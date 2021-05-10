@@ -6,7 +6,7 @@
 /*   By: darbib <darbib@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/06 13:48:08 by darbib            #+#    #+#             */
-/*   Updated: 2021/05/07 17:17:28 by darbib           ###   ########.fr       */
+/*   Updated: 2021/05/10 11:40:30 by darbib           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,8 +183,7 @@ namespace ft
 			void swap (vector& x);
 			void clear();
 
-
-allocator_type get_allocator() const;
+			allocator_type get_allocator() const;
 
 		private:
 			Alloc		&_alloc;
