@@ -6,7 +6,7 @@
 /*   By: darbib <darbib@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/06 13:48:08 by darbib            #+#    #+#             */
-/*   Updated: 2021/05/07 16:31:48 by darbib           ###   ########.fr       */
+/*   Updated: 2021/05/07 17:17:28 by darbib           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,11 +120,10 @@ namespace ft
 
 			virtual ~vector()
 			{
-				//delete elements
+				for (int i = 0; i < this->_size; i++)
+					this->elems[i].~T();
 				this->alloc.deallocate(this->_elems, this->_capacity);
 			}
-
-
 
 
 			size_type size() const 
@@ -150,14 +149,48 @@ namespace ft
 			{
 				if (n <= this->_capacity)
 					return ;
+				T *tmp = NULL;
+				try
+				{
+					tmp = static_cast<T*>(this->_alloc.allocate(n));
+				}
+				catch(std::exception e)
+				{
+					std::cout << e.what() << std::endl;
+					return ;
+				}
+				for (int i = 0; i < this->_size; i++)
+					this->elems[i].~T();
+				this->alloc.deallocate(this->_elems, this->_capacity);
+				this->elems = tmp;
 				this->_capacity = n;
 			}
+
+
+
+
+			template <class InputIterator>
+				void assign (InputIterator first, InputIterator last);
+			void assign (size_type n, const value_type& val);
+			void push_back (const value_type& val);
+			void pop_back();
+			iterator insert (iterator position, const value_type& val);
+			void insert (iterator position, size_type n, const value_type& val);
+			template <class InputIterator>
+				void insert (iterator position, InputIterator first, InputIterator last);
+			iterator erase (iterator position);
+			iterator erase (iterator first, iterator last);
+			void swap (vector& x);
+			void clear();
+
+
+allocator_type get_allocator() const;
 
 		private:
 			Alloc		&_alloc;
 			size_type 	_size;
 			size_type 	_max_size;
 			size_type 	_capacity;
-			T			_elems;
+			T			*_elems;
 	};
 }
