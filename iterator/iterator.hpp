@@ -6,7 +6,7 @@
 /*   By: darbib <darbib@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/10 15:40:13 by darbib            #+#    #+#             */
-/*   Updated: 2021/05/11 15:07:09 by darbib           ###   ########.fr       */
+/*   Updated: 2021/05/13 14:57:42 by darbib           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,36 +31,75 @@ namespace ft
 		typedef Category	iterator_category;
 	};
 
-	template <class Iter> 
-	struct iterator_traits
-	{
-		typedef typename Iter::iterator_category	iterator_category;
-		typedef typename Iter::value_type			value_type;
-		typedef typename Iter::difference_type		difference_type;
-		typedef typename Iter::pointer				pointer;
-		typedef typename Iter::reference			reference;
-	};
-
 	template <class T>
 	class Random_Access_Iterator
 	: public ft::iterator<ft::random_access_iterator_tag, T>
 	{
 		public :
-			Random_Access_Iterator();
-			Random_Access_Iterator(Random_Access_Iterator const &src);
-			virtual ~Random_Access_Iterator();
-			Random_Access_Iterator &operator=(Random_Access_Iterator const &src);
+			typedef typename iterator<random_access_iterator_tag, T>::value_type		value_type;
+			typedef typename iterator<random_access_iterator_tag, T>::difference_type	difference_type;
+			typedef typename iterator<random_access_iterator_tag, T>::pointer			pointer;
+			typedef typename iterator<random_access_iterator_tag, T>::reference			reference;
+			typedef typename iterator<random_access_iterator_tag, T>::iterator_category	iterator_category;
 
-			//typename ft::iterator<random_access_iterator_tag, T>::reference	operator*(void) const
-			typename ft::iterator_traits<::reference	operator*(void) const
-				{ return static_cast<reference>(this->_current_ptr); }
+			Random_Access_Iterator()
+			: _current_ptr(NULL)
+			{ }
+
+			Random_Access_Iterator(Random_Access_Iterator const &src)
+			: _current_ptr(src._current_ptr)
+			{ }
+
+			Random_Access_Iterator(pointer ptr)
+			: _current_ptr(ptr)
+			{ }
+
+			virtual ~Random_Access_Iterator() { };
+	
+			Random_Access_Iterator &operator=(Random_Access_Iterator const &src)
+			{
+				this->_current_ptr = src._current_ptr;
+				return *this;
+			}
+
+			value_type	operator*(void) const
+			{ return static_cast<value_type>(*this->_current_ptr); }
 
 			pointer		operator->(void) const
-				{ return this->_current_ptr; }
+			{ return this->_current_ptr; }
+
+			Random_Access_Iterator	operator+(int n) const 
+			{
+				Random_Access_Iterator	rai;
+				rai._current_ptr = this->_current_ptr + n;  
+				return rai;
+			}
+
+			friend Random_Access_Iterator	operator+(int n, Random_Access_Iterator &other);
+
+			difference_type			operator-(Random_Access_Iterator &other) const
+			{ return static_cast<difference_type>(this->_current_ptr - other._current_ptr); }
+
+			Random_Access_Iterator	operator-(int n) const
+			{
+				Random_Access_Iterator	rai;
+				rai._current_ptr = this->_current_ptr - n;  
+				return rai;
+			}
+
+			Random_Access_Iterator	operator+(Random_Access_Iterator &other) const
+			{ return this->_current_ptr + other._current_ptr; }
 
 		protected :
 			pointer		_current_ptr;
 
-
 	};
+
+	template <class T>
+	Random_Access_Iterator<T>	operator+(int n, Random_Access_Iterator<T> &other)
+	{
+		Random_Access_Iterator<T>	rai;
+		rai._current_ptr = n + other._current_ptr;  
+		return rai;
+	}
 }
