@@ -1,38 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   iterator.hpp                                       :+:      :+:    :+:   */
+/*   vect_iterator.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: darbib <darbib@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/05/10 15:40:13 by darbib            #+#    #+#             */
-/*   Updated: 2021/05/15 15:18:58 by darbib           ###   ########.fr       */
+/*   Created: 2021/05/14 14:24:16 by darbib            #+#    #+#             */
+/*   Updated: 2021/05/15 16:20:00 by darbib           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cstddef>
+#include "iterator.hpp"
 
 namespace ft
 {
-	struct input_iterator_tag {};
-	struct output_iterator_tag {};
-	struct forward_iterator_tag : input_iterator_tag, output_iterator_tag {};
-	struct bidirectionnal_iterator_tag : forward_iterator_tag {};
-	struct random_access_iterator_tag : bidirectionnal_iterator_tag {};
-
-	template <class Category, class T, class Distance = ptrdiff_t,
-			 class Pointer = T*, class Reference = T&>
-	struct iterator
-	{
-		typedef T			value_type;
-		typedef Distance	difference_type;
-		typedef Pointer		pointer;
-		typedef Reference	reference;
-		typedef Category	iterator_category;
-	};
-
 	template <class T>
-	class Random_Access_Iterator
+	class Vect_Iterator
 	: public ft::iterator<ft::random_access_iterator_tag, T>
 	{
 		public :
@@ -42,23 +26,25 @@ namespace ft
 			typedef typename iterator<random_access_iterator_tag, T>::reference			reference;
 			typedef typename iterator<random_access_iterator_tag, T>::iterator_category	iterator_category;
 
-			Random_Access_Iterator()
+			Vect_Iterator()
 			: _current_ptr(NULL)
-			{ }
+			//{ }
+			{ std::cout << "an iterator is created" << std::endl;}
 
-			Random_Access_Iterator(Random_Access_Iterator const &src)
+			Vect_Iterator(Vect_Iterator const &src)
 			: _current_ptr(src._current_ptr)
 			{ }
 
-			Random_Access_Iterator(pointer ptr)
+			Vect_Iterator(pointer ptr)
 			: _current_ptr(ptr)
 			{ }
 
-			virtual ~Random_Access_Iterator()
-			{ }
-	
-			Random_Access_Iterator
-			&operator=(Random_Access_Iterator const &src)
+			virtual ~Vect_Iterator()
+			//{ }
+			{ std::cout << "an iterator is destroyed" << std::endl;}
+
+			Vect_Iterator
+			&operator=(Vect_Iterator const &src)
 			{
 				this->_current_ptr = src._current_ptr;
 				return *this;
@@ -73,31 +59,31 @@ namespace ft
 			{ return this->_current_ptr; }
 
 			difference_type	
-			operator-(Random_Access_Iterator &other) const
+			operator-(Vect_Iterator &other) const
 			{ return static_cast<difference_type>(this->_current_ptr - other._current_ptr); }
 
 			bool
-			operator<(Random_Access_Iterator &other) const
+			operator<(Vect_Iterator &other) const
 			{ return this->_current_ptr < other._current_ptr; }
 
 			bool
-			operator>(Random_Access_Iterator &other) const
+			operator>(Vect_Iterator &other) const
 			{ return this->_current_ptr > other._current_ptr; }
 
 			bool
-			operator>=(Random_Access_Iterator &other) const
+			operator>=(Vect_Iterator &other) const
 			{ return this->_current_ptr >= other._current_ptr; }
 
 			bool
-			operator<=(Random_Access_Iterator &other) const
+			operator<=(Vect_Iterator &other) const
 			{ return this->_current_ptr <= other._current_ptr; }
 
 			bool
-			operator==(Random_Access_Iterator &other) const
+			operator==(Vect_Iterator &other) const
 			{ return this->_current_ptr == other._current_ptr; }
 
 			bool
-			operator!=(Random_Access_Iterator &other) const
+			operator!=(Vect_Iterator &other) const
 			{ return this->_current_ptr != other._current_ptr; }
 
 			pointer
@@ -112,7 +98,85 @@ namespace ft
 				this->_current_ptr = ptr;
 			}
 
+			value_type
+			operator[](int n)
+			{
+				return *(this + n);
+			}
+
+			Vect_Iterator
+			operator+(int n) const
+			{
+				Vect_Iterator vi;
+				vi._current_ptr = this->_current_ptr + n;
+				return vi;
+			}
+
+			Vect_Iterator
+			operator-(int n) const
+			{ 
+				Vect_Iterator vi;
+				vi._current_ptr = this->_current_ptr - n;
+				return vi;
+			}
+
+			Vect_Iterator &
+			operator+=(int n)
+			{
+				this->_current_ptr += n;
+				return *this;
+			}
+
+			Vect_Iterator &
+			operator-=(int n)
+			{
+				this->_current_ptr -= n;
+				return *this;
+			}
+
+			Vect_Iterator
+			operator--(void)
+			{
+				this->_current_ptr -= 1;
+				return *this;
+			}
+
+			Vect_Iterator
+			operator--(int)
+			{
+				Vect_Iterator tmp;
+				tmp._current_ptr = this->_current_ptr;
+				this->_current_ptr -= 1;
+				return tmp;
+			}
+
+			Vect_Iterator
+			operator++(void)
+			{
+				this->_current_ptr += 1;
+				return *this;
+			}
+
+			Vect_Iterator
+			operator++(int)
+			{
+				Vect_Iterator tmp;
+				tmp._current_ptr = this->_current_ptr;
+				this->_current_ptr += 1;
+				return tmp;
+			}
+
+
 		protected :
 			pointer		_current_ptr;
 	};
+
+	template <class T>
+	Vect_Iterator<T>
+	operator+(int n, Vect_Iterator<T> &other)
+	{	
+		Vect_Iterator<T> vi;
+		vi.setCurrentPtr(other.getCurrentPtr() + n);
+		return vi;
+	}
 }
