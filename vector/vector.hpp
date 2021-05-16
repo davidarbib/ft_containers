@@ -6,12 +6,13 @@
 /*   By: darbib <darbib@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/06 13:48:08 by darbib            #+#    #+#             */
-/*   Updated: 2021/05/14 14:20:58 by darbib           ###   ########.fr       */
+/*   Updated: 2021/05/16 18:26:07 by darbib           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <memory>
 #include <iostream>
+#include "vect_iterator.hpp"
 
 #define MAX_SIZE	2305843009213693951
 
@@ -29,8 +30,8 @@ namespace ft
 			typedef typename Alloc::const_pointer			const_pointer;
     		typedef std::size_t								size_type;
     		typedef std::ptrdiff_t							difference_type;
-    		//typedef /* implementation-defined */          iterator;
-    		//typedef /* implementation-defined */          const_iterator;
+    		typedef typename ft::vect_iterator<T>			iterator;
+    		typedef typename ft::vect_iterator<T const>		const_iterator;
     		//typedef std::reverse_iterator<iterator>       reverse_iterator;
     		//typedef std::reverse_iterator<const_itar      const_reverse_iterator;
 
@@ -115,7 +116,6 @@ namespace ft
 				}	
 				for (int i = 0; i < this->_size; i++)
 					this->_elems[i] = other._elems[i];
-			//	needs [] overload
 			}
 
 			virtual ~vector()
@@ -124,7 +124,6 @@ namespace ft
 					this->elems[i].~T();
 				this->alloc.deallocate(this->_elems, this->_capacity);
 			}
-
 
 			size_type size() const 
 				{return this->_size;}
@@ -165,9 +164,6 @@ namespace ft
 				this->elems = tmp;
 				this->_capacity = n;
 			}
-
-
-
 
 			template <class InputIterator>
 				void assign (InputIterator first, InputIterator last);

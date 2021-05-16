@@ -6,7 +6,7 @@
 /*   By: darbib <darbib@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/14 14:24:16 by darbib            #+#    #+#             */
-/*   Updated: 2021/05/16 15:35:55 by darbib           ###   ########.fr       */
+/*   Updated: 2021/05/16 16:00:17 by darbib           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 namespace ft
 {
 	template <class T>
-	class Vect_Iterator
+	class vect_iterator
 	: public ft::iterator<ft::random_access_iterator_tag, T>
 	{
 		public :
@@ -26,27 +26,27 @@ namespace ft
 			typedef typename iterator<random_access_iterator_tag, T>::reference			reference;
 			typedef typename iterator<random_access_iterator_tag, T>::iterator_category	iterator_category;
 
-			Vect_Iterator()
+			vect_iterator()
 			: _current_ptr(NULL)
 			//{ }
 			{ std::cout << "an iterator is created" << std::endl;}
 
-			Vect_Iterator(Vect_Iterator const &src)
+			vect_iterator(vect_iterator const &src)
 			: _current_ptr(src._current_ptr)
 			//{ }
 			{ std::cout << "an iterator is created" << std::endl;}
 
-			Vect_Iterator(pointer ptr)
+			vect_iterator(pointer ptr)
 			: _current_ptr(ptr)
 			//{ }
 			{ std::cout << "an iterator is created" << std::endl;}
 
-			virtual ~Vect_Iterator()
+			virtual ~vect_iterator()
 			//{ }
 			{ std::cout << "an iterator is destroyed" << std::endl;}
 
-			Vect_Iterator &
-			operator=(Vect_Iterator const &src)
+			vect_iterator &
+			operator=(vect_iterator const &src)
 			{
 			{ std::cout << "iterator assignment" << std::endl;}
 				this->_current_ptr = src._current_ptr;
@@ -62,31 +62,31 @@ namespace ft
 			{ return this->_current_ptr; }
 
 			difference_type	
-			operator-(Vect_Iterator &other) const
+			operator-(vect_iterator &other) const
 			{ return static_cast<difference_type>(this->_current_ptr - other._current_ptr); }
 
 			bool
-			operator<(Vect_Iterator &other) const
+			operator<(vect_iterator &other) const
 			{ return this->_current_ptr < other._current_ptr; }
 
 			bool
-			operator>(Vect_Iterator &other) const
+			operator>(vect_iterator &other) const
 			{ return this->_current_ptr > other._current_ptr; }
 
 			bool
-			operator>=(Vect_Iterator &other) const
+			operator>=(vect_iterator &other) const
 			{ return this->_current_ptr >= other._current_ptr; }
 
 			bool
-			operator<=(Vect_Iterator &other) const
+			operator<=(vect_iterator &other) const
 			{ return this->_current_ptr <= other._current_ptr; }
 
 			bool
-			operator==(Vect_Iterator &other) const
+			operator==(vect_iterator &other) const
 			{ return this->_current_ptr == other._current_ptr; }
 
 			bool
-			operator!=(Vect_Iterator &other) const
+			operator!=(vect_iterator &other) const
 			{ return this->_current_ptr != other._current_ptr; }
 
 			pointer
@@ -107,37 +107,37 @@ namespace ft
 				return *(this + n);
 			}
 
-			Vect_Iterator
+			vect_iterator
 			operator+(int n) const
 			{
-				Vect_Iterator vi;
+				vect_iterator vi;
 				vi._current_ptr = this->_current_ptr + n;
 				return vi;
 			}
 
-			Vect_Iterator
+			vect_iterator
 			operator-(int n) const
 			{ 
-				Vect_Iterator vi;
+				vect_iterator vi;
 				vi._current_ptr = this->_current_ptr - n;
 				return vi;
 			}
 
-			Vect_Iterator &
+			vect_iterator &
 			operator+=(int n)
 			{
 				this->_current_ptr += n;
 				return *this;
 			}
 
-			Vect_Iterator &
+			vect_iterator &
 			operator-=(int n)
 			{
 				this->_current_ptr -= n;
 				return *this;
 			}
 
-			Vect_Iterator &
+			vect_iterator &
 			operator--(void)
 			{
 			{ std::cout << "prefix dec" << std::endl;}
@@ -145,17 +145,17 @@ namespace ft
 				return *this;
 			}
 
-			Vect_Iterator
+			vect_iterator
 			operator--(int)
 			{
 			{ std::cout << "postfix dec" << std::endl;}
-				Vect_Iterator tmp;
+				vect_iterator tmp;
 				tmp._current_ptr = this->_current_ptr;
 				this->_current_ptr -= 1;
 				return tmp;
 			}
 
-			Vect_Iterator &
+			vect_iterator &
 			operator++(void)
 			{
 			{ std::cout << "prefix inc" << std::endl;}
@@ -163,11 +163,11 @@ namespace ft
 				return *this;
 			}
 
-			Vect_Iterator
+			vect_iterator
 			operator++(int)
 			{
 			{ std::cout << "postfix inc" << std::endl;}
-				Vect_Iterator tmp;
+				vect_iterator tmp;
 				tmp._current_ptr = this->_current_ptr;
 				this->_current_ptr += 1;
 				return tmp;
@@ -178,10 +178,10 @@ namespace ft
 	};
 
 	template <class T>
-	Vect_Iterator<T>
-	operator+(int n, Vect_Iterator<T> &other)
+	vect_iterator<T>
+	operator+(int n, vect_iterator<T> &other)
 	{	
-		Vect_Iterator<T> vi;
+		vect_iterator<T> vi;
 		vi.setCurrentPtr(other.getCurrentPtr() + n);
 		return vi;
 	}

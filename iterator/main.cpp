@@ -9,11 +9,11 @@ int main(int ac, char **av)
 
 	int tb[] = { 4, 7, -2, 13 };
 
-	ft::Vect_Iterator<int> it(tb);
+	ft::vect_iterator<int> it(tb);
 	std::cout << *it << std::endl;
 	std::cout << *(it + 2) << std::endl;
 	std::cout << *(2 + it) << std::endl;
-	ft::Vect_Iterator<int> it2 = it + 1 + 1;
+	ft::vect_iterator<int> it2 = it + 1 + 1;
 	std::cout << *it2 << std::endl;
 	std::cout << it2 - it << std::endl;
 	//ft::Random_Access_Iterator<int> itnull;
@@ -39,7 +39,7 @@ int main(int ac, char **av)
 	std::cout << "------------------------------" << std::endl;
 	std::cout << std::endl;
 
-	ft::Vect_Iterator<int>it3;
+	ft::vect_iterator<int>it3;
 	std::cout << std::endl;
 	std::cout << "------------------------------" << std::endl;
 	std::cout << std::endl;
@@ -50,9 +50,9 @@ int main(int ac, char **av)
 	std::cout << "------------------------------" << std::endl;
 	std::cout << std::endl;
 
-	ft::Vect_Iterator<int> itchain1(tb);
-	ft::Vect_Iterator<int> itchain2;
-	ft::Vect_Iterator<int> itchain3;
+	ft::vect_iterator<int> itchain1(tb);
+	ft::vect_iterator<int> itchain2;
+	ft::vect_iterator<int> itchain3;
 	std::cout << std::endl;
 	std::cout << "------------------------------" << std::endl;
 	std::cout << std::endl;
