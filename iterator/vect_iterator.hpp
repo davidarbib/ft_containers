@@ -6,7 +6,7 @@
 /*   By: darbib <darbib@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/14 14:24:16 by darbib            #+#    #+#             */
-/*   Updated: 2021/05/15 16:20:00 by darbib           ###   ########.fr       */
+/*   Updated: 2021/05/16 15:35:55 by darbib           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,19 +33,22 @@ namespace ft
 
 			Vect_Iterator(Vect_Iterator const &src)
 			: _current_ptr(src._current_ptr)
-			{ }
+			//{ }
+			{ std::cout << "an iterator is created" << std::endl;}
 
 			Vect_Iterator(pointer ptr)
 			: _current_ptr(ptr)
-			{ }
+			//{ }
+			{ std::cout << "an iterator is created" << std::endl;}
 
 			virtual ~Vect_Iterator()
 			//{ }
 			{ std::cout << "an iterator is destroyed" << std::endl;}
 
-			Vect_Iterator
-			&operator=(Vect_Iterator const &src)
+			Vect_Iterator &
+			operator=(Vect_Iterator const &src)
 			{
+			{ std::cout << "iterator assignment" << std::endl;}
 				this->_current_ptr = src._current_ptr;
 				return *this;
 			}
@@ -134,9 +137,10 @@ namespace ft
 				return *this;
 			}
 
-			Vect_Iterator
+			Vect_Iterator &
 			operator--(void)
 			{
+			{ std::cout << "prefix dec" << std::endl;}
 				this->_current_ptr -= 1;
 				return *this;
 			}
@@ -144,15 +148,17 @@ namespace ft
 			Vect_Iterator
 			operator--(int)
 			{
+			{ std::cout << "postfix dec" << std::endl;}
 				Vect_Iterator tmp;
 				tmp._current_ptr = this->_current_ptr;
 				this->_current_ptr -= 1;
 				return tmp;
 			}
 
-			Vect_Iterator
+			Vect_Iterator &
 			operator++(void)
 			{
+			{ std::cout << "prefix inc" << std::endl;}
 				this->_current_ptr += 1;
 				return *this;
 			}
@@ -160,12 +166,12 @@ namespace ft
 			Vect_Iterator
 			operator++(int)
 			{
+			{ std::cout << "postfix inc" << std::endl;}
 				Vect_Iterator tmp;
 				tmp._current_ptr = this->_current_ptr;
 				this->_current_ptr += 1;
 				return tmp;
 			}
-
 
 		protected :
 			pointer		_current_ptr;

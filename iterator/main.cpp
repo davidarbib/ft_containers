@@ -45,6 +45,41 @@ int main(int ac, char **av)
 	std::cout << std::endl;
 	it3 = it2--; //it2 = tb
 	std::cout << *it3 << std::endl;
-	return 0;
 
+	std::cout << std::endl;
+	std::cout << "------------------------------" << std::endl;
+	std::cout << std::endl;
+
+	ft::Vect_Iterator<int> itchain1(tb);
+	ft::Vect_Iterator<int> itchain2;
+	ft::Vect_Iterator<int> itchain3;
+	std::cout << std::endl;
+	std::cout << "------------------------------" << std::endl;
+	std::cout << std::endl;
+	itchain3 = ++itchain2 = ++itchain1;
+	//itchain3 = itchain2++ = itchain1++;
+	//itchain2 = ++itchain1;
+	//itchain2 = itchain1++;
+	std::cout << "*itchain1 : " << *itchain1 << std::endl;
+	std::cout << "*itchain2 : " << *itchain2 << std::endl;
+	std::cout << "*itchain3 : " << *itchain3 << std::endl;
+
+	std::cout << std::endl;
+	std::cout << "------------------------------" << std::endl;
+	std::cout << std::endl;
+
+	std::vector<int> vec;
+	vec.push_back(4);
+	vec.push_back(7);
+	vec.push_back(-2);
+	vec.push_back(13);
+	std::vector<int>::iterator itvec1 = vec.begin();
+	std::vector<int>::iterator itvec2;
+	std::vector<int>::iterator itvec3;
+	itvec3 = ++itvec2 = ++itvec1;
+	//itvec3 = itvec2++ = itvec1++;
+	std::cout << "*itvec1 : " << *itvec1 << std::endl;
+	std::cout << "*itvec2 : " << *itvec2 << std::endl;
+	std::cout << "*itvec3 : " << *itvec3 << std::endl;
+	return 0;
 }
