@@ -6,7 +6,7 @@
 /*   By: darbib <darbib@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/10 15:40:13 by darbib            #+#    #+#             */
-/*   Updated: 2021/05/15 15:18:58 by darbib           ###   ########.fr       */
+/*   Updated: 2021/08/10 23:58:21 by darbib           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,22 @@ namespace ft
 	struct bidirectionnal_iterator_tag : forward_iterator_tag {};
 	struct random_access_iterator_tag : bidirectionnal_iterator_tag {};
 
+
 	template <class Category, class T, class Distance = ptrdiff_t,
 			 class Pointer = T*, class Reference = T&>
 	struct iterator
 	{
 		typedef T			value_type;
+		typedef Distance	difference_type;
+		typedef Pointer		pointer;
+		typedef Reference	reference;
+		typedef Category	iterator_category;
+	};
+
+	template <typename T> 
+	struct iterator_traits<T*>
+	{
+		typedef T:: 		value_type;
 		typedef Distance	difference_type;
 		typedef Pointer		pointer;
 		typedef Reference	reference;
