@@ -6,7 +6,7 @@
 /*   By: darbib <darbib@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/06 13:48:08 by darbib            #+#    #+#             */
-/*   Updated: 2021/05/16 18:26:07 by darbib           ###   ########.fr       */
+/*   Updated: 2021/08/11 17:02:09 by darbib           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,8 +166,37 @@ namespace ft
 			}
 
 			template <class InputIterator>
-				void assign (InputIterator first, InputIterator last);
-			void assign (size_type n, const value_type& val);
+			void
+			assign (InputIterator first, InputIterator last)
+			{
+				size_t tmp_size;
+				
+				
+				tmp_size = static_cast<InputIterator::iterator_traits::pointer>(last)
+				- static_cast<InputIterator::iterator_traits::pointer>(first);
+				this._alloc.deallocate(this->_size);
+				this._alloc.allocate(tmp_size);
+				this->_size = tmp_size;
+				/*
+				if (!this->_size)
+					return ;
+				try
+				{
+					this->_elems = static_cast<T*>(this->_alloc.allocate(_size));
+				}
+				catch (std::exception e)
+				{
+					std::cout << e.what() << std::endl;	
+					return ;
+				}	
+				*/
+			}
+
+			void
+			assign (size_type n, const value_type& val);
+			{
+			}
+
 			void push_back (const value_type& val);
 			void pop_back();
 			iterator insert (iterator position, const value_type& val);

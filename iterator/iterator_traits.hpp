@@ -10,12 +10,13 @@ namespace ft
 		typedef typename T::iterator_category	iterator_category;
 	};
 
+	template <typename T> 
 	struct iterator_traits<T*>
 	{
 		typedef T								value_type;
 		typedef T*								pointer;
 		typedef T&								reference;
-		typedef ptrdiff_t						difference_type;
+		typedef std::ptrdiff_t						difference_type;
 		typedef random_access_iterator_tag		iterator_category;
 	};
 }
