@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   vector.hpp                                         :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: darbib <darbib@student.42.fr>              +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/05/06 13:48:08 by darbib            #+#    #+#             */
-/*   Updated: 2021/08/12 19:50:35 by darbib           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include <memory>
 #include <iostream>
 #include "vect_iterator.hpp"
@@ -45,8 +33,7 @@ namespace ft
 			_alloc(alloc)
 			{}
 
-			vector(std::size_t count, const T& value = T(),
-                 	const Alloc& alloc = Alloc())
+			vector(size_type count, const T& value = T(), const Alloc& alloc = Alloc())
 			: _size(count), _max_size(MAX_SIZE), _capacity(0), _elems(NULL),
 			_alloc(alloc)
 			{
@@ -54,13 +41,13 @@ namespace ft
 					return ;
 				try
 				{
-					this->_elems = static_cast<T*>(this->_alloc.allocate(_size));
+					this->_elems = this->_alloc.allocate(_size);
 				}
 				catch (std::exception e)
 				{
 					std::cout << e.what() << std::endl;	
 					return ;
-				}	
+				}
 				for (int i = 0; i < this->_size; i++)
 					this->_elems[i] = value;
 			}
@@ -71,7 +58,7 @@ namespace ft
 			{
 				try
 				{
-					this->_elems = static_cast<T*>(this->_alloc.allocate(_size));
+					this->_elems = this->_alloc.allocate(_size);
 				}
 				catch (std::exception e)
 				{
@@ -89,7 +76,7 @@ namespace ft
 					return ;
 				try
 				{
-					this->_elems = static_cast<T*>(this->_alloc.allocate(_size));
+					this->_elems = this->_alloc.allocate(_size);
 				}
 				catch (std::exception e)
 				{
@@ -100,7 +87,7 @@ namespace ft
 			}
 
 			vector(const vector& other)
-			: _size(other.size), _capacity(other.capacity), _elems(NULL),
+			: _size(other.size()), _capacity(other.capacity()), _elems(NULL),
 				_max_size(MAX_SIZE), _alloc(other.alloc)
 			{
 				if (!this->_size)
@@ -121,8 +108,8 @@ namespace ft
 			virtual ~vector()
 			{
 				for (int i = 0; i < this->_size; i++)
-					this->elems[i].~T();
-				this->alloc.deallocate(this->_elems, this->_capacity);
+					this->_elems[i].~T();
+				this->_alloc.deallocate(this->_elems, this->_capacity);
 			}
 
 			size_type size() const 
@@ -211,8 +198,6 @@ namespace ft
 			size_t
 			computeSize(InputIterator first, InputIterator last)
 			{
-				if (first == NULL || last == NULL)
-					return 0;
 				size_t	size = 1;
 				for (InputIterator it = first; it != last; it++) 
 					size++;
@@ -220,10 +205,10 @@ namespace ft
 			}
 
 		private:
-			size_type 		_size;
-			size_type 		_max_size;
-			size_type 		_capacity;
-			T				*_elems;
-			const Alloc		&_alloc;
+			size_type 					_size;
+			size_type 					_max_size;
+			size_type 					_capacity;
+			pointer						_elems;
+			allocator_type				_alloc;
 	};
 }
