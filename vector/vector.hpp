@@ -6,7 +6,7 @@
 /*   By: darbib <darbib@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/06 13:48:08 by darbib            #+#    #+#             */
-/*   Updated: 2021/08/11 17:02:09 by darbib           ###   ########.fr       */
+/*   Updated: 2021/08/12 19:50:35 by darbib           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ namespace ft
 			: _size(count), _max_size(MAX_SIZE), _capacity(0), _elems(NULL),
 			_alloc(alloc)
 			{
-				if (!this->_size)
+				if (this->_size == 0)
 					return ;
 				try
 				{
@@ -82,10 +82,10 @@ namespace ft
 			template<class InputIt>
 			vector(InputIt first, InputIt last,
 						const Alloc& alloc = Alloc())
-			: _size(static_cast<int>(last) - static_cast<int>(first)),
-				_max_size(MAX_SIZE), _capacity(0), _elems(NULL), _alloc(alloc)
+			: _max_size(MAX_SIZE), _capacity(0), _elems(NULL), _alloc(alloc)
 			{
-				if (!this->_size)
+				this->_size = computeSize(first, last);
+				if (this->_size == 0)
 					return ;
 				try
 				{
@@ -169,32 +169,29 @@ namespace ft
 			void
 			assign (InputIterator first, InputIterator last)
 			{
-				size_t tmp_size;
-				
-				
-				tmp_size = static_cast<InputIterator::iterator_traits::pointer>(last)
-				- static_cast<InputIterator::iterator_traits::pointer>(first);
-				this._alloc.deallocate(this->_size);
-				this._alloc.allocate(tmp_size);
+				size_t tmp_size = computeSize(first, last);
+				if (tmp_size == 0)
+					return ;
+				this->_alloc.deallocate(this->_size);
+				this->_alloc.allocate(tmp_size);
 				this->_size = tmp_size;
-				/*
-				if (!this->_size)
-					return ;
-				try
-				{
-					this->_elems = static_cast<T*>(this->_alloc.allocate(_size));
-				}
-				catch (std::exception e)
-				{
-					std::cout << e.what() << std::endl;	
-					return ;
-				}	
-				*/
+				this->_capacity = tmp_size;
+				int i = 0;
+				for (InputIterator it = first; it != last; it++)
+					this[i++] = *it;
 			}
 
 			void
-			assign (size_type n, const value_type& val);
+			assign (size_type n, const value_type& val)
 			{
+				if (n == 0)
+					return ;
+				this->_alloc.deallocate(this->_size);
+				this->_alloc.allocate(n);
+				this->_size = n;
+				this->_capacity = n;
+				for (size_type i = 0; i < n; i++)
+					this[i] = val;
 			}
 
 			void push_back (const value_type& val);
@@ -210,11 +207,23 @@ namespace ft
 
 			allocator_type get_allocator() const;
 
+			template <class InputIterator>
+			size_t
+			computeSize(InputIterator first, InputIterator last)
+			{
+				if (first == NULL || last == NULL)
+					return 0;
+				size_t	size = 1;
+				for (InputIterator it = first; it != last; it++) 
+					size++;
+				return size;
+			}
+
 		private:
-			Alloc		&_alloc;
-			size_type 	_size;
-			size_type 	_max_size;
-			size_type 	_capacity;
-			T			*_elems;
+			size_type 		_size;
+			size_type 		_max_size;
+			size_type 		_capacity;
+			T				*_elems;
+			const Alloc		&_alloc;
 	};
 }

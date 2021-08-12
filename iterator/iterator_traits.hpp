@@ -1,3 +1,5 @@
+#include <iterator.hpp>
+
 namespace ft
 {
 	template <typename T> 
@@ -13,10 +15,10 @@ namespace ft
 	template <typename T> 
 	struct iterator_traits<T*>
 	{
-		typedef T								value_type;
-		typedef T*								pointer;
-		typedef T&								reference;
+		typedef T									value_type;
+		typedef T*									pointer;
+		typedef T&									reference;
 		typedef std::ptrdiff_t						difference_type;
-		typedef random_access_iterator_tag		iterator_category;
+		typedef ft::random_access_iterator_tag		iterator_category;
 	};
 }
