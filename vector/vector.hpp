@@ -48,27 +48,13 @@ namespace ft
 					std::cout << e.what() << std::endl;	
 					return ;
 				}
-				for (int i = 0; i < this->_size; i++)
+				for (size_type i = 0; i < this->_size; i++)
 					this->_elems[i] = value;
-			}
-
-			vector(std::size_t count)
-			: _size(count), _max_size(MAX_SIZE), _capacity(0), _elems(NULL),
-				_alloc(Alloc())
-			{
-				try
-				{
-					this->_elems = this->_alloc.allocate(_size);
-				}
-				catch (std::exception e)
-				{
-					std::cout << e.what() << std::endl;	
-				}	
+				_capacity = _size;
 			}
 
 			template<class InputIt>
-			vector(InputIt first, InputIt last,
-						const Alloc& alloc = Alloc())
+			vector(InputIt first, InputIt last, const Alloc& alloc = Alloc())
 			: _max_size(MAX_SIZE), _capacity(0), _elems(NULL), _alloc(alloc)
 			{
 				this->_size = computeSize(first, last);
@@ -84,6 +70,7 @@ namespace ft
 					return ;
 				}	
 			//		need iterator implementation
+				_capacity = _size;
 			}
 
 			vector(const vector& other)
@@ -101,13 +88,13 @@ namespace ft
 					std::cout << e.what() << std::endl;	
 					return ;
 				}	
-				for (int i = 0; i < this->_size; i++)
+				for (size_type i = 0; i < this->_size; i++)
 					this->_elems[i] = other._elems[i];
 			}
 
 			virtual ~vector()
 			{
-				for (int i = 0; i < this->_size; i++)
+				for (size_type i = 0; i < this->_size; i++)
 					this->_elems[i].~T();
 				this->_alloc.deallocate(this->_elems, this->_capacity);
 			}
@@ -173,10 +160,10 @@ namespace ft
 			{
 				if (n == 0)
 					return ;
-				this->_alloc.deallocate(this->_size);
-				this->_alloc.allocate(n);
-				this->_size = n;
-				this->_capacity = n;
+				_alloc.deallocate(_size);
+				_alloc.allocate(n);
+				_size = n;
+				_capacity = n;
 				for (size_type i = 0; i < n; i++)
 					this[i] = val;
 			}
@@ -191,6 +178,11 @@ namespace ft
 			iterator erase (iterator first, iterator last);
 			void swap (vector& x);
 			void clear();
+
+			value_type operator[](unsigned int idx)
+			{
+				return  
+			}
 
 			allocator_type get_allocator() const;
 
