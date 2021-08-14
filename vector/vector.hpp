@@ -173,15 +173,30 @@ namespace ft
 			iterator insert (iterator position, const value_type& val);
 			void insert (iterator position, size_type n, const value_type& val);
 			template <class InputIterator>
-				void insert (iterator position, InputIterator first, InputIterator last);
+			void insert (iterator position, InputIterator first, InputIterator last);
 			iterator erase (iterator position);
 			iterator erase (iterator first, iterator last);
 			void swap (vector& x);
 			void clear();
 
-			value_type operator[](unsigned int idx)
+			reference
+			operator[](unsigned int offset)
 			{
-				return  
+				return static_cast<reference>(*(_elems + offset));
+			}
+
+			iterator
+			begin(void)
+			{
+				iterator it(_elems);
+				return it;
+			}
+
+			iterator
+			end(void)
+			{
+				iterator it(_elems + _size);
+				return it;
 			}
 
 			allocator_type get_allocator() const;

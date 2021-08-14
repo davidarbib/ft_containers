@@ -6,7 +6,7 @@
 /*   By: darbib <darbib@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/10 15:40:13 by darbib            #+#    #+#             */
-/*   Updated: 2021/08/12 18:18:36 by darbib           ###   ########.fr       */
+/*   Updated: 2021/08/14 23:19:34 by darbib           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,6 @@
 
 namespace ft
 {
-	struct input_iterator_tag {};
-	struct output_iterator_tag {};
-	struct forward_iterator_tag : input_iterator_tag, output_iterator_tag {};
-	struct bidirectionnal_iterator_tag : forward_iterator_tag {};
-	struct random_access_iterator_tag : bidirectionnal_iterator_tag {};
-
-
 	template <class Category, class T, class Distance = ptrdiff_t,
 			 class Pointer = T*, class Reference = T&>
 	struct iterator
@@ -34,7 +27,7 @@ namespace ft
 
 	template <class T>
 	class Random_Access_Iterator
-	: public ft::iterator<ft::random_access_iterator_tag, T>
+	: public ft::iterator_traits<ft::random_access_iterator_tag, T>
 	{
 		public :
 			typedef typename iterator<random_access_iterator_tag, T>::value_type		value_type;

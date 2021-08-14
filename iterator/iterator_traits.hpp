@@ -1,15 +1,22 @@
-#include <iterator.hpp>
+#ifndef ITERATOR_TRAITS_HPP
+# define ITERATOR_TRAITS_HPP
 
 namespace ft
 {
-	template <typename T> 
+	struct input_iterator_tag {};
+	struct output_iterator_tag {};
+	struct forward_iterator_tag : input_iterator_tag, output_iterator_tag {};
+	struct bidirectionnal_iterator_tag : forward_iterator_tag {};
+	struct random_access_iterator_tag : bidirectionnal_iterator_tag {};
+
+	template <class Iter> 
 	struct iterator_traits
 	{
-		typedef typename T::value_type       	value_type;
-		typedef typename T::pointer          	pointer;
-		typedef typename T::reference        	reference;
-		typedef typename T::difference_type  	difference_type;
-		typedef typename T::iterator_category	iterator_category;
+		typedef typename Iter::value_type       	value_type;
+		typedef typename Iter::pointer          	pointer;
+		typedef typename Iter::reference        	reference;
+		typedef typename Iter::difference_type  	difference_type;
+		typedef typename Iter::iterator_category	iterator_category;
 	};
 
 	template <typename T> 
@@ -22,3 +29,4 @@ namespace ft
 		typedef ft::random_access_iterator_tag		iterator_category;
 	};
 }
+#endif

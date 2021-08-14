@@ -6,25 +6,27 @@
 /*   By: darbib <darbib@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/14 14:24:16 by darbib            #+#    #+#             */
-/*   Updated: 2021/05/16 16:00:17 by darbib           ###   ########.fr       */
+/*   Updated: 2021/08/14 23:59:49 by darbib           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cstddef>
-#include "iterator.hpp"
+#include <iterator_traits.hpp>
 
 namespace ft
 {
 	template <class T>
 	class vect_iterator
-	: public ft::iterator<ft::random_access_iterator_tag, T>
+	: public ft::iterator_traits<T*>
 	{
 		public :
-			typedef typename iterator<random_access_iterator_tag, T>::value_type		value_type;
-			typedef typename iterator<random_access_iterator_tag, T>::difference_type	difference_type;
-			typedef typename iterator<random_access_iterator_tag, T>::pointer			pointer;
-			typedef typename iterator<random_access_iterator_tag, T>::reference			reference;
-			typedef typename iterator<random_access_iterator_tag, T>::iterator_category	iterator_category;
+			typedef T								value_type;
+			typedef T&								reference;
+			typedef const T&						const_reference;
+			typedef T*								pointer;
+			typedef const T*						const_pointer;
+			typedef std::ptrdiff_t					difference_type;
+			typedef ft::random_access_iterator_tag	iterator_category;
 
 			vect_iterator()
 			: _current_ptr(NULL)
@@ -61,33 +63,42 @@ namespace ft
 			operator->(void) const
 			{ return this->_current_ptr; }
 
+			reference
+			operator[](unsigned int offset)
+			{
+				return *(_current_ptr + offset);
+			}
+
 			difference_type	
 			operator-(vect_iterator &other) const
-			{ return static_cast<difference_type>(this->_current_ptr - other._current_ptr); }
+			{
+				
+				return static_cast<difference_type>(this->_current_ptr - other._current_ptr);
+			}
 
 			bool
-			operator<(vect_iterator &other) const
+			operator<(const vect_iterator &other) const
 			{ return this->_current_ptr < other._current_ptr; }
 
 			bool
-			operator>(vect_iterator &other) const
+			operator>(const vect_iterator &other) const
 			{ return this->_current_ptr > other._current_ptr; }
 
 			bool
-			operator>=(vect_iterator &other) const
+			operator>=(const vect_iterator &other) const
 			{ return this->_current_ptr >= other._current_ptr; }
 
 			bool
-			operator<=(vect_iterator &other) const
+			operator<=(const vect_iterator &other) const
 			{ return this->_current_ptr <= other._current_ptr; }
 
 			bool
-			operator==(vect_iterator &other) const
+			operator==(const vect_iterator &other) const
 			{ return this->_current_ptr == other._current_ptr; }
 
 			bool
-			operator!=(vect_iterator &other) const
-			{ return this->_current_ptr != other._current_ptr; }
+			operator!=(const vect_iterator &other) const
+			{ return !(*this == other); }
 
 			pointer
 			getCurrentPtr(void)
@@ -99,12 +110,6 @@ namespace ft
 			setCurrentPtr(pointer ptr)
 			{
 				this->_current_ptr = ptr;
-			}
-
-			value_type
-			operator[](int n)
-			{
-				return *(this + n);
 			}
 
 			vect_iterator
