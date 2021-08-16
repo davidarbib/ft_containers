@@ -1,7 +1,9 @@
 #include <vector.hpp>
 #include <vector>
 #include <list>
-
+#include <memory>
+#include <iostream>
+//namespace ft = std;
 int main()
 {
 	std::cout << "|---------------------------------------|" << std::endl;
@@ -80,6 +82,7 @@ int main()
 	for (mine_it = mine_v.end(); mine_it != mine_v.begin(); mine_it--)
 		std::cout << *mine_it << std::endl;
 
+	std::cout << std::endl;
 	std::cout << "|---------------------------------------|" << std::endl;
 	std::cout << "|                                       |" << std::endl;
 	std::cout << "|            vector functions           |" << std::endl;
@@ -88,6 +91,7 @@ int main()
 
 	std::cout << std::endl << "---------assign---------" << std::endl;
 	std::vector<int> true_v1;
+	ft::vector<int> mine_v1;
 	std::list<int> true_l1;
 	
 	true_l1.push_back(3);
@@ -96,10 +100,15 @@ int main()
 	true_l1.push_back(-7);
 	true_l1.push_back(1);
 
-	true_v1.assign(true_l1.end(), true_l1.begin());
+	true_v1.assign(true_l1.begin(), true_l1.end());
 	for (std::vector<int>::iterator it = true_v1.begin(); it != true_v1.end(); it++)
 		std::cout << *it << std::endl;
-
+	
+	std::cout << mine_v1.capacity() << std::endl;	
+	mine_v1.assign(true_l1.begin(), true_l1.end());
+	ft::vector<int>::iterator it = mine_v1.begin();
+	for (; it != mine_v1.end(); it++)
+		std::cout << *it << std::endl;
 	return 0;
 }
 

@@ -134,7 +134,7 @@ namespace ft
 				}
 				for (int i = 0; i < this->_size; i++)
 					this->elems[i].~T();
-				this->alloc.deallocate(this->_elems, this->_capacity);
+				this->alloc.deallocate(_elems, _capacity);
 				this->elems = tmp;
 				this->_capacity = n;
 			}
@@ -143,41 +143,63 @@ namespace ft
 			void
 			assign (InputIterator first, InputIterator last)
 			{
-				size_t tmp_size = computeSize(first, last);
-				if (tmp_size == 0)
-					return ;
-				this->_alloc.deallocate(this->_size);
-				this->_alloc.allocate(tmp_size);
-				this->_size = tmp_size;
-				this->_capacity = tmp_size;
+				size_type tmp_size = computeSize(first, last);
+				if (_capacity != 0)
+					_alloc.deallocate(_elems, _capacity);
+				if (tmp_size > _capacity)
+				try
+				{
+					_elems = _alloc.allocate(tmp_size);
+				}
+				catch (std::bad_alloc &e)
+				{
+					std::cout << e.what() << std::endl;
+				}
+				_size = tmp_size;
+				_capacity = tmp_size;
 				int i = 0;
 				for (InputIterator it = first; it != last; it++)
-					this[i++] = *it;
+					_elems[i++] = *it;
 			}
 
 			void
-			assign (size_type n, const value_type& val)
+			assign (size_type n, const value_type& val) //TODO enable if to avoid caller casting
 			{
 				if (n == 0)
 					return ;
-				_alloc.deallocate(_size);
-				_alloc.allocate(n);
+				_alloc.deallocate(_elems, _capacity);
+				if (n > _capacity)
+					_elems = _alloc.allocate(n);
 				_size = n;
 				_capacity = n;
 				for (size_type i = 0; i < n; i++)
-					this[i] = val;
+					_elems[i] = val;
 			}
 
 			void push_back (const value_type& val);
-			void pop_back();
+
+			void
+			pop_back()
+			{
+			}
+
 			iterator insert (iterator position, const value_type& val);
 			void insert (iterator position, size_type n, const value_type& val);
 			template <class InputIterator>
 			void insert (iterator position, InputIterator first, InputIterator last);
 			iterator erase (iterator position);
 			iterator erase (iterator first, iterator last);
-			void swap (vector& x);
-			void clear();
+
+			void
+			swap (vector& x)
+			{
+			}
+
+			void
+			clear()
+			{
+				_size = 0;
+			}
 
 			reference
 			operator[](unsigned int offset)
@@ -212,7 +234,7 @@ namespace ft
 			size_t
 			computeSize(InputIterator first, InputIterator last)
 			{
-				size_t	size = 1;
+				size_type size = 1;
 				for (InputIterator it = first; it != last; it++) 
 					size++;
 				return size;
