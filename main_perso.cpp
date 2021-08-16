@@ -1,5 +1,6 @@
 #include <vector.hpp>
 #include <vector>
+#include <list>
 
 int main()
 {
@@ -78,5 +79,27 @@ int main()
 	std::cout << "my way" << std::endl;
 	for (mine_it = mine_v.end(); mine_it != mine_v.begin(); mine_it--)
 		std::cout << *mine_it << std::endl;
+
+	std::cout << "|---------------------------------------|" << std::endl;
+	std::cout << "|                                       |" << std::endl;
+	std::cout << "|            vector functions           |" << std::endl;
+	std::cout << "|                                       |" << std::endl;
+	std::cout << "|---------------------------------------|" << std::endl;
+
+	std::cout << std::endl << "---------assign---------" << std::endl;
+	std::vector<int> true_v1;
+	std::list<int> true_l1;
+	
+	true_l1.push_back(3);
+	true_l1.push_back(-31);
+	true_l1.push_back(8);
+	true_l1.push_back(-7);
+	true_l1.push_back(1);
+
+	true_v1.assign(true_l1.end(), true_l1.begin());
+	for (std::vector<int>::iterator it = true_v1.begin(); it != true_v1.end(); it++)
+		std::cout << *it << std::endl;
+
 	return 0;
 }
+

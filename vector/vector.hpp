@@ -201,6 +201,13 @@ namespace ft
 
 			allocator_type get_allocator() const;
 
+		private:
+			size_type 					_size;
+			size_type 					_max_size;
+			size_type 					_capacity;
+			pointer						_elems;
+			allocator_type				_alloc;
+
 			template <class InputIterator>
 			size_t
 			computeSize(InputIterator first, InputIterator last)
@@ -210,12 +217,5 @@ namespace ft
 					size++;
 				return size;
 			}
-
-		private:
-			size_type 					_size;
-			size_type 					_max_size;
-			size_type 					_capacity;
-			pointer						_elems;
-			allocator_type				_alloc;
 	};
 }
