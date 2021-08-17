@@ -230,10 +230,32 @@ namespace ft
 				_size--;
 			}
 
-			iterator insert (iterator position, const value_type& val);
-			void insert (iterator position, size_type n, const value_type& val);
+			iterator
+			insert (iterator position, const value_type& val)
+			{
+				if (_size == _capacity)
+					this->realloc_elems();
+				iterator it = this->end() - 1;
+				size_type i = this->size();
+				while (it != position)
+				{
+					_elems[i] = _elems[i - 1];	
+					i--;
+					it--
+				}
+			}
+
+			void
+			insert (iterator position, size_type n, const value_type& val)
+			{
+			}
+
 			template <class InputIterator>
-			void insert (iterator position, InputIterator first, InputIterator last);
+			void
+			insert (iterator position, InputIterator first, InputIterator last)
+			{
+			}
+
 			iterator erase (iterator position);
 			iterator erase (iterator first, iterator last);
 
