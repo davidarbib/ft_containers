@@ -176,11 +176,32 @@ namespace ft
 					_elems[i] = val;
 			}
 
-			void push_back (const value_type& val);
+			void
+			push_back (const value_type& val)
+			{
+				try
+				{
+					if (_capacity == 0)
+					{
+						_elems = _alloc.allocate(1);	
+						_capacity++;
+					}
+				}
+				catch (std::bad_alloc &e)
+				{
+					std::cout << e.what() << std::endl;
+					return ;
+				}
+				if (_size == _capacity)
+					this->realloc_elems();
+				_elems[_size] = val;
+				_size++;
+			}
 
 			void
 			pop_back()
 			{
+				_size--;
 			}
 
 			iterator insert (iterator position, const value_type& val);
@@ -193,6 +214,7 @@ namespace ft
 			void
 			swap (vector& x)
 			{
+				(void)x;
 			}
 
 			void
@@ -238,6 +260,25 @@ namespace ft
 				for (InputIterator it = first; it != last; it++) 
 					size++;
 				return size;
+			}
+
+			void
+			realloc_elems(void)
+			{
+				size_type new_capacity = _capacity * 2;
+				try
+				{
+					pointer new_elems = _alloc.allocate(new_capacity);	
+					for (size_type i = 0; i < _size; i++)
+						new_elems[i] = _elems[i];
+					_alloc.deallocate(_elems, _capacity);
+					_elems = new_elems;
+					_capacity = new_capacity;
+				}
+				catch(std::bad_alloc &e)
+				{
+					std::cout << e.what() << std::endl;
+				}
 			}
 	};
 }

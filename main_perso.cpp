@@ -109,6 +109,33 @@ int main()
 	ft::vector<int>::iterator it = mine_v1.begin();
 	for (; it != mine_v1.end(); it++)
 		std::cout << *it << std::endl;
+
+	std::cout << std::endl << "---------push_back---------" << std::endl;
+	std::vector<int> true_vpush;
+	ft::vector<int> mine_vpush;
+
+	true_vpush.push_back(-100);
+	//true_vpush.push_back(2);
+	//true_vpush.push_back(-35);
+	//true_vpush.push_back(73);
+	//true_vpush.push_back(45);
+	//
+	std::cout << "true vector size : " << true_vpush.size() << std::endl;
+	std::cout << "true vector capacity : " << true_vpush.capacity() << std::endl;
+
+	for (std::vector<int>::iterator it = true_vpush.begin(); it != true_vpush.end(); it++)
+		std::cout << *it << std::endl;
+
+	mine_vpush.push_back(-100);
+	//mine_vpush.push_back(2);
+	//mine_vpush.push_back(-35);
+	//mine_vpush.push_back(73);
+	//mine_vpush.push_back(45);
+
+	std::cout << "my vector size : " << mine_vpush.size() << std::endl;
+	std::cout << "my vector capacity : " << mine_vpush.capacity() << std::endl;
+	for (ft::vector<int>::iterator it = mine_vpush.begin(); it != mine_vpush.end(); it++)
+		std::cout << *it << std::endl;
 	return 0;
 }
 
