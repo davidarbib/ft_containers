@@ -77,13 +77,13 @@ int main()
 
 	std::cout << std::endl << "---------postfix dec---------" << std::endl;
 
-	std::cout << "true way" << std::endl;
-	for (true_it = true_v.end(); true_it != true_v.begin(); true_it--)
-		std::cout << *true_it << std::endl;
+	//std::cout << "true way" << std::endl;
+	//for (true_it = true_v.end(); true_it != true_v.begin(); true_it--)
+	//	std::cout << *true_it << std::endl;
 
-	std::cout << "my way" << std::endl;
-	for (mine_it = mine_v.end(); mine_it != mine_v.begin(); mine_it--)
-		std::cout << *mine_it << std::endl;
+	//std::cout << "my way" << std::endl;
+	//for (mine_it = mine_v.end(); mine_it != mine_v.begin(); mine_it--)
+	//	std::cout << *mine_it << std::endl;
 
 	std::cout << std::endl;
 	std::cout << "|---------------------------------------|" << std::endl;
@@ -158,26 +158,114 @@ int main()
 	for (ft::vector<int>::iterator it = mine_resize_v.begin(); it != mine_resize_v.end(); it++)
 		std::cout << *it << std::endl;
 
-	true_resize_v.resize(0);
-	mine_resize_v.resize(0);
-
+	true_resize_v.resize(2);
+	mine_resize_v.resize(2);
 
 	std::cout << "----------after resize----------" << std::endl;
 
-	std::cout << "true try access  : " << true_resize_v[2] << std::endl;
+	//std::cout << "true try access  : " << true_resize_v[2] << std::endl;
+//	std::vector<int>::iterator end = true_resize_v.end();
+//	std::cout << *end << std::endl;
 	std::cout << "true vector size : " << true_resize_v.size() << std::endl;
 	std::cout << "true vector capacity : " << true_resize_v.capacity() << std::endl;
 
-	for (std::vector<int>::iterator it = true_resize_v.begin(); it != true_resize_v.end(); it++)
+	for (std::vector<int>::iterator it = true_resize_v.begin();
+			it != true_resize_v.end(); it++)
 		std::cout << *it << std::endl;
 
-	std::cout << "mine try access  : " << mine_resize_v[2] << std::endl;
+	//std::cout << "mine try access  : " << mine_resize_v[2] << std::endl;
 	std::cout << "mine vector size : " << mine_resize_v.size() << std::endl;
 	std::cout << "mine vector capacity : " << mine_resize_v.capacity() << std::endl;
 
-	for (ft::vector<int>::iterator it = mine_resize_v.begin(); it != mine_resize_v.end(); it++)
+	for (ft::vector<int>::iterator it = mine_resize_v.begin();
+			it != mine_resize_v.end(); it++)
 		std::cout << *it << std::endl;
+
 	
+	std::cout << "----------max_size----------" << std::endl;
+
+	std::cout << "true max_size------" << std::endl;
+	std::vector<int> int_v;
+	std::cout << int_v.max_size() << std::endl;
+	std::vector<long> long_v;
+	std::cout << long_v.max_size() << std::endl;
+	std::vector<char> char_v;
+	std::cout << char_v.max_size() << std::endl;
+	std::vector<float> float_v;
+	std::cout << float_v.max_size() << std::endl;
+	std::vector<double> double_v;
+	std::cout << double_v.max_size() << std::endl;
+
+	std::cout << "mine max_size------" << std::endl;
+	ft::vector<int> int_vm;
+	std::cout << int_vm.max_size() << std::endl;
+	ft::vector<long> long_vm;
+	std::cout << long_vm.max_size() << std::endl;
+	ft::vector<char> char_vm;
+	std::cout << char_vm.max_size() << std::endl;
+	ft::vector<float> float_vm;
+	std::cout << float_vm.max_size() << std::endl;
+	ft::vector<double> double_vm;
+	std::cout << double_vm.max_size() << std::endl;
+
+	std::cout << "----------swap----------" << std::endl;
+
+	std::vector<int> v1;
+	std::vector<int> v2;
+
+	ft::vector<int> vm1;
+	ft::vector<int> vm2;
+	
+	v1.push_back(1);
+	v1.push_back(2);
+	v1.push_back(3);
+
+//	v2.push_back(-1);
+//	v2.push_back(-2);
+//	v2.push_back(-3);
+//	v2.push_back(-4);
+//	v2.push_back(-5);
+
+	vm1.push_back(1);
+	vm1.push_back(2);
+	vm1.push_back(3);
+
+//	vm2.push_back(-1);
+//	vm2.push_back(-2);
+//	vm2.push_back(-3);
+//	vm2.push_back(-4);
+//	vm2.push_back(-5);
+
+	std::cout << "true vector elems : " << std::endl;
+	for (std::vector<int>::iterator it = v1.begin(); it != v1.end(); it++)
+		std::cout << *it << std::endl;
+
+	std::cout << "true vector size : " << v1.size() << std::endl;
+	std::cout << "true vector capacity : " << v1.capacity() << std::endl;
+
+	std::cout << "mine vector elems : " << std::endl;
+	for (ft::vector<int>::iterator it = vm1.begin(); it != vm1.end(); it++)
+		std::cout << *it << std::endl;
+
+	std::cout << "mine vector size : " << vm1.size() << std::endl;
+	std::cout << "mine vector capacity : " << vm1.capacity() << std::endl;
+	
+	v1.swap(v2);
+	vm1.swap(vm2);
+	std::cout << "after swap---------" << std::endl;
+
+	for (std::vector<int>::iterator it = v1.begin(); it != v1.end(); it++)
+		std::cout << *it << std::endl;
+
+	std::cout << "true vector size : " << v1.size() << std::endl;
+	std::cout << "true vector capacity : " << v1.capacity() << std::endl;
+
+	for (ft::vector<int>::iterator it = vm1.begin(); it != vm1.end(); it++)
+		std::cout << *it << std::endl;
+
+	std::cout << "mine vector size : " << vm1.size() << std::endl;
+	std::cout << "mine vector capacity : " << vm1.capacity() << std::endl;
+
 	return 0;
 }
 

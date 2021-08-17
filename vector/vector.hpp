@@ -2,7 +2,8 @@
 #include <iostream>
 #include "vect_iterator.hpp"
 
-#define MAX_SIZE	2305843009213693951
+#define CHAR_TYPEID "c"
+#define MAX_SIZE 9223372036854775807
 
 namespace ft
 {
@@ -24,19 +25,28 @@ namespace ft
     		//typedef std::reverse_iterator<const_itar      const_reverse_iterator;
 
 			vector()
-			: _size(0), _max_size(MAX_SIZE), _capacity(0), _elems(NULL), 
-			_alloc(Alloc())
-			{}
+			: _size(0), _capacity(0), _elems(NULL), _alloc(Alloc())
+			{
+				if (strncmp(typeid(value_type).name(), CHAR_TYPEID, 1))
+					_max_size = MAX_SIZE / sizeof(T) * 2;
+				_max_size = MAX_SIZE / sizeof(T);
+			}
 
 			vector(const Alloc& alloc)
-			: _size(0), _max_size(MAX_SIZE), _capacity(0), _elems(NULL), 
-			_alloc(alloc)
-			{}
+			: _size(0), _capacity(0), _elems(NULL), _alloc(alloc)
+			{
+				if (strncmp(typeid(value_type).name(), CHAR_TYPEID, 1))
+					_max_size = MAX_SIZE / sizeof(T) * 2;
+				_max_size = MAX_SIZE / sizeof(T);
+			}
 
 			vector(size_type count, const T& value = T(), const Alloc& alloc = Alloc())
-			: _size(count), _max_size(MAX_SIZE), _capacity(0), _elems(NULL),
-			_alloc(alloc)
+			: _size(count), _capacity(0), _elems(NULL), _alloc(alloc)
 			{
+				if (strncmp(typeid(value_type).name(), CHAR_TYPEID, 1))
+					_max_size = MAX_SIZE / sizeof(T) * 2;
+				_max_size = MAX_SIZE / sizeof(T);
+
 				if (this->_size == 0)
 					return ;
 				try
@@ -55,8 +65,12 @@ namespace ft
 
 			template<class InputIt>
 			vector(InputIt first, InputIt last, const Alloc& alloc = Alloc())
-			: _max_size(MAX_SIZE), _capacity(0), _elems(NULL), _alloc(alloc)
+			: _capacity(0), _elems(NULL), _alloc(alloc)
 			{
+				if (strncmp(typeid(value_type).name(), CHAR_TYPEID, 1))
+					_max_size = MAX_SIZE / sizeof(T) * 2;
+				_max_size = MAX_SIZE / sizeof(T);
+
 				this->_size = computeSize(first, last);
 				if (this->_size == 0)
 					return ;
@@ -75,8 +89,12 @@ namespace ft
 
 			vector(const vector& other)
 			: _size(other.size()), _capacity(other.capacity()), _elems(NULL),
-				_max_size(MAX_SIZE), _alloc(other.alloc)
+				_alloc(other._alloc)
 			{
+				if (strncmp(typeid(value_type).name(), CHAR_TYPEID, 1))
+					_max_size = MAX_SIZE / sizeof(T) * 2;
+				_max_size = MAX_SIZE / sizeof(T);
+
 				if (!this->_size)
 					return ;
 				try
@@ -96,14 +114,17 @@ namespace ft
 			{
 				for (size_type i = 0; i < this->_size; i++)
 					this->_elems[i].~T();
-				this->_alloc.deallocate(this->_elems, this->_capacity);
+				if (_capacity != 0)
+					this->_alloc.deallocate(this->_elems, this->_capacity);
 			}
 
 			size_type size() const 
 				{return _size;}
 
-			size_type max_size() const //TODO check stl
-				{return MAX_SIZE;}
+			size_type max_size() const
+				{
+					return _max_size;
+				}
 
 			void resize (size_type n, value_type val = value_type())
 			{
@@ -167,7 +188,8 @@ namespace ft
 			}
 
 			void
-			assign (size_type n, const value_type& val) //TODO enable if to avoid caller casting
+			assign (size_type n, const value_type& val) //TODO enable if to avoid 
+														//caller casting
 			{
 				if (n == 0)
 					return ;
@@ -216,9 +238,44 @@ namespace ft
 			iterator erase (iterator first, iterator last);
 
 			void
-			swap (vector& x)
+			swap (vector<value_type>& x)
 			{
-				(void)x;
+				vector tmp(x);
+				
+				if (x._capacity != 0)
+					x._alloc.deallocate(x._elems, x._capacity);
+				x._size = this->_size;
+				x._capacity = this->_capacity;
+				if (x._capacity != 0)
+				{
+					try
+					{
+						x._elems = x._alloc.allocate(x._capacity);
+						for (size_type i = 0; i < x._size; i++)
+							x._elems[i] = this->_elems[i];
+					}
+					catch (std::bad_alloc &e)
+					{
+						std::cout << e.what() << std::endl;
+					}
+				}
+				if (this->_capacity != 0)
+					this->_alloc.deallocate(this->_elems, this->_capacity);
+				this->_size = tmp._size;
+				this->_capacity = tmp._capacity;
+				if (this->_capacity != 0)
+				{
+					try
+					{
+						this->_elems = this->_alloc.allocate(this->_capacity);
+						for (size_type i = 0; i < this->_size; i++)
+							this->_elems[i] = tmp._elems[i];
+					}
+					catch (std::bad_alloc &e)
+					{
+						std::cout << e.what() << std::endl;
+					}
+				}
 			}
 
 			void
@@ -285,4 +342,9 @@ namespace ft
 				}
 			}
 	};
+
+//	template <typename T>
+//	vector<T>&
+//	operator=( vector<T>& lhs, const vector<T>& rhs );
+
 }
