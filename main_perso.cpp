@@ -1,9 +1,12 @@
+//#define __IT_LIFE_DEBUG__ 1
+
 #include <vector.hpp>
 #include <vector>
 #include <list>
 #include <memory>
 #include <iostream>
 //namespace ft = std;
+
 int main()
 {
 	std::cout << "|---------------------------------------|" << std::endl;
@@ -136,6 +139,45 @@ int main()
 	std::cout << "my vector capacity : " << mine_vpush.capacity() << std::endl;
 	for (ft::vector<int>::iterator it = mine_vpush.begin(); it != mine_vpush.end(); it++)
 		std::cout << *it << std::endl;
+
+	std::cout << std::endl << "---------resize---------" << std::endl;
+
+	std::vector<int> true_resize_v;
+	true_resize_v.push_back(1);
+	true_resize_v.push_back(2);
+	true_resize_v.push_back(3);
+	
+	for (std::vector<int>::iterator it = true_resize_v.begin(); it != true_resize_v.end(); it++)
+		std::cout << *it << std::endl;
+
+	ft::vector<int> mine_resize_v;
+	mine_resize_v.push_back(1);
+	mine_resize_v.push_back(2);
+	mine_resize_v.push_back(3);
+	
+	for (ft::vector<int>::iterator it = mine_resize_v.begin(); it != mine_resize_v.end(); it++)
+		std::cout << *it << std::endl;
+
+	true_resize_v.resize(0);
+	mine_resize_v.resize(0);
+
+
+	std::cout << "----------after resize----------" << std::endl;
+
+	std::cout << "true try access  : " << true_resize_v[2] << std::endl;
+	std::cout << "true vector size : " << true_resize_v.size() << std::endl;
+	std::cout << "true vector capacity : " << true_resize_v.capacity() << std::endl;
+
+	for (std::vector<int>::iterator it = true_resize_v.begin(); it != true_resize_v.end(); it++)
+		std::cout << *it << std::endl;
+
+	std::cout << "mine try access  : " << mine_resize_v[2] << std::endl;
+	std::cout << "mine vector size : " << mine_resize_v.size() << std::endl;
+	std::cout << "mine vector capacity : " << mine_resize_v.capacity() << std::endl;
+
+	for (ft::vector<int>::iterator it = mine_resize_v.begin(); it != mine_resize_v.end(); it++)
+		std::cout << *it << std::endl;
+	
 	return 0;
 }
 

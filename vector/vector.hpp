@@ -100,17 +100,21 @@ namespace ft
 			}
 
 			size_type size() const 
-				{return this->_size;}
+				{return _size;}
 
-			size_type max_size() const
-				{return this->_size;}
+			size_type max_size() const //TODO check stl
+				{return MAX_SIZE;}
 
-			/* needs push_back etc....
 			void resize (size_type n, value_type val = value_type())
 			{
-				T *tmp = static_cast<T*>(this->alloc.allocate
+				if (n > _capacity)
+				{
+					this->realloc_elems();
+					for (size_type i = _size; i < n; i++)
+						_elems[i] = val;
+				}
+				_size = n;
 			}
-			*/
 
 			size_type capacity() const
 				{return this->_capacity;}

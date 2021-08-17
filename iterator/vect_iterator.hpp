@@ -6,7 +6,7 @@
 /*   By: darbib <darbib@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/14 14:24:16 by darbib            #+#    #+#             */
-/*   Updated: 2021/08/14 23:59:49 by darbib           ###   ########.fr       */
+/*   Updated: 2021/08/17 18:04:34 by darbib           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ namespace ft
 			typedef std::ptrdiff_t					difference_type;
 			typedef ft::random_access_iterator_tag	iterator_category;
 
+#if __IT_LIFE_DEBUG__ == 1
 			vect_iterator()
 			: _current_ptr(NULL)
 			//{ }
@@ -46,6 +47,23 @@ namespace ft
 			virtual ~vect_iterator()
 			//{ }
 			{ std::cout << "an iterator is destroyed" << std::endl;}
+
+#else
+			vect_iterator()
+			: _current_ptr(NULL)
+			{ }
+
+			vect_iterator(vect_iterator const &src)
+			: _current_ptr(src._current_ptr)
+			{ }
+
+			vect_iterator(pointer ptr)
+			: _current_ptr(ptr)
+			{ }
+
+			virtual ~vect_iterator()
+			{ }
+#endif
 
 			vect_iterator &
 			operator=(vect_iterator const &src)
