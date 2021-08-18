@@ -286,7 +286,7 @@ namespace ft
 			void
 			insert (iterator position, size_type n, const value_type& val)
 			{
-				new_size = _size + n;
+				size_type new_size = _size + n;
 				if (new_size > _capacity)
 					try
 					{
@@ -298,11 +298,12 @@ namespace ft
 						size_type i = 0;
 						while (it != position)
 						{
-							new_elems[i] = _elems[i];	
+							new_elems[i] = _elems[i];
 							i++;
 							it++;
 						}
-						for (size_type j = 1; j < n; j++)
+						size_type j;
+						for (j = 0; j < n; j++)
 							new_elems[i + j] = val;
 						while (i + j < new_size)
 						{
@@ -319,7 +320,7 @@ namespace ft
 					}
 				else
 				{
-					iterator it = this->begin() + new_size;
+					iterator it = this->begin() + new_size - 1;
 					size_type i = new_size;
 					while (it != position)
 					{
@@ -327,7 +328,9 @@ namespace ft
 						i--;
 						it--;
 					}
-					while (size_type j = 0; j < n; j++)
+					std::cout << "i :" << i << std::endl;
+					std::cout << "elems[i] : " << _elems[i] << std::endl;
+					for (size_type j = 0; j < n; j++)
 						_elems[i - j] = val;
 				}
 				_size = new_size;

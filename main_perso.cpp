@@ -311,6 +311,57 @@ int main()
 		std::cout << *mit << std::endl;
 	std::cout << "size : " << vm_sinsert.size() << std::endl;
 	std::cout << "capacity : " << vm_sinsert.capacity() << std::endl;
+
+	std::cout << "----------multiple insert----------" << std::endl;
+
+	
+	std::vector<int> v_minsert;
+	ft::vector<int> vm_minsert;
+	
+	v_minsert.push_back(1); 
+	v_minsert.push_back(2); 
+	v_minsert.push_back(3); 
+	v_minsert.push_back(4); 
+
+	vm_minsert.push_back(1); 
+	vm_minsert.push_back(2); 
+	vm_minsert.push_back(3); 
+	vm_minsert.push_back(4); 
+	
+	std::cout << "true----------" << std::endl;
+	std::cout << "before : " << std::endl;
+	for (std::vector<int>::iterator it = v_minsert.begin(); it != v_minsert.end(); it++)
+		std::cout << *it << std::endl;
+
+	std::cout << "size : " << v_minsert.size() << std::endl;
+	std::cout << "capacity : " << v_minsert.capacity() << std::endl;
+
+	v_minsert.insert(v_minsert.begin() + 1, 2, -42);
+	std::cout << "after : " << std::endl;
+
+	for (std::vector<int>::iterator it = v_minsert.begin(); it != v_minsert.end(); it++)
+		std::cout << *it << std::endl;
+	
+	std::cout << "size : " << v_minsert.size() << std::endl;
+	std::cout << "capacity : " << v_minsert.capacity() << std::endl;
+
+	std::cout << "mine----------" << std::endl;
+	std::cout << "before :" << std::endl;
+	std::cout << "size : " << vm_minsert.size() << std::endl;
+	std::cout << "capacity : " << vm_minsert.capacity() << std::endl;
+
+	for (ft::vector<int>::iterator mit = vm_minsert.begin();
+			mit != vm_minsert.end(); mit++)
+		std::cout << *mit << std::endl;
+
+	vm_minsert.insert(vm_minsert.begin() + 1, 2, -42);
+	std::cout << "after : " << std::endl;
+
+	for (ft::vector<int>::iterator mit = vm_minsert.begin();
+			mit != vm_minsert.end(); mit++)
+		std::cout << *mit << std::endl;
+	std::cout << "size : " << vm_minsert.size() << std::endl;
+	std::cout << "capacity : " << vm_minsert.capacity() << std::endl;
 	
 	return 0;
 }
