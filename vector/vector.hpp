@@ -110,6 +110,30 @@ namespace ft
 					this->_elems[i] = other._elems[i];
 			}
 
+			vector &
+			operator= (const vector& x)
+			{
+				if (this->_capacity != 0)
+					this->destroy_elems();
+				this->_size = x._size;
+				this->_capacity = x._capacity;
+				if (this->_capacity != 0)
+				{
+					try
+					{
+						this->_elems = this->_alloc.allocate(this->_capacity);
+						for (size_type i = 0; i < this->_size; i++)
+							std::cout << x._elems[i] << std::endl;
+							//this->_elems[i] = x._elems[i];
+					}
+					catch (std::bad_alloc &e)
+					{
+						std::cout << e.what() << std::endl;
+					}
+				}
+				return *this;
+			}
+
 			virtual ~vector()
 			{
 				for (size_type i = 0; i < this->_size; i++)
@@ -145,23 +169,10 @@ namespace ft
 
 			void reserve(size_type n)
 			{
-				if (n <= this->_capacity)
+				if (n <= _capacity)
 					return ;
-				T *tmp = NULL;
-				try
-				{
-					tmp = static_cast<T*>(this->_alloc.allocate(n));
-				}
-				catch(std::exception e)
-				{
-					std::cout << e.what() << std::endl;
-					return ;
-				}
-				for (int i = 0; i < this->_size; i++)
-					this->elems[i].~T();
-				this->alloc.deallocate(_elems, _capacity);
-				this->elems = tmp;
-				this->_capacity = n;
+				this->realloc_elems();
+				_capacity = n;
 			}
 
 			template <class InputIterator>
@@ -188,12 +199,11 @@ namespace ft
 			}
 
 			void
-			assign (size_type n, const value_type& val) //TODO enable if to avoid 
-														//caller casting
+			assign (size_type n, const value_type& val) //TODO enable if to avoid caller casting
 			{
 				if (n == 0)
 					return ;
-				_alloc.deallocate(_elems, _capacity);
+				this->destroy_elems(_capacity);
 				if (n > _capacity)
 					_elems = _alloc.allocate(n);
 				_size = n;
@@ -258,7 +268,7 @@ namespace ft
 							new_elems[i] = _elems[i - 1];
 							i++;
 						}
-						_alloc.deallocate(_elems, _capacity);
+						this->destroy_elems();
 						_elems = new_elems;
 						_capacity = new_capacity;
 					}
@@ -310,7 +320,7 @@ namespace ft
 							new_elems[i + j] = _elems[i];
 							i++;
 						}
-						_alloc.deallocate(_elems, _capacity);
+						this->destroy_elems();
 						_elems = new_elems;
 						_capacity = new_capacity;
 					}
@@ -353,7 +363,7 @@ namespace ft
 				vector tmp(x);
 				
 				if (x._capacity != 0)
-					x._alloc.deallocate(x._elems, x._capacity);
+					x.destroy_elems();
 				x._size = this->_size;
 				x._capacity = this->_capacity;
 				if (x._capacity != 0)
@@ -370,7 +380,7 @@ namespace ft
 					}
 				}
 				if (this->_capacity != 0)
-					this->_alloc.deallocate(this->_elems, this->_capacity);
+					this->destroy_elems();
 				this->_size = tmp._size;
 				this->_capacity = tmp._capacity;
 				if (this->_capacity != 0)
@@ -442,14 +452,24 @@ namespace ft
 					pointer new_elems = _alloc.allocate(new_capacity);	
 					for (size_type i = 0; i < _size; i++)
 						new_elems[i] = _elems[i];
-					_alloc.deallocate(_elems, _capacity);
+					if (_capacity != 0)
+						this->destroy_elems();
 					_elems = new_elems;
 					_capacity = new_capacity;
+					
 				}
 				catch(std::bad_alloc &e)
 				{
 					std::cout << e.what() << std::endl;
 				}
+			}
+
+			void
+			destroy_elems(void)
+			{
+				for (size_type i = 0; i < _capacity; i++)
+					_elems[i].~T();
+				_alloc.deallocate(_elems, _capacity);
 			}
 	};
 

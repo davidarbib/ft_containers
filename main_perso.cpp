@@ -113,15 +113,16 @@ int main()
 	for (; it != mine_v1.end(); it++)
 		std::cout << *it << std::endl;
 
+
 	std::cout << std::endl << "---------push_back---------" << std::endl;
 	std::vector<int> true_vpush;
 	ft::vector<int> mine_vpush;
 
 	true_vpush.push_back(-100);
-	//true_vpush.push_back(2);
-	//true_vpush.push_back(-35);
-	//true_vpush.push_back(73);
-	//true_vpush.push_back(45);
+	true_vpush.push_back(2);
+	true_vpush.push_back(-35);
+	true_vpush.push_back(73);
+	true_vpush.push_back(45);
 	//
 	std::cout << "true vector size : " << true_vpush.size() << std::endl;
 	std::cout << "true vector capacity : " << true_vpush.capacity() << std::endl;
@@ -130,10 +131,10 @@ int main()
 		std::cout << *it << std::endl;
 
 	mine_vpush.push_back(-100);
-	//mine_vpush.push_back(2);
-	//mine_vpush.push_back(-35);
-	//mine_vpush.push_back(73);
-	//mine_vpush.push_back(45);
+	mine_vpush.push_back(2);
+	mine_vpush.push_back(-35);
+	mine_vpush.push_back(73);
+	mine_vpush.push_back(45);
 
 	std::cout << "my vector size : " << mine_vpush.size() << std::endl;
 	std::cout << "my vector capacity : " << mine_vpush.capacity() << std::endl;
@@ -362,6 +363,30 @@ int main()
 		std::cout << *mit << std::endl;
 	std::cout << "size : " << vm_minsert.size() << std::endl;
 	std::cout << "capacity : " << vm_minsert.capacity() << std::endl;
+
+	std::cout << "--------------operator=----------------" << std::endl;
+	
+	std::vector<int> v_src;
+	v_src.push_back(1);
+	v_src.push_back(2);
+	v_src.push_back(3);
+	v_src.push_back(4);
+
+	std::vector<int> v_dest;
+	v_dest = v_src;
+	for (std::vector<int>::iterator it = v_dest.begin(); it != v_dest.end(); it++)
+		std::cout << *it << std::endl;
+
+	ft::vector<int> vm_src;
+	vm_src.push_back(1);
+	vm_src.push_back(2);
+	vm_src.push_back(3);
+	vm_src.push_back(4);
+
+	ft::vector<int> vm_dest;
+	vm_dest = vm_src;
+	//for (ft::vector<int>::iterator it = vm_dest.begin(); it != vm_dest.end(); it++)
+	//	std::cout << *it << std::endl;
 	
 	return 0;
 }
