@@ -266,6 +266,52 @@ int main()
 	std::cout << "mine vector size : " << vm1.size() << std::endl;
 	std::cout << "mine vector capacity : " << vm1.capacity() << std::endl;
 
+	std::cout << "----------simple insert----------" << std::endl;
+
+	std::vector<int> v_sinsert;
+	std::vector<int> v_empty;
+	ft::vector<int> vm_sinsert;
+	ft::vector<int> vm_empty;
+	
+	v_sinsert.push_back(1); 
+	v_sinsert.push_back(2); 
+	v_sinsert.push_back(3); 
+	v_sinsert.push_back(4); 
+
+	vm_sinsert.push_back(1); 
+	vm_sinsert.push_back(2); 
+	vm_sinsert.push_back(3); 
+	vm_sinsert.push_back(4); 
+	
+	std::cout << "true----------" << std::endl;
+	std::vector<int>::iterator pos = v_sinsert.insert(v_sinsert.begin() + 1, -42);
+	std::cout << *pos << std::endl;
+
+	for (std::vector<int>::iterator it = v_sinsert.begin(); it != v_sinsert.end(); it++)
+		std::cout << *it << std::endl;
+	
+	//std::vector<int>::iterator random_pos = v_sinsert.insert(v_empty.begin(), -42);
+	//(void)random_pos;
+
+	std::cout << "mine----------" << std::endl;
+	std::cout << "before----------" << std::endl;
+	std::cout << "size : " << vm_sinsert.size() << std::endl;
+	std::cout << "capacity : " << vm_sinsert.capacity() << std::endl;
+
+	for (ft::vector<int>::iterator mit = vm_sinsert.begin();
+			mit != vm_sinsert.end(); mit++)
+		std::cout << *mit << std::endl;
+
+	ft::vector<int>::iterator mpos = vm_sinsert.insert(vm_sinsert.begin() + 1, -42);
+	std::cout << "after----------" << std::endl;
+	std::cout << "pos : " << *pos << std::endl;
+
+	for (ft::vector<int>::iterator mit = vm_sinsert.begin();
+			mit != vm_sinsert.end(); mit++)
+		std::cout << *mit << std::endl;
+	std::cout << "size : " << vm_sinsert.size() << std::endl;
+	std::cout << "capacity : " << vm_sinsert.capacity() << std::endl;
+	
 	return 0;
 }
 

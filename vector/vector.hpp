@@ -230,26 +230,110 @@ namespace ft
 				_size--;
 			}
 
+			/*
+			* if current capacity is not sufficient
+			* realloc reimplementation to avoid unnecessary memory moves
+			*
+			*/
 			iterator
 			insert (iterator position, const value_type& val)
 			{
 				if (_size == _capacity)
-					this->realloc_elems();
-				iterator it = this->end() - 1;
-				size_type i = this->size();
-				while (it != position)
 				{
-					_elems[i] = _elems[i - 1];	
-					i--;
-					it--
+					try
+					{
+						size_type new_capacity = _capacity * 2;
+						pointer new_elems = _alloc.allocate(new_capacity);
+						iterator it = this->begin();
+						size_type i = 0;
+						while (it != position)
+						{
+							new_elems[i] = _elems[i];	
+							i++;
+							it++;
+						}
+						new_elems[i++] = val;
+						while (i < _size + 1)
+						{
+							new_elems[i] = _elems[i - 1];
+							i++;
+						}
+						_alloc.deallocate(_elems, _capacity);
+						_elems = new_elems;
+						_capacity = new_capacity;
+					}
+					catch(std::bad_alloc &e)
+					{
+						std::cout << e.what() << std::endl;
+					}
 				}
+				else
+				{
+					iterator it = this->end();
+					size_type i = _size;
+					while (it != position)
+					{
+						_elems[i] = _elems[i - 1];
+						i--;
+						it--;
+					}
+					_elems[i] = val;
+				}
+				_size++;
+				return position;
 			}
 
 			void
 			insert (iterator position, size_type n, const value_type& val)
 			{
+				new_size = _size + n;
+				if (new_size > _capacity)
+					try
+					{
+						size_type new_capacity = _capacity;
+						while (new_capacity < new_size)
+							new_capacity *= 2;
+						pointer new_elems = _alloc.allocate(new_capacity);
+						iterator it = this->begin();
+						size_type i = 0;
+						while (it != position)
+						{
+							new_elems[i] = _elems[i];	
+							i++;
+							it++;
+						}
+						for (size_type j = 1; j < n; j++)
+							new_elems[i + j] = val;
+						while (i + j < new_size)
+						{
+							new_elems[i + j] = _elems[i];
+							i++;
+						}
+						_alloc.deallocate(_elems, _capacity);
+						_elems = new_elems;
+						_capacity = new_capacity;
+					}
+					catch(std::bad_alloc &e)
+					{
+						std::cout << e.what() << std::endl;
+					}
+				else
+				{
+					iterator it = this->begin() + new_size;
+					size_type i = new_size;
+					while (it != position)
+					{
+						_elems[i] = _elems[i - n];
+						i--;
+						it--;
+					}
+					while (size_type j = 0; j < n; j++)
+						_elems[i - j] = val;
+				}
+				_size = new_size;
 			}
 
+/*
 			template <class InputIterator>
 			void
 			insert (iterator position, InputIterator first, InputIterator last)
@@ -258,6 +342,7 @@ namespace ft
 
 			iterator erase (iterator position);
 			iterator erase (iterator first, iterator last);
+*/
 
 			void
 			swap (vector<value_type>& x)

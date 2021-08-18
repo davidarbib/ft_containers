@@ -6,7 +6,7 @@
 /*   By: darbib <darbib@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/14 14:24:16 by darbib            #+#    #+#             */
-/*   Updated: 2021/08/17 18:04:34 by darbib           ###   ########.fr       */
+/*   Updated: 2021/08/18 16:45:27 by darbib           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,7 +163,9 @@ namespace ft
 			vect_iterator &
 			operator--(void)
 			{
+#if __IT_LIFE_DEBUG__ == 1
 			{ std::cout << "prefix dec" << std::endl;}
+#endif
 				this->_current_ptr -= 1;
 				return *this;
 			}
@@ -171,7 +173,9 @@ namespace ft
 			vect_iterator
 			operator--(int)
 			{
+#if __IT_LIFE_DEBUG__ == 1
 			{ std::cout << "postfix dec" << std::endl;}
+#endif
 				vect_iterator tmp;
 				tmp._current_ptr = this->_current_ptr;
 				this->_current_ptr -= 1;
@@ -181,7 +185,9 @@ namespace ft
 			vect_iterator &
 			operator++(void)
 			{
+#if __IT_LIFE_DEBUG__ == 1
 			{ std::cout << "prefix inc" << std::endl;}
+#endif
 				this->_current_ptr += 1;
 				return *this;
 			}
@@ -189,7 +195,9 @@ namespace ft
 			vect_iterator
 			operator++(int)
 			{
+#if __IT_LIFE_DEBUG__ == 1
 			{ std::cout << "postfix inc" << std::endl;}
+#endif
 				vect_iterator tmp;
 				tmp._current_ptr = this->_current_ptr;
 				this->_current_ptr += 1;
