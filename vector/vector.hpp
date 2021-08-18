@@ -357,6 +357,16 @@ namespace ft
 			iterator erase (iterator first, iterator last);
 */
 
+			
+			void
+			swap (vector<value_type>& x)
+			{
+				vector<value_type> tmp = x;
+				x = *this;
+				*this = tmp;
+			}
+
+			/*
 			void
 			swap (vector<value_type>& x)
 			{
@@ -397,6 +407,7 @@ namespace ft
 					}
 				}
 			}
+			*/
 
 			void
 			clear()
@@ -471,6 +482,19 @@ namespace ft
 					_elems[i].~T();
 				_alloc.deallocate(_elems, _capacity);
 			}
+
+			reference
+			front()
+			{
+				return _elems[0];
+			}
+
+			reference
+			back()
+			{
+				return _elems[_size - 1];
+			}
+
 	};
 
 //	template <typename T>
