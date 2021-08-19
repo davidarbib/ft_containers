@@ -346,17 +346,76 @@ namespace ft
 				_size = new_size;
 			}
 
-/*
 			template <class InputIterator>
 			void
 			insert (iterator position, InputIterator first, InputIterator last)
 			{
+				size_type n = computeSize(first, last);
+				size_type new_size = _size + n;
+				if (new_size > _capacity)
+					try
+					{
+						size_type new_capacity = _capacity;
+						while (new_capacity < new_size)
+							new_capacity *= 2;
+						pointer new_elems = _alloc.allocate(new_capacity);
+						iterator it = this->begin();
+						size_type i = 0;
+						while (it != position)
+						{
+							new_elems[i] = _elems[i];
+							i++;
+							it++;
+						}
+						size_type j = 0;
+						InputIterator in_it = first;
+						while (in_it != last)
+						{
+							new_elems[i + j] = *it;
+							j++;
+						}
+						while (i + j < new_size)
+						{
+							new_elems[i + j] = _elems[i];
+							i++;
+						}
+						this->destroy_elems();
+						_elems = new_elems;
+						_capacity = new_capacity;
+					}
+					catch(std::bad_alloc &e)
+					{
+						std::cout << e.what() << std::endl;
+					}
+				else
+				{
+					//iterator it = this->begin() + new_size - 1;
+					iterator it = this->begin();
+					size_type insert_idx = 0;
+					while (it != position)
+					{
+						insert_idx++;	
+						it++;
+					}
+					size_type j = insert_idx;
+					while (j < _size)
+					{
+						_elems[j + n] = _elems[j];
+						j++;
+					}
+					InputIterator in_it = first;
+					j = 0;
+					while (in_it != last)
+					{
+						_elems[insert_idx + j] = *in_it;
+						j++;
+					}
+				}
+				_size = new_size;
 			}
 
 			iterator erase (iterator position);
 			iterator erase (iterator first, iterator last);
-*/
-
 			
 			void
 			swap (vector<value_type>& x)

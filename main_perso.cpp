@@ -388,6 +388,61 @@ int main()
 	//for (ft::vector<int>::iterator it = vm_dest.begin(); it != vm_dest.end(); it++)
 	//	std::cout << *it << std::endl;
 	
+	std::cout << "----------range insert----------" << std::endl;
+
+	std::list<int>l_in;
+	l_in.push_back(-555);
+	l_in.push_back(444);
+	l_in.push_back(-777);
+	l_in.push_back(777);
+	std::vector<int> v_rinsert;
+	ft::vector<int> vm_rinsert;
+	
+	v_rinsert.push_back(1); 
+	v_rinsert.push_back(2); 
+	v_rinsert.push_back(3); 
+	v_rinsert.push_back(4); 
+
+	vm_rinsert.push_back(1); 
+	vm_rinsert.push_back(2); 
+	vm_rinsert.push_back(3); 
+	vm_rinsert.push_back(4); 
+	
+	std::cout << "true----------" << std::endl;
+	std::cout << "before : " << std::endl;
+	for (std::vector<int>::iterator it = v_rinsert.begin(); it != v_rinsert.end(); it++)
+		std::cout << *it << std::endl;
+
+	std::cout << "size : " << v_rinsert.size() << std::endl;
+	std::cout << "capacity : " << v_rinsert.capacity() << std::endl;
+
+	v_rinsert.insert(v_rinsert.begin() + 1, l_in.begin(), l_in.end());
+	std::cout << "after : " << std::endl;
+
+	for (std::vector<int>::iterator it = v_rinsert.begin(); it != v_rinsert.end(); it++)
+		std::cout << *it << std::endl;
+	
+	std::cout << "size : " << v_rinsert.size() << std::endl;
+	std::cout << "capacity : " << v_rinsert.capacity() << std::endl;
+
+	std::cout << "mine----------" << std::endl;
+	std::cout << "before :" << std::endl;
+	std::cout << "size : " << vm_rinsert.size() << std::endl;
+	std::cout << "capacity : " << vm_rinsert.capacity() << std::endl;
+
+	for (ft::vector<int>::iterator mit = vm_rinsert.begin();
+			mit != vm_rinsert.end(); mit++)
+		std::cout << *mit << std::endl;
+
+	vm_rinsert.insert(vm_rinsert.begin() + 1, l_in.begin(), l_in.end());
+	std::cout << "after : " << std::endl;
+
+	for (ft::vector<int>::iterator mit = vm_rinsert.begin();
+			mit != vm_rinsert.end(); mit++)
+		std::cout << *mit << std::endl;
+	std::cout << "size : " << vm_rinsert.size() << std::endl;
+	std::cout << "capacity : " << vm_rinsert.capacity() << std::endl;
+
 	return 0;
 }
 
