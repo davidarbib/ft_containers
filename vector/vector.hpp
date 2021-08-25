@@ -348,7 +348,8 @@ namespace ft
 
 			template <class InputIterator>
 			void
-			insert (iterator position, InputIterator first, InputIterator last)
+			insert (iterator position, InputIterator first, InputIterator last,
+					ft::enable_if<>::type = std::nullptr)
 			{
 				size_type n = computeSize(first, last);
 				size_type new_size = _size + n;

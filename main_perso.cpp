@@ -443,6 +443,9 @@ int main()
 	std::cout << "size : " << vm_rinsert.size() << std::endl;
 	std::cout << "capacity : " << vm_rinsert.capacity() << std::endl;
 
+
 	return 0;
+	
+	
 }
 
