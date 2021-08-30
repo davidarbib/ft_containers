@@ -6,7 +6,7 @@
 #    By: darbib <darbib@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/06 14:53:36 by darbib            #+#    #+#              #
-#    Updated: 2021/08/13 00:21:59 by darbib           ###   ########.fr        #
+#    Updated: 2021/08/30 14:15:44 by darbib           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 SHELL = /bin/zsh
@@ -43,7 +43,8 @@ SRC_DIR = ./srcs/
 OBJ = $(SRC:%.cpp=$(OBJ_DIR)%.o)
 
 INC_DIRS = ./vector \
-		   ./iterator 
+		   ./iterator \
+		   ./type_traits
 
 INC = $(addprefix -I, $(INC_DIRS))
 

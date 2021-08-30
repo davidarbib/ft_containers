@@ -24,5 +24,17 @@ namespace ft
 
 	template <typename T>
 	struct is_integral : public ft::is_same<T, int>
-	{ };
+	{
+	};
+	/*
+	template <typename T>
+	struct is_integral
+	{
+		static bool value;
+		
+		
+		
+
+	}
+	*/
 }

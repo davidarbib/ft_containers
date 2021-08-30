@@ -6,7 +6,7 @@
 /*   By: darbib <darbib@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/14 14:24:16 by darbib            #+#    #+#             */
-/*   Updated: 2021/08/18 16:45:27 by darbib           ###   ########.fr       */
+/*   Updated: 2021/08/30 16:42:01 by darbib           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,9 @@
 namespace ft
 {
 	template <class T>
+	//class vect_iterator
+	//: public ft::iterator_traits<T*>
 	class vect_iterator
-	: public ft::iterator_traits<T*>
 	{
 		public :
 			typedef T								value_type;

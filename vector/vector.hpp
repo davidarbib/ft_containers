@@ -1,6 +1,8 @@
 #include <memory>
 #include <iostream>
 #include "vect_iterator.hpp"
+#include "type_traits.hpp"
+#include <iterator_traits.hpp>
 
 #define CHAR_TYPEID "c"
 #define MAX_SIZE 9223372036854775807
@@ -253,6 +255,7 @@ namespace ft
 					try
 					{
 						size_type new_capacity = _capacity * 2;
+						//new_capacity = computeCapacity(_size + 1);
 						pointer new_elems = _alloc.allocate(new_capacity);
 						iterator it = this->begin();
 						size_type i = 0;
@@ -349,7 +352,7 @@ namespace ft
 			template <class InputIterator>
 			void
 			insert (iterator position, InputIterator first, InputIterator last,
-					ft::enable_if<>::type = std::nullptr)
+					typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = 0)
 			{
 				size_type n = computeSize(first, last);
 				size_type new_size = _size + n;
@@ -372,7 +375,8 @@ namespace ft
 						InputIterator in_it = first;
 						while (in_it != last)
 						{
-							new_elems[i + j] = *it;
+							new_elems[i + j] = *in_it;
+							in_it++;
 							j++;
 						}
 						while (i + j < new_size)
@@ -505,13 +509,27 @@ namespace ft
 			allocator_type				_alloc;
 
 			template <class InputIterator>
-			size_t
+			size_type
 			computeSize(InputIterator first, InputIterator last)
 			{
-				size_type size = 1;
+				size_type size = 0;
 				for (InputIterator it = first; it != last; it++) 
 					size++;
+				std::cout << "COMPUTE SIZE : " << size << std::endl;
 				return size;
+			}
+
+			size_type
+			computeCapacity(size_type size)
+			{	
+				size_type capacity;
+
+				if (size > 8)
+					return size;
+				capacity = 1;
+				while (capacity < size)
+					capacity *= 2;
+				return capacity;
 			}
 
 			void

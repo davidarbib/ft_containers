@@ -17,9 +17,11 @@ void foo(double a, double b)
    */
 
 template <typename T>
-void foo(T a, T b,
-		typename ft::enable_if<ft::is_same<T, int>::true_value>::type* = 0)
+//void foo(T a, T b,
+//		typename ft::enable_if<!ft::is_same<T, int>::value>::type* = 0)
 //void foo(T a, T b)
+void foo(T a, T b,
+		typename ft::enable_if<!ft::is_integral<T>::value>::type* = 0)
 {
 	std::cout << "template" << std::endl;
 }
