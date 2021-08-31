@@ -56,7 +56,7 @@ namespace ft
 				{
 					_elems = _alloc.allocate(_capacity);
 					for (size_type i = 0; i < _size; i++)
-						_elems[i] = T(value);
+						_alloc.construct(_elems + i, value);
 				}
 				catch (std::exception e)
 				{
@@ -84,7 +84,7 @@ namespace ft
 					size_type i = 0;
 					for (; it < last; it++)
 					{
-						_elems[i] = value_type(*it);
+						_alloc.construct(_elems + i, *it);
 						i++;
 					}
 				}
@@ -110,7 +110,7 @@ namespace ft
 				{
 					this->_elems = static_cast<T*>(this->_alloc.allocate(_size));
 					for (size_type i = 0; i < this->_size; i++)
-						this->_elems[i] = value_type(other._elems[i]);
+						_alloc.construct(_elems + i, other._elems[i]);
 				}
 				catch (std::exception e)
 				{
@@ -132,7 +132,7 @@ namespace ft
 					{
 						this->_elems = this->_alloc.allocate(this->_capacity);
 						for (size_type i = 0; i < this->_size; i++)
-							this->_elems[i] = value_type(x._elems[i]);
+							_alloc.construct(_elems + i, x._elems[i]);
 					}
 					catch (std::bad_alloc &e)
 					{
@@ -145,7 +145,7 @@ namespace ft
 			virtual ~vector()
 			{
 				for (size_type i = 0; i < this->_size; i++)
-					this->_elems[i].~T();
+					_alloc.destroy(_elems + i);
 				if (_capacity != 0)
 					this->_alloc.deallocate(this->_elems, this->_capacity);
 			}
@@ -164,7 +164,8 @@ namespace ft
 				{
 					this->realloc_elems();
 					for (size_type i = _size; i < n; i++)
-						_elems[i] = value_type(val);
+						_alloc.construct(_elems + i, val);
+						
 				}
 				_size = n;
 			}
@@ -197,7 +198,7 @@ namespace ft
 					_elems = _alloc.allocate(tmp_size);
 					int i = 0;
 					for (InputIterator it = first; it != last; it++)
-						_elems[i++] = value_type(*it);
+						_alloc.construct(_elems + i++, *it);
 				}
 				catch (std::bad_alloc &e)
 				{
@@ -218,7 +219,7 @@ namespace ft
 					if (n > _capacity)
 						_elems = _alloc.allocate(n);
 					for (size_type i = 0; i < n; i++)
-						_elems[i] = value_type(val);
+						_alloc.construct(_elems + i++, val);
 				}
 				catch (std::bad_alloc &e)
 				{
@@ -246,7 +247,7 @@ namespace ft
 				}
 				if (_size == _capacity)
 					this->realloc_elems();
-				_elems[_size] = value_type(val);
+				_alloc.construct(_elems + _size, val);
 				_size++;
 			}
 
@@ -274,14 +275,14 @@ namespace ft
 						size_type i = 0;
 						while (it != position)
 						{
-							new_elems[i] = _elems[i];	
+							_alloc.construct(new_elems + i, _elems[i]);
 							i++;
 							it++;
 						}
 						new_elems[i++] = val;
 						while (i < _size + 1)
 						{
-							new_elems[i] = _elems[i - 1];
+							_alloc.construct(new_elems + i, _elems[i - 1]);
 							i++;
 						}
 						this->destroy_elems();
@@ -299,11 +300,11 @@ namespace ft
 					size_type i = _size;
 					while (it != position)
 					{
-						_elems[i] = _elems[i - 1];
+						_alloc.construct(_elems + i, _elems[i - 1]);
 						i--;
 						it--;
 					}
-					_elems[i] = val;
+					_alloc.construct(_elems + i, val);
 				}
 				_size++;
 				return position;
@@ -322,16 +323,16 @@ namespace ft
 						size_type i = 0;
 						while (it != position)
 						{
-							new_elems[i] = _elems[i];
+							_alloc.construct(new_elems + i, _elems[i]);
 							i++;
 							it++;
 						}
 						size_type j;
 						for (j = 0; j < n; j++)
-							new_elems[i + j] = val;
+							_alloc.construct(new_elems + i + j, val);
 						while (i + j < new_size)
 						{
-							new_elems[i + j] = _elems[i];
+							_alloc.construct(new_elems + i + j, _elems[i]);
 							i++;
 						}
 						this->destroy_elems();
@@ -348,14 +349,12 @@ namespace ft
 					size_type i = new_size;
 					while (it != position)
 					{
-						_elems[i] = _elems[i - n];
+						_alloc.construct(_elems + i, _elems[i - n]);
 						i--;
 						it--;
 					}
-					std::cout << "i :" << i << std::endl;
-					std::cout << "elems[i] : " << _elems[i] << std::endl;
 					for (size_type j = 0; j < n; j++)
-						_elems[i - j] = val;
+						_alloc.construct(_elems + i - j, val);
 				}
 				_size = new_size;
 			}
@@ -377,7 +376,7 @@ namespace ft
 						size_type i = 0;
 						while (it != position)
 						{
-							new_elems[i] = value_type(_elems[i]);
+							_alloc.construct(new_elems + i, _elems[i]);
 							i++;
 							it++;
 						}
@@ -385,13 +384,13 @@ namespace ft
 						InputIterator in_it = first;
 						while (in_it != last)
 						{
-							new_elems[i + j] = value_type(*in_it);
+							_alloc.construct(new_elems + i + j, *in_it);
 							in_it++;
 							j++;
 						}
 						while (i + j < new_size)
 						{
-							new_elems[i + j] = value_type(_elems[i]);
+							_alloc.construct(new_elems + i + j, _elems[i]);
 							i++;
 						}
 						this->destroy_elems();
@@ -415,14 +414,14 @@ namespace ft
 					size_type j = new_size;
 					while (j >= insert_idx)
 					{
-						_elems[j] = _elems[j - n];
+						_alloc.construct(_elems + j, _elems[j - n]);
 						j--;
 					}
 					InputIterator in_it = first;
 					j = 0;
 					while (in_it != last)
 					{
-						_elems[insert_idx + j] = *in_it;
+						_alloc.construct(_elems + insert_idx + j, *in_it);
 						in_it++;
 						j++;
 					}
@@ -441,10 +440,10 @@ namespace ft
 					i++;
 					it++;
 				}
-				_elems[i].~value_type();
+				_alloc.destroy(_elems + i);
 				while (it != this->end() - 1)
 				{
-					_elems[i] = _elems[i + 1];
+					_alloc.construct(_elems + i, _elems[i + 1]);
 					i++;
 					it++;
 				}
@@ -466,13 +465,13 @@ namespace ft
 				size_type j = 0;
 				while (it != last)
 				{
-					_elems[i + j].~value_type();
+					_alloc.destroy(_elems + i + j);
 					j++;
 					it++;
 				}
 				while (it != this->end())
 				{
-					_elems[i] = _elems[i + j];
+					_alloc.construct(_elems + i, _elems[i + j]);
 					i++;
 					it++;
 				}
@@ -554,7 +553,7 @@ namespace ft
 				{
 					pointer new_elems = _alloc.allocate(new_capacity);	
 					for (size_type i = 0; i < _size; i++)
-						new_elems[i] = value_type(_elems[i]);
+						_alloc.construct(new_elems + i, _elems[i]);
 					if (_capacity != 0)
 						this->destroy_elems();
 					_elems = new_elems;
@@ -571,7 +570,7 @@ namespace ft
 			destroy_elems(void)
 			{
 				for (size_type i = 0; i < _capacity; i++)
-					_elems[i].~T();
+					_alloc.destroy(_elems + i);
 				_alloc.deallocate(_elems, _capacity);
 			}
 
