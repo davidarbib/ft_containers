@@ -404,10 +404,10 @@ int main()
 	l_in.push_back(-555);
 	l_in.push_back(444);
 	l_in.push_back(-777);
-	l_in.push_back(777);
-	l_in.push_back(-999);
-	l_in.push_back(333);
-	l_in.push_back(-111);
+	//l_in.push_back(777);
+	//l_in.push_back(-999);
+	//l_in.push_back(333);
+	//l_in.push_back(-111);
 	std::vector<int> v_rinsert;
 	ft::vector<int> vm_rinsert;
 	
@@ -415,11 +415,13 @@ int main()
 	v_rinsert.push_back(2); 
 	v_rinsert.push_back(3); 
 	v_rinsert.push_back(4); 
+	v_rinsert.push_back(5); 
 
 	vm_rinsert.push_back(1); 
 	vm_rinsert.push_back(2); 
 	vm_rinsert.push_back(3); 
 	vm_rinsert.push_back(4); 
+	vm_rinsert.push_back(5); 
 	
 	std::cout << "true----------" << std::endl;
 	std::cout << "before : " << std::endl;
@@ -453,6 +455,72 @@ int main()
 	for (ft::vector<int>::iterator mit = vm_rinsert.begin();
 			mit != vm_rinsert.end(); mit++)
 		std::cout << *mit << std::endl;
+	std::cout << "size : " << vm_rinsert.size() << std::endl;
+	std::cout << "capacity : " << vm_rinsert.capacity() << std::endl;
+
+	std::cout << "----------simple erase----------" << std::endl;	
+	std::cout << "true----------" << std::endl;
+	std::cout << "before : " << std::endl;
+	for (std::vector<int>::iterator it = v_rinsert.begin(); it != v_rinsert.end(); it++)
+		std::cout << *it << std::endl;
+	std::cout << "size : " << v_rinsert.size() << std::endl;
+	std::cout << "capacity : " << v_rinsert.capacity() << std::endl;
+
+	v_rinsert.erase(v_rinsert.begin() + 1);
+	
+	std::cout << "after : " << std::endl;
+	for (std::vector<int>::iterator it = v_rinsert.begin(); it != v_rinsert.end(); it++)
+		std::cout << *it << std::endl;
+	std::cout << "size : " << v_rinsert.size() << std::endl;
+	std::cout << "capacity : " << v_rinsert.capacity() << std::endl;
+
+	std::cout << "mine----------" << std::endl;
+	std::cout << "before : " << std::endl;
+	for (ft::vector<int>::iterator it = vm_rinsert.begin(); it != vm_rinsert.end(); it++)
+		std::cout << *it << std::endl;
+	std::cout << "size : " << vm_rinsert.size() << std::endl;
+	std::cout << "capacity : " << vm_rinsert.capacity() << std::endl;
+
+	vm_rinsert.erase(vm_rinsert.begin() + 1);
+	
+	std::cout << "after : " << std::endl;
+	for (ft::vector<int>::iterator it = vm_rinsert.begin(); it != vm_rinsert.end(); it++)
+		std::cout << *it << std::endl;
+	std::cout << "size : " << vm_rinsert.size() << std::endl;
+	std::cout << "capacity : " << vm_rinsert.capacity() << std::endl;
+
+	std::cout << "----------multiple erase----------" << std::endl;	
+	std::cout << "true----------" << std::endl;
+	std::cout << "before : " << std::endl;
+	for (std::vector<int>::iterator it = v_rinsert.begin(); it != v_rinsert.end(); it++)
+		std::cout << *it << std::endl;
+	std::cout << "size : " << v_rinsert.size() << std::endl;
+	std::cout << "capacity : " << v_rinsert.capacity() << std::endl;
+
+	//std::cout << "return value :" << *(v_rinsert.erase(v_rinsert.begin() + 1, v_rinsert.begin() + 4)) << std::endl;
+	//std::cout << "return value :" << *(v_rinsert.erase(v_rinsert.end(), v_rinsert.end())) << std::endl;
+	std::cout << "return value :" << *(v_rinsert.erase(v_rinsert.begin() + 1, v_rinsert.begin() + 1)) << std::endl;
+	
+	std::cout << "after : " << std::endl;
+	for (std::vector<int>::iterator it = v_rinsert.begin(); it != v_rinsert.end(); it++)
+		std::cout << *it << std::endl;
+	std::cout << "size : " << v_rinsert.size() << std::endl;
+	std::cout << "capacity : " << v_rinsert.capacity() << std::endl;
+
+	std::cout << "mine----------" << std::endl;
+	std::cout << "before : " << std::endl;
+	for (ft::vector<int>::iterator it = vm_rinsert.begin(); it != vm_rinsert.end(); it++)
+		std::cout << *it << std::endl;
+	std::cout << "size : " << vm_rinsert.size() << std::endl;
+	std::cout << "capacity : " << vm_rinsert.capacity() << std::endl;
+
+	//std::cout << "return value :" << *(vm_rinsert.erase(vm_rinsert.begin() + 1, vm_rinsert.begin() + 4)) << std::endl;
+	//std::cout << "return value :" << *(vm_rinsert.erase(vm_rinsert.end(), vm_rinsert.begin() + 4)) << std::endl;
+	std::cout << "return value :" << *(vm_rinsert.erase(vm_rinsert.begin() + 1, vm_rinsert.begin() + 1)) << std::endl;
+	
+	std::cout << "after : " << std::endl;
+	for (ft::vector<int>::iterator it = vm_rinsert.begin(); it != vm_rinsert.end(); it++)
+		std::cout << *it << std::endl;
 	std::cout << "size : " << vm_rinsert.size() << std::endl;
 	std::cout << "capacity : " << vm_rinsert.capacity() << std::endl;
 
