@@ -1,11 +1,12 @@
 #include <memory>
+#include <stdexcept>
 #include <iostream>
 #include "vect_iterator.hpp"
 #include "type_traits.hpp"
 #include <iterator_traits.hpp>
 
 #define CHAR_TYPEID "c"
-#define MAX_SIZE 9223372036854775807
+#define EMAXSIZE "can't reserve above max_size"
 
 namespace ft
 {
@@ -29,25 +30,28 @@ namespace ft
 			vector()
 			: _size(0), _capacity(0), _elems(NULL), _alloc(Alloc())
 			{
-				if (strncmp(typeid(value_type).name(), CHAR_TYPEID, 1))
-					_max_size = MAX_SIZE / sizeof(T) * 2;
-				_max_size = MAX_SIZE / sizeof(T);
+				if (!strncmp(typeid(value_type).name(), CHAR_TYPEID, 1))
+					_max_size = _alloc.max_size() / 2;
+				else
+					_max_size = _alloc.max_size();
 			}
 
 			vector(const Alloc& alloc)
 			: _size(0), _capacity(0), _elems(NULL), _alloc(alloc)
 			{
-				if (strncmp(typeid(value_type).name(), CHAR_TYPEID, 1))
-					_max_size = MAX_SIZE / sizeof(T) * 2;
-				_max_size = MAX_SIZE / sizeof(T);
+				if (!strncmp(typeid(value_type).name(), CHAR_TYPEID, 1))
+					_max_size = _alloc.max_size() / 2;
+				else
+					_max_size = _alloc.max_size();
 			}
 
 			vector(size_type count, const T& value = T(), const Alloc& alloc = Alloc())
 			: _size(count), _capacity(0), _elems(NULL), _alloc(alloc)
 			{
-				if (strncmp(typeid(value_type).name(), CHAR_TYPEID, 1))
-					_max_size = MAX_SIZE / sizeof(T) * 2;
-				_max_size = MAX_SIZE / sizeof(T);
+				if (!strncmp(typeid(value_type).name(), CHAR_TYPEID, 1))
+					_max_size = _alloc.max_size() / 2;
+				else
+					_max_size = _alloc.max_size();
 
 				if (_size == 0)
 					return ;
@@ -70,9 +74,10 @@ namespace ft
 			vector(InputIterator first, InputIterator last, const Alloc& alloc = Alloc())
 			: _capacity(0), _elems(NULL), _alloc(alloc)
 			{
-				if (strncmp(typeid(value_type).name(), CHAR_TYPEID, 1))
-					_max_size = MAX_SIZE / sizeof(T) * 2;
-				_max_size = MAX_SIZE / sizeof(T);
+				if (!strncmp(typeid(value_type).name(), CHAR_TYPEID, 1))
+					_max_size = _alloc.max_size() / 2;
+				else
+					_max_size = _alloc.max_size();
 
 				this->_size = computeSize(first, last);
 				if (this->_size == 0)
@@ -100,9 +105,10 @@ namespace ft
 			: _size(other.size()), _capacity(other.capacity()), _elems(NULL),
 				_alloc(other._alloc)
 			{
-				if (strncmp(typeid(value_type).name(), CHAR_TYPEID, 1))
-					_max_size = MAX_SIZE / sizeof(T) * 2;
-				_max_size = MAX_SIZE / sizeof(T);
+				if (!strncmp(typeid(value_type).name(), CHAR_TYPEID, 1))
+					_max_size = _alloc.max_size() / 2;
+				else
+					_max_size = _alloc.max_size();
 
 				if (!this->_size)
 					return ;
@@ -151,14 +157,13 @@ namespace ft
 			}
 
 			size_type size() const 
-				{return _size;}
+			{ return _size; }
 
 			size_type max_size() const
-				{
-					return _max_size;
-				}
+			{ return _max_size; }
 
-			void resize (size_type n, value_type val = value_type())
+			void
+			resize (size_type n, value_type val = value_type())
 			{
 				if (n > _capacity)
 				{
@@ -170,14 +175,31 @@ namespace ft
 				_size = n;
 			}
 
-			size_type capacity() const
+			size_type
+			capacity() const
 				{return this->_capacity;}
 
-			bool empty() const
+			bool
+			empty() const
 				{return (this->_size > 0);}
 
-			void reserve(size_type n)
+			void
+			reserve(size_type n)
+			throw (std::length_error())
 			{
+				if (n > _max_size)
+				{
+					try
+					{
+						throw std::length_error(EMAXSIZE);
+					}
+					catch(std::bad_alloc &e)
+					{
+						std::cout << e.what() << std::endl;
+						return ;
+					}
+
+				}
 				if (n <= _capacity)
 					return ;
 				this->realloc_elems();
