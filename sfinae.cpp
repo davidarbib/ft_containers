@@ -69,9 +69,11 @@ typedef yes no[2]; // Size: 2 bytes.
 yes& f1();
 no& f2();
 
+/*
 int main()
 {
 std::cout << (sizeof(f1()) == sizeof(f2())) << std::endl; // Output 0.
 std::cout << (sizeof(f1()) == sizeof(f1())) << std::endl; // Output 1.
 return 0;
 }
+*/
