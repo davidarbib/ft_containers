@@ -30,6 +30,18 @@ namespace ft
 
 		static value_type const value = v;
 	};
+	
+	template <>
+	struct integral_constant<bool, true>
+	{
+		typedef ft::integral_constant<bool, true> true_type;
+	};
+
+	template <>
+	struct integral_constant<bool, false>
+	{
+		typedef ft::integral_constant<bool, false> false_type;
+	};
 
 	template <typename T>
 	struct is_integral
@@ -90,16 +102,4 @@ namespace ft
 	{
 		static bool const value = true;
 	};
-
-	/*
-	template <typename T>
-	struct is_integral
-	{
-		static bool value;
-		
-		
-		
-
-	}
-	*/
 }

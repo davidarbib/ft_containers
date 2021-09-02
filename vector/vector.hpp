@@ -71,7 +71,9 @@ namespace ft
 			}
 
 			template<class InputIterator>
-			vector(InputIterator first, InputIterator last, const Alloc& alloc = Alloc())
+			vector(InputIterator first, InputIterator last,
+					const Alloc& alloc = Alloc(),
+					typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = 0)
 			: _capacity(0), _elems(NULL), _alloc(alloc)
 			{
 				if (!strncmp(typeid(value_type).name(), CHAR_TYPEID, 1))
@@ -181,7 +183,7 @@ namespace ft
 
 			bool
 			empty() const
-				{return (this->_size > 0);}
+				{return (this->_size == 0);}
 
 			void
 			reserve(size_type n)
@@ -535,7 +537,25 @@ namespace ft
 				return it;
 			}
 
-			allocator_type get_allocator() const;
+			pointer
+			data(void)
+			{ return _elems; }
+
+			reference
+			at(size_type pos)
+			{ return _elems[pos]; }
+
+			reference
+			front()
+			{ return _elems[0]; }
+
+			reference
+			back()
+			{ return _elems[_size - 1]; }
+
+			allocator_type
+			get_allocator(void) const
+			{ return _alloc; }
 
 		private:
 			size_type 					_size;
@@ -596,16 +616,23 @@ namespace ft
 				_alloc.deallocate(_elems, _capacity);
 			}
 
-			reference
-			front()
-			{
-				return _elems[0];
-			}
-
-			reference
-			back()
-			{
-				return _elems[_size - 1];
-			}
 	};
+
+	template <class T, class Alloc>
+	bool operator==(const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs);
+
+	template <class T, class Alloc>
+	bool operator!=(const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs);
+
+	template <class T, class Alloc>
+	bool operator<=(const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs);
+
+	template <class T, class Alloc>
+	bool operator<(const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs);
+
+	template <class T, class Alloc>
+	bool operator>=(const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs);
+
+	template <class T, class Alloc>
+	bool operator>(const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs);
 }
