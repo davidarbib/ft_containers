@@ -3,6 +3,7 @@
 #include <iostream>
 #include "vect_iterator.hpp"
 #include "type_traits.hpp"
+#include "algorithm.hpp"
 #include <iterator_traits.hpp>
 
 #define CHAR_TYPEID "c"
@@ -619,20 +620,32 @@ namespace ft
 	};
 
 	template <class T, class Alloc>
-	bool operator==(const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs);
+	bool operator==(const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs)
+	{ return ft::equal(lhs.begin(), lhs.end(), rhs.begin()); }
 
 	template <class T, class Alloc>
-	bool operator!=(const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs);
+	bool operator!=(const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs)
+	{ return !ft::equal(lhs.begin(), lhs.end(), rhs.begin()); }
 
 	template <class T, class Alloc>
-	bool operator<=(const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs);
+	bool operator<=(const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs)
+	{ return ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()); }
 
 	template <class T, class Alloc>
-	bool operator<(const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs);
+	bool operator<(const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs)
+	{
+		return !ft::equal(lhs.begin(), lhs.end(), rhs.begin()) &&
+				ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+	}
 
 	template <class T, class Alloc>
-	bool operator>=(const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs);
+	bool operator>=(const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs)
+	{ return ft::lexicographical_compare(rhs.begin(), rhs.end(), lhs.begin(), lhs.end()); }
 
 	template <class T, class Alloc>
-	bool operator>(const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs);
+	bool operator>(const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs)
+	{
+		return !ft::equal(lhs.begin(), lhs.end(), rhs.begin()) &&
+				ft::lexicographical_compare(rhs.begin(), rhs.end(), lhs.begin(), lhs.end());
+	}
 }

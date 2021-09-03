@@ -29,4 +29,5 @@ namespace ft
 		typedef ft::random_access_iterator_tag		iterator_category;
 	};
 }
+
 #endif

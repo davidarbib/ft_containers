@@ -6,7 +6,7 @@
 #    By: darbib <darbib@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/06 14:53:36 by darbib            #+#    #+#              #
-#    Updated: 2021/08/30 14:15:44 by darbib           ###   ########.fr        #
+#    Updated: 2021/09/03 15:58:01 by darbib           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 SHELL = /bin/zsh
@@ -44,7 +44,8 @@ OBJ = $(SRC:%.cpp=$(OBJ_DIR)%.o)
 
 INC_DIRS = ./vector \
 		   ./iterator \
-		   ./type_traits
+		   ./type_traits \
+		   ./algorithm
 
 INC = $(addprefix -I, $(INC_DIRS))
 
@@ -85,3 +86,10 @@ fclean : clean
 	@echo $(MAGENTA) "...done" $(RESET)
 
 re : fclean all
+
+algotest : algorithm_test.cpp
+	@echo $(MAGENTA) "Testing algorithm functions"  $(RESET)
+	@$(CC) $(CFLAGS) $< -o $@ $(INC) 
+	@./$@
+
+	
