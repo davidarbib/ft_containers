@@ -96,7 +96,7 @@ int main()
 	std::vector<int> true_v1;
 	ft::vector<int> mine_v1;
 	std::list<int> true_l1;
-	
+
 	true_l1.push_back(3);
 	true_l1.push_back(-31);
 	true_l1.push_back(8);
@@ -111,7 +111,6 @@ int main()
 	ft::vector<int>::iterator it = mine_v1.begin();
 	for (; it != mine_v1.end(); it++)
 		std::cout << *it << std::endl;
-
 
 	std::cout << std::endl << "---------push_back---------" << std::endl;
 	std::vector<int> true_vpush;

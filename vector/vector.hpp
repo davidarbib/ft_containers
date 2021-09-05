@@ -131,8 +131,7 @@ namespace ft
 			vector &
 			operator= (const vector& x)
 			{
-				if (this->_capacity != 0)
-					this->destroy_elems();
+				this->destroy_elems();
 				this->_size = x._size;
 				this->_capacity = x._capacity;
 				if (this->_capacity != 0)
@@ -180,11 +179,11 @@ namespace ft
 
 			size_type
 			capacity() const
-				{return this->_capacity;}
+				{ return this->_capacity; }
 
 			bool
 			empty() const
-				{return (this->_size == 0);}
+				{ return (this->_size == 0); }
 
 			void
 			reserve(size_type n)
@@ -215,22 +214,31 @@ namespace ft
 					typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = 0)
 			{
 				size_type tmp_size = computeSize(first, last);
-				if (_capacity != 0)
-					_alloc.deallocate(_elems, _capacity);
 				if (tmp_size > _capacity)
-				try
 				{
-					_elems = _alloc.allocate(tmp_size);
-					int i = 0;
+					this->destroy_elems();
+					try
+					{
+						_elems = _alloc.allocate(tmp_size);
+						size_type i = 0;
+						for (InputIterator it = first; it != last; it++)
+							_alloc.construct(_elems + i++, *it);
+					}
+					catch (std::bad_alloc &e)
+					{
+						std::cout << e.what() << std::endl;
+					}
+					_size = tmp_size;
+					_capacity = tmp_size;
+				}
+				else
+				{	
+					for (size_type i = 0; i < _capacity; i++)
+						_alloc.destroy(_elems + i);
+					size_type i = 0;
 					for (InputIterator it = first; it != last; it++)
 						_alloc.construct(_elems + i++, *it);
 				}
-				catch (std::bad_alloc &e)
-				{
-					std::cout << e.what() << std::endl;
-				}
-				_size = tmp_size;
-				_capacity = tmp_size;
 			}
 
 			void
@@ -238,17 +246,26 @@ namespace ft
 			{
 				if (n == 0)
 					return ;
-				this->destroy_elems(_capacity);
-				try
+				if (n > _capacity)
 				{
-					if (n > _capacity)
+					this->destroy_elems();
+					try
+					{
 						_elems = _alloc.allocate(n);
-					for (size_type i = 0; i < n; i++)
-						_alloc.construct(_elems + i++, val);
+						for (size_type i = 0; i < n; i++)
+							_alloc.construct(_elems + i++, val);
+					}
+					catch (std::bad_alloc &e)
+					{
+						std::cout << e.what() << std::endl;
+					}
 				}
-				catch (std::bad_alloc &e)
-				{
-					std::cout << e.what() << std::endl;
+				else
+				{	
+					for (size_type i = 0; i < _capacity; i++)
+						_alloc.destroy(_elems + i);
+					for (size_type i = 0; i < n; i++)
+						_alloc.construct(_elems + i, val);
 				}
 				_size = n;
 				_capacity = n;
@@ -538,6 +555,20 @@ namespace ft
 				return it;
 			}
 
+			const_iterator
+			begin(void) const
+			{
+				const_iterator it(_elems);
+				return it;
+			}
+
+			const_iterator
+			end(void) const
+			{
+				const_iterator it(_elems + _size);
+				return it;
+			}
+
 			pointer
 			data(void)
 			{ return _elems; }
@@ -597,8 +628,7 @@ namespace ft
 					pointer new_elems = _alloc.allocate(new_capacity);	
 					for (size_type i = 0; i < _size; i++)
 						_alloc.construct(new_elems + i, _elems[i]);
-					if (_capacity != 0)
-						this->destroy_elems();
+					this->destroy_elems();
 					_elems = new_elems;
 					_capacity = new_capacity;
 					
@@ -612,20 +642,23 @@ namespace ft
 			void
 			destroy_elems(void)
 			{
+				if (_capacity == 0)
+					return ;
 				for (size_type i = 0; i < _capacity; i++)
 					_alloc.destroy(_elems + i);
+				std::cout << "_capacity on destroy : " << _capacity << std::endl;
+				std::cout << "_size on destroy : " << _size << std::endl;
 				_alloc.deallocate(_elems, _capacity);
 			}
-
 	};
 
 	template <class T, class Alloc>
 	bool operator==(const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs)
-	{ return ft::equal(lhs.begin(), lhs.end(), rhs.begin()); }
+	{ return ft::equal(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()); }
 
 	template <class T, class Alloc>
 	bool operator!=(const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs)
-	{ return !ft::equal(lhs.begin(), lhs.end(), rhs.begin()); }
+	{ return !ft::equal(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()); }
 
 	template <class T, class Alloc>
 	bool operator<=(const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs)
@@ -634,7 +667,7 @@ namespace ft
 	template <class T, class Alloc>
 	bool operator<(const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs)
 	{
-		return !ft::equal(lhs.begin(), lhs.end(), rhs.begin()) &&
+		return !ft::equal(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()) &&
 				ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
 	}
 
@@ -645,7 +678,7 @@ namespace ft
 	template <class T, class Alloc>
 	bool operator>(const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs)
 	{
-		return !ft::equal(lhs.begin(), lhs.end(), rhs.begin()) &&
+		return !ft::equal(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()) &&
 				ft::lexicographical_compare(rhs.begin(), rhs.end(), lhs.begin(), lhs.end());
 	}
 }

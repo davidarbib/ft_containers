@@ -6,7 +6,7 @@
 #    By: darbib <darbib@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/06 14:53:36 by darbib            #+#    #+#              #
-#    Updated: 2021/09/03 15:58:01 by darbib           ###   ########.fr        #
+#    Updated: 2021/09/05 20:55:40 by darbib           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 SHELL = /bin/zsh
@@ -92,4 +92,14 @@ algotest : algorithm_test.cpp
 	@$(CC) $(CFLAGS) $< -o $@ $(INC) 
 	@./$@
 
+prep_for_mli : 
+	@echo $(MAGENTA) "Extract headers from subdirectories"  $(RESET)
+	@cp iterator/*.hpp .
+	@cp vector/*.hpp .
+	@cp algorithm/*.hpp .
+	@cp type_traits/*.hpp .
+
+del_mli_setup : 
+	@echo $(MAGENTA) "remove headers from root directory"  $(RESET)
+	@rm *.hpp
 	
