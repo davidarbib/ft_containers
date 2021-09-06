@@ -6,7 +6,7 @@
 /*   By: darbib <darbib@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/14 14:24:16 by darbib            #+#    #+#             */
-/*   Updated: 2021/08/30 16:42:01 by darbib           ###   ########.fr       */
+/*   Updated: 2021/09/06 19:19:13 by darbib           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,6 @@
 namespace ft
 {
 	template <class T>
-	//class vect_iterator
-	//: public ft::iterator_traits<T*>
 	class vect_iterator
 	{
 		public :
@@ -49,6 +47,14 @@ namespace ft
 			//{ }
 			{ std::cout << "an iterator is destroyed" << std::endl;}
 
+			vect_iterator &
+			operator=(vect_iterator const &src)
+			{
+			{ std::cout << "iterator assignment" << std::endl;}
+				this->_current_ptr = src._current_ptr;
+				return *this;
+			}
+
 #else
 			vect_iterator()
 			: _current_ptr(NULL)
@@ -64,15 +70,14 @@ namespace ft
 
 			virtual ~vect_iterator()
 			{ }
-#endif
 
 			vect_iterator &
 			operator=(vect_iterator const &src)
 			{
-			{ std::cout << "iterator assignment" << std::endl;}
 				this->_current_ptr = src._current_ptr;
 				return *this;
 			}
+#endif
 
 			reference
 			operator*(void)
@@ -89,7 +94,14 @@ namespace ft
 			}
 
 			difference_type	
-			operator-(vect_iterator &other) const
+			operator-(vect_iterator<value_type> &other) const
+			{
+				
+				return static_cast<difference_type>(this->_current_ptr - other._current_ptr);
+			}
+
+			difference_type	
+			operator-(const vect_iterator<value_type> &other) const
 			{
 				
 				return static_cast<difference_type>(this->_current_ptr - other._current_ptr);

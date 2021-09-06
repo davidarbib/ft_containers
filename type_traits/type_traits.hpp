@@ -102,4 +102,33 @@ namespace ft
 	{
 		static bool const value = true;
 	};
+
+	template <typename T>
+	struct is_const
+	{
+		static bool const value = false;
+	};
+
+	template <typename T>
+	struct is_const<const T>
+	{
+		static bool const value = true;
+	};
+
+	template <bool B, typename T, typename F>
+	struct conditionnal
+	{
+	};
+
+	template <typename T, typename F>
+	struct conditionnal<true, T, F>
+	{
+		typedef T type;
+	};
+
+	template <typename T, typename F>
+	struct conditionnal<false, T, F>
+	{
+		typedef F type;
+	};
 }

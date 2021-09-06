@@ -8,6 +8,13 @@
 
 #define CHAR_TYPEID "c"
 #define EMAXSIZE "can't reserve above max_size"
+#define E_RANGE "Out of bound exception"
+
+#if __APPLE__ == 1
+	#define SIZE_CAP _capacity
+#else
+	#define SIZE_CAP _size
+#endif
 
 namespace ft
 {
@@ -56,7 +63,8 @@ namespace ft
 
 				if (_size == 0)
 					return ;
-				_capacity = computeCapacity(_size);
+				//_capacity = computeCapacity(_size);
+				_capacity = _size;
 				try
 				{
 					_elems = _alloc.allocate(_capacity);
@@ -68,7 +76,6 @@ namespace ft
 					std::cout << e.what() << std::endl;	
 					return ;
 				}
-				_capacity = _size;
 			}
 
 			template<class InputIterator>
@@ -85,12 +92,13 @@ namespace ft
 				this->_size = computeSize(first, last);
 				if (this->_size == 0)
 					return ;
+				_capacity = _size;
 				try
 				{
-					this->_elems = this->_alloc.allocate(_size);
+					this->_elems = this->_alloc.allocate(_capacity);
 					InputIterator it = first;
 					size_type i = 0;
-					for (; it < last; it++)
+					for (; it != last; it++)
 					{
 						_alloc.construct(_elems + i, *it);
 						i++;
@@ -113,12 +121,13 @@ namespace ft
 				else
 					_max_size = _alloc.max_size();
 
-				if (!this->_size)
+				if (_size == 0)
 					return ;
+				//_capacity = _size;
 				try
 				{
-					this->_elems = static_cast<T*>(this->_alloc.allocate(_size));
-					for (size_type i = 0; i < this->_size; i++)
+					_elems = _alloc.allocate(_capacity);
+					for (size_type i = 0; i < _size; i++)
 						_alloc.construct(_elems + i, other._elems[i]);
 				}
 				catch (std::exception e)
@@ -131,14 +140,14 @@ namespace ft
 			vector &
 			operator= (const vector& x)
 			{
-				this->destroy_elems();
 				this->_size = x._size;
-				this->_capacity = x._capacity;
-				if (this->_capacity != 0)
+				if (this->_size > this->_capacity)
 				{
+					this->destroy_elems();
+					size_type new_capacity = this->_size;
 					try
 					{
-						this->_elems = this->_alloc.allocate(this->_capacity);
+						_elems = this->_alloc.allocate(new_capacity);
 						for (size_type i = 0; i < this->_size; i++)
 							_alloc.construct(_elems + i, x._elems[i]);
 					}
@@ -146,6 +155,14 @@ namespace ft
 					{
 						std::cout << e.what() << std::endl;
 					}
+					this->_capacity = new_capacity;
+				}
+				else
+				{	
+					for (size_type i = 0; i < this->_capacity; i++)
+						_alloc.destroy(this->_elems + i);
+					for (size_type i = 0; i < this->_size; i++)
+						_alloc.construct(this->_elems + i, x._elems[i]);
 				}
 				return *this;
 			}
@@ -216,10 +233,12 @@ namespace ft
 				size_type tmp_size = computeSize(first, last);
 				if (tmp_size > _capacity)
 				{
+					//size_type new_capacity = computeCapacity(tmp_size);
+					size_type new_capacity = tmp_size; 
 					this->destroy_elems();
 					try
 					{
-						_elems = _alloc.allocate(tmp_size);
+						_elems = _alloc.allocate(new_capacity);
 						size_type i = 0;
 						for (InputIterator it = first; it != last; it++)
 							_alloc.construct(_elems + i++, *it);
@@ -228,8 +247,7 @@ namespace ft
 					{
 						std::cout << e.what() << std::endl;
 					}
-					_size = tmp_size;
-					_capacity = tmp_size;
+					_capacity = new_capacity;
 				}
 				else
 				{	
@@ -239,6 +257,7 @@ namespace ft
 					for (InputIterator it = first; it != last; it++)
 						_alloc.construct(_elems + i++, *it);
 				}
+				_size = tmp_size;
 			}
 
 			void
@@ -248,17 +267,20 @@ namespace ft
 					return ;
 				if (n > _capacity)
 				{
+					//size_type new_capacity = computeCapacity(tmp_size);
+					size_type new_capacity = n; 
 					this->destroy_elems();
 					try
 					{
 						_elems = _alloc.allocate(n);
 						for (size_type i = 0; i < n; i++)
-							_alloc.construct(_elems + i++, val);
+							_alloc.construct(_elems + i, val);
 					}
 					catch (std::bad_alloc &e)
 					{
 						std::cout << e.what() << std::endl;
 					}
+					_capacity = new_capacity;
 				}
 				else
 				{	
@@ -268,7 +290,6 @@ namespace ft
 						_alloc.construct(_elems + i, val);
 				}
 				_size = n;
-				_capacity = n;
 			}
 
 			void
@@ -548,17 +569,17 @@ namespace ft
 				return it;
 			}
 
-			iterator
-			end(void)
-			{
-				iterator it(_elems + _size);
-				return it;
-			}
-
 			const_iterator
 			begin(void) const
 			{
 				const_iterator it(_elems);
+				return it;
+			}
+
+			iterator
+			end(void)
+			{
+				iterator it(_elems + _size);
 				return it;
 			}
 
@@ -575,14 +596,36 @@ namespace ft
 
 			reference
 			at(size_type pos)
-			{ return _elems[pos]; }
+			throw (std::out_of_range)
+			{
+				if (pos >= _size)
+					throw std::out_of_range(E_RANGE);
+				return _elems[pos];
+			}
+
+			const_reference
+			at(size_type pos) const
+			throw (std::out_of_range)
+			{
+				if (pos >= _size)
+					throw std::out_of_range(E_RANGE);
+				return _elems[pos];
+			}
 
 			reference
 			front()
 			{ return _elems[0]; }
 
+			const_reference
+			front() const
+			{ return _elems[0]; }
+
 			reference
 			back()
+			{ return _elems[_size - 1]; }
+
+			const_reference
+			back() const
 			{ return _elems[_size - 1]; }
 
 			allocator_type
@@ -609,14 +652,11 @@ namespace ft
 			size_type
 			computeCapacity(size_type size)
 			{	
-				size_type capacity;
-
-				if (size > 8)
+				if (size > SIZE_CAP * 2)
 					return size;
-				capacity = 1;
-				while (capacity < size)
-					capacity *= 2;
-				return capacity;
+				if (SIZE_CAP > 0)
+					return SIZE_CAP * 2;
+				return 1;
 			}
 
 			void
@@ -646,8 +686,6 @@ namespace ft
 					return ;
 				for (size_type i = 0; i < _capacity; i++)
 					_alloc.destroy(_elems + i);
-				std::cout << "_capacity on destroy : " << _capacity << std::endl;
-				std::cout << "_size on destroy : " << _size << std::endl;
 				_alloc.deallocate(_elems, _capacity);
 			}
 	};

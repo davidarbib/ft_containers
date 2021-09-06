@@ -37,5 +37,16 @@ int main()
 	std::cout << ft::is_integral<wchar_t>::value << std::endl;
 	std::cout << ft::is_integral<std::string>::value << std::endl;
 
+	std::cout << "---------------------is_const-----------------------" << std::endl;
+	std::cout << ft::is_const<int>::value << std::endl;
+	std::cout << ft::is_const<const int>::value << std::endl;
+
+	std::cout << "---------------------conditionnal-----------------------" << std::endl;
+
+	ft::conditionnal<true, int, std::string>::type var_int;
+	ft::conditionnal<false, int, std::string>::type var_string;
+
+	std::cout << typeid(var_int).name() << std::endl;
+	std::cout << typeid(var_string).name() << std::endl;
 	return 0;
 }
