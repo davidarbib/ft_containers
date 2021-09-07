@@ -187,10 +187,12 @@ namespace ft
 			{
 				if (n > _capacity)
 				{
-					this->realloc_elems();
+					this->realloc_elems(computeCapacity(n));
+				}
+				if (n > _size)
+				{
 					for (size_type i = _size; i < n; i++)
 						_alloc.construct(_elems + i, val);
-						
 				}
 				_size = n;
 			}
@@ -222,7 +224,7 @@ namespace ft
 				}
 				if (n <= _capacity)
 					return ;
-				this->realloc_elems();
+				this->realloc_elems(_capacity * 2);
 				_capacity = n;
 			}
 
@@ -310,7 +312,7 @@ namespace ft
 					return ;
 				}
 				if (_size == _capacity)
-					this->realloc_elems();
+					this->realloc_elems(_capacity * 2);
 				_alloc.construct(_elems + _size, val);
 				_size++;
 			}
@@ -661,9 +663,8 @@ namespace ft
 			}
 
 			void
-			realloc_elems(void)
+			realloc_elems(size_type new_capacity)
 			{
-				size_type new_capacity = _capacity * 2;
 				try
 				{
 					pointer new_elems = _alloc.allocate(new_capacity);	
