@@ -6,7 +6,7 @@
 /*   By: darbib <darbib@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/14 14:24:16 by darbib            #+#    #+#             */
-/*   Updated: 2021/09/06 22:40:27 by darbib           ###   ########.fr       */
+/*   Updated: 2021/09/07 16:38:49 by darbib           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,13 @@ namespace ft
 			//{ }
 			{ std::cout << "an iterator is created" << std::endl;}
 
+			template <bool B>
+			vect_iterator(vect_iterator<T, B> &src,
+					typename ft::enable_if<!B>::type* = 0)
+			: _current_ptr(src._current_ptr)
+			//{ }
+			{ std::cout << "an iterator is created" << std::endl;}
+
 			vect_iterator(pointer ptr)
 			: _current_ptr(ptr)
 			//{ }
@@ -60,6 +67,12 @@ namespace ft
 			{ }
 
 			vect_iterator(vect_iterator const &src)
+			: _current_ptr(src._current_ptr)
+			{ }
+
+			template <bool B>
+			vect_iterator(const vect_iterator<T, B> &src,
+					typename ft::enable_if<!B>::type* = 0)
 			: _current_ptr(src._current_ptr)
 			{ }
 
@@ -106,29 +119,6 @@ namespace ft
 				return static_cast<difference_type>(this->_current_ptr - other._current_ptr);
 			}
 
-			bool
-			operator<(const vect_iterator &other) const
-			{ return this->_current_ptr < other._current_ptr; }
-
-			bool
-			operator>(const vect_iterator &other) const
-			{ return this->_current_ptr > other._current_ptr; }
-
-			bool
-			operator>=(const vect_iterator &other) const
-			{ return this->_current_ptr >= other._current_ptr; }
-
-			bool
-			operator<=(const vect_iterator &other) const
-			{ return this->_current_ptr <= other._current_ptr; }
-
-			bool
-			operator==(const vect_iterator &other) const
-			{ return this->_current_ptr == other._current_ptr; }
-
-			bool
-			operator!=(const vect_iterator &other) const
-			{ return !(*this == other); }
 
 			pointer
 			getCurrentPtr(void)
@@ -216,7 +206,7 @@ namespace ft
 				return tmp;
 			}
 
-		protected :
+		public :
 			pointer		_current_ptr;
 	};
 
@@ -228,4 +218,40 @@ namespace ft
 		vi.setCurrentPtr(other.getCurrentPtr() + n);
 		return vi;
 	}
+
+	template<typename T, bool B, bool C>
+	bool
+	operator<(const vect_iterator<T, B> &lhs,
+			const vect_iterator<T, C> &rhs)
+	{ return lhs._current_ptr < rhs._current_ptr; }
+
+	template<typename T, bool B, bool C>
+	bool
+	operator>(const vect_iterator<T, B> &lhs,
+			const vect_iterator<T, C> &rhs)
+	{ return lhs._current_ptr > rhs._current_ptr; }
+
+	template<typename T, bool B, bool C>
+	bool
+	operator<=(const vect_iterator<T, B> &lhs,
+			const vect_iterator<T, C> &rhs)
+	{ return lhs._current_ptr <= rhs._current_ptr; }
+
+	template<typename T, bool B, bool C>
+	bool
+	operator>=(const vect_iterator<T, B> &lhs,
+			const vect_iterator<T, C> &rhs)
+	{ return lhs._current_ptr >= rhs._current_ptr; }
+
+	template<typename T, bool B, bool C>
+	bool
+	operator==(const vect_iterator<T, B> &lhs,
+			const vect_iterator<T, C> &rhs)
+	{ return lhs._current_ptr == rhs._current_ptr; }
+
+	template<typename T, bool B, bool C>
+	bool
+	operator!=(const vect_iterator<T, B> &lhs,
+			const vect_iterator<T, C> &rhs)
+	{ return lhs._current_ptr != rhs._current_ptr; }
 }
