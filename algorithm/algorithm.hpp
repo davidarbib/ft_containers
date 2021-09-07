@@ -97,7 +97,7 @@ namespace ft
            InputIt2 first2, InputIt2 last2)
 	{
 		typename ft::iterator_traits<InputIt1>::difference_type size1;
-		typename ft::iterator_traits<InputIt1>::difference_type size2;
+		typename ft::iterator_traits<InputIt2>::difference_type size2;
 		
 		size1 = ft::distance(first1, last1);
 		size2 = ft::distance(first2, last2);
@@ -111,7 +111,7 @@ namespace ft
 
 		for (; (first1 != last1 && first2 != last2); ++first1, ++first2)
 			if (*first1 != *first2) return false;
-		return true;
+		return (first1 == last1) && (first2 == last2);
 	}
 
 	template <class InputIt1, class InputIt2, class BinaryPredicate>
