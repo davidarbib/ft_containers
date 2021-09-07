@@ -30,8 +30,8 @@ namespace ft
 			typedef typename Alloc::const_pointer			const_pointer;
     		typedef std::size_t								size_type;
     		typedef std::ptrdiff_t							difference_type;
-    		typedef typename ft::vect_iterator<T>			iterator;
-    		typedef typename ft::vect_iterator<T const>		const_iterator;
+    		typedef typename ft::vect_iterator<T, false>	iterator;
+    		typedef typename ft::vect_iterator<T, true>		const_iterator;
     		//typedef std::reverse_iterator<iterator>       reverse_iterator;
     		//typedef std::reverse_iterator<const_itar      const_reverse_iterator;
 
@@ -63,7 +63,6 @@ namespace ft
 
 				if (_size == 0)
 					return ;
-				//_capacity = computeCapacity(_size);
 				_capacity = _size;
 				try
 				{

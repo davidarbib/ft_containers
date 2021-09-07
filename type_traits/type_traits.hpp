@@ -1,3 +1,6 @@
+#ifndef TYPE_TRAITS_HPP
+# define TYPE_TRAITS_HPP
+
 namespace ft
 {
 	template <bool, typename T = void>
@@ -132,3 +135,4 @@ namespace ft
 		typedef F type;
 	};
 }
+#endif

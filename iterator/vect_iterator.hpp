@@ -6,24 +6,23 @@
 /*   By: darbib <darbib@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/14 14:24:16 by darbib            #+#    #+#             */
-/*   Updated: 2021/09/06 19:19:13 by darbib           ###   ########.fr       */
+/*   Updated: 2021/09/06 22:40:27 by darbib           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cstddef>
 #include <iterator_traits.hpp>
+#include <type_traits.hpp>
 
 namespace ft
 {
-	template <class T>
+	template <class T, bool isconst = false>
 	class vect_iterator
 	{
 		public :
-			typedef T								value_type;
-			typedef T&								reference;
-			typedef const T&						const_reference;
-			typedef T*								pointer;
-			typedef const T*						const_pointer;
+			typedef T														value_type;
+			typedef typename ft::conditionnal<isconst, const T&, T&>::type	reference;
+			typedef typename ft::conditionnal<isconst, const T*, T*>::type	pointer;
 			typedef std::ptrdiff_t					difference_type;
 			typedef ft::random_access_iterator_tag	iterator_category;
 
@@ -94,14 +93,14 @@ namespace ft
 			}
 
 			difference_type	
-			operator-(vect_iterator<value_type> &other) const
+			operator-(vect_iterator &other) const
 			{
 				
 				return static_cast<difference_type>(this->_current_ptr - other._current_ptr);
 			}
 
 			difference_type	
-			operator-(const vect_iterator<value_type> &other) const
+			operator-(const vect_iterator &other) const
 			{
 				
 				return static_cast<difference_type>(this->_current_ptr - other._current_ptr);
