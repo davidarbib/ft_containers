@@ -1,14 +1,5 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   vect_iterator.hpp                                  :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: darbib <darbib@student.42.fr>              +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/05/14 14:24:16 by darbib            #+#    #+#             */
-/*   Updated: 2021/09/08 21:56:11 by darbib           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+#ifndef VECT_ITERATOR_HPP
+# define VECT_ITERATOR_HPP
 
 #include <cstddef>
 #include <iterator_traits.hpp>
@@ -26,42 +17,6 @@ namespace ft
 			typedef std::ptrdiff_t					difference_type;
 			typedef ft::random_access_iterator_tag	iterator_category;
 
-#if __IT_LIFE_DEBUG__ == 1
-			vect_iterator()
-			: _current_ptr(NULL)
-			//{ }
-			{ std::cout << "an iterator is created" << std::endl;}
-
-			vect_iterator(vect_iterator const &src)
-			: _current_ptr(src._current_ptr)
-			//{ }
-			{ std::cout << "an iterator is created" << std::endl;}
-
-			template <bool B>
-			vect_iterator(vect_iterator<T, B> &src,
-					typename ft::enable_if<!B>::type* = 0)
-			: _current_ptr(src._current_ptr)
-			//{ }
-			{ std::cout << "an iterator is created" << std::endl;}
-
-			vect_iterator(pointer ptr)
-			: _current_ptr(ptr)
-			//{ }
-			{ std::cout << "an iterator is created" << std::endl;}
-
-			virtual ~vect_iterator()
-			//{ }
-			{ std::cout << "an iterator is destroyed" << std::endl;}
-
-			vect_iterator &
-			operator=(vect_iterator const &src)
-			{
-			{ std::cout << "iterator assignment" << std::endl;}
-				this->_current_ptr = src._current_ptr;
-				return *this;
-			}
-
-#else
 			vect_iterator()
 			: _current_ptr(NULL)
 			{ }
@@ -89,7 +44,6 @@ namespace ft
 				this->_current_ptr = src._current_ptr;
 				return *this;
 			}
-#endif
 
 			reference
 			operator*(void)
@@ -211,48 +165,6 @@ namespace ft
 		vi.setCurrentPtr(other.getCurrentPtr() + n);
 		return vi;
 	}
-/*
-	template <typename T, bool B, bool C>
-	typename vect_iterator<T, B>::difference_type
-	operator-(const vect_iterator<T, B> &lhs, const vect_iterator<T, C> &rhs)
-	{ return lhs._current_ptr - rhs._current_ptr; }
-
-	template<typename T, bool B, bool C>
-	bool
-	operator<(const vect_iterator<T, B> &lhs,
-			const vect_iterator<T, C> &rhs)
-	{ return lhs._current_ptr < rhs._current_ptr; }
-
-	template<typename T, bool B, bool C>
-	bool
-	operator>(const vect_iterator<T, B> &lhs,
-			const vect_iterator<T, C> &rhs)
-	{ return lhs._current_ptr > rhs._current_ptr; }
-
-	template<typename T, bool B, bool C>
-	bool
-	operator<=(const vect_iterator<T, B> &lhs,
-			const vect_iterator<T, C> &rhs)
-	{ return lhs._current_ptr <= rhs._current_ptr; }
-
-	template<typename T, bool B, bool C>
-	bool
-	operator>=(const vect_iterator<T, B> &lhs,
-			const vect_iterator<T, C> &rhs)
-	{ return lhs._current_ptr >= rhs._current_ptr; }
-
-	template<typename T, bool B, bool C>
-	bool
-	operator==(const vect_iterator<T, B> &lhs,
-			const vect_iterator<T, C> &rhs)
-	{ return lhs._current_ptr == rhs._current_ptr; }
-
-	template<typename T, bool B, bool C>
-	bool
-	operator!=(const vect_iterator<T, B> &lhs,
-			const vect_iterator<T, C> &rhs)
-	{ return lhs._current_ptr != rhs._current_ptr; }
-	*/
 
 	template <typename T, bool B, bool C>
 	typename vect_iterator<T, B>::difference_type
@@ -295,3 +207,5 @@ namespace ft
 			const vect_iterator<T, C> &rhs)
 	{ return lhs.getCurrentPtr() != rhs.getCurrentPtr(); }
 }
+
+#endif
