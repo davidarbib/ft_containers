@@ -548,9 +548,18 @@ namespace ft
 			void
 			swap (vector<value_type>& x)
 			{
-				vector<value_type> tmp = x;
-				x = *this;
-				*this = tmp;
+				allocator_type tmp_alloc = x._alloc;
+				pointer tmp_elems = x._elems;
+				size_type tmp_capacity = x._capacity;
+				size_type tmp_size = x._size;
+				x._alloc = this->_alloc;
+				x._elems = this->_elems;
+				x._capacity = this->_capacity;
+				x._size = this->_size;
+				this->_alloc = tmp_alloc;
+				this->_elems = tmp_elems; 
+				this->_capacity = tmp_capacity; 
+				this->_size = tmp_size; 
 			}
 
 			void
