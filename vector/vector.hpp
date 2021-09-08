@@ -4,6 +4,7 @@
 #include <typeinfo>
 #include <cstring>
 #include "vect_iterator.hpp"
+#include "reverse_iterator.hpp"
 #include "type_traits.hpp"
 #include "algorithm.hpp"
 #include <iterator_traits.hpp>
@@ -34,8 +35,8 @@ namespace ft
     		typedef std::ptrdiff_t							difference_type;
     		typedef typename ft::vect_iterator<T, false>	iterator;
     		typedef typename ft::vect_iterator<T, true>		const_iterator;
-    		//typedef std::reverse_iterator<iterator>       reverse_iterator;
-    		//typedef std::reverse_iterator<const_itar      const_reverse_iterator;
+    		typedef ft::reverse_iterator<iterator>       	reverse_iterator;
+    		typedef ft::reverse_iterator<const_iterator>	const_reverse_iterator;
 
 			vector()
 			: _size(0), _capacity(0), _elems(NULL), _alloc(Alloc())
@@ -599,6 +600,34 @@ namespace ft
 			end(void) const
 			{
 				const_iterator it(_elems + _size);
+				return it;
+			}
+
+			reverse_iterator
+			rbegin(void)
+			{
+				reverse_iterator it(_elems + _size);
+				return it;
+			}
+
+			const_reverse_iterator
+			rbegin(void) const
+			{
+				const_reverse_iterator it(_elems + _size);
+				return it;
+			}
+
+			reverse_iterator
+			rend(void)
+			{
+				reverse_iterator it(_elems);
+				return it;
+			}
+
+			const_reverse_iterator
+			rend(void) const
+			{
+				const_reverse_iterator it(_elems);
 				return it;
 			}
 

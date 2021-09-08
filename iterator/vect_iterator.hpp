@@ -6,7 +6,7 @@
 /*   By: darbib <darbib@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/14 14:24:16 by darbib            #+#    #+#             */
-/*   Updated: 2021/09/07 16:38:49 by darbib           ###   ########.fr       */
+/*   Updated: 2021/09/08 21:56:11 by darbib           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ namespace ft
 			template <bool B>
 			vect_iterator(const vect_iterator<T, B> &src,
 					typename ft::enable_if<!B>::type* = 0)
-			: _current_ptr(src._current_ptr)
+			: _current_ptr(src.getCurrentPtr())
 			{ }
 
 			vect_iterator(pointer ptr)
@@ -100,28 +100,21 @@ namespace ft
 			{ return this->_current_ptr; }
 
 			reference
-			operator[](unsigned int offset)
+			operator[](int offset)
 			{
 				return *(_current_ptr + offset);
 			}
 
-			difference_type	
-			operator-(vect_iterator &other) const
+			const reference
+			operator[](int offset) const
 			{
-				
-				return static_cast<difference_type>(this->_current_ptr - other._current_ptr);
+				return *(_current_ptr + offset);
 			}
 
-			difference_type	
-			operator-(const vect_iterator &other) const
-			{
-				
-				return static_cast<difference_type>(this->_current_ptr - other._current_ptr);
-			}
 
 
 			pointer
-			getCurrentPtr(void)
+			getCurrentPtr(void) const
 			{
 				return this->_current_ptr;
 			}
@@ -206,7 +199,7 @@ namespace ft
 				return tmp;
 			}
 
-		public :
+		private :
 			pointer		_current_ptr;
 	};
 
@@ -218,6 +211,11 @@ namespace ft
 		vi.setCurrentPtr(other.getCurrentPtr() + n);
 		return vi;
 	}
+/*
+	template <typename T, bool B, bool C>
+	typename vect_iterator<T, B>::difference_type
+	operator-(const vect_iterator<T, B> &lhs, const vect_iterator<T, C> &rhs)
+	{ return lhs._current_ptr - rhs._current_ptr; }
 
 	template<typename T, bool B, bool C>
 	bool
@@ -254,4 +252,46 @@ namespace ft
 	operator!=(const vect_iterator<T, B> &lhs,
 			const vect_iterator<T, C> &rhs)
 	{ return lhs._current_ptr != rhs._current_ptr; }
+	*/
+
+	template <typename T, bool B, bool C>
+	typename vect_iterator<T, B>::difference_type
+	operator-(const vect_iterator<T, B> &lhs, const vect_iterator<T, C> &rhs)
+	{ return lhs.getCurrentPtr() - rhs.getCurrentPtr(); }
+
+	template<typename T, bool B, bool C>
+	bool
+	operator<(const vect_iterator<T, B> &lhs,
+			const vect_iterator<T, C> &rhs)
+	{ return lhs.getCurrentPtr() < rhs.getCurrentPtr(); }
+
+	template<typename T, bool B, bool C>
+	bool
+	operator>(const vect_iterator<T, B> &lhs,
+			const vect_iterator<T, C> &rhs)
+	{ return lhs.getCurrentPtr() > rhs.getCurrentPtr(); }
+
+	template<typename T, bool B, bool C>
+	bool
+	operator<=(const vect_iterator<T, B> &lhs,
+			const vect_iterator<T, C> &rhs)
+	{ return lhs.getCurrentPtr() <= rhs.getCurrentPtr(); }
+
+	template<typename T, bool B, bool C>
+	bool
+	operator>=(const vect_iterator<T, B> &lhs,
+			const vect_iterator<T, C> &rhs)
+	{ return lhs.getCurrentPtr() >= rhs.getCurrentPtr(); }
+
+	template<typename T, bool B, bool C>
+	bool
+	operator==(const vect_iterator<T, B> &lhs,
+			const vect_iterator<T, C> &rhs)
+	{ return lhs.getCurrentPtr() == rhs.getCurrentPtr(); }
+
+	template<typename T, bool B, bool C>
+	bool
+	operator!=(const vect_iterator<T, B> &lhs,
+			const vect_iterator<T, C> &rhs)
+	{ return lhs.getCurrentPtr() != rhs.getCurrentPtr(); }
 }

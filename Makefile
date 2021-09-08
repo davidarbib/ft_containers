@@ -6,7 +6,7 @@
 #    By: darbib <darbib@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/06 14:53:36 by darbib            #+#    #+#              #
-#    Updated: 2021/09/05 20:55:40 by darbib           ###   ########.fr        #
+#    Updated: 2021/09/08 21:21:46 by darbib           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 SHELL = /bin/zsh
@@ -102,4 +102,9 @@ prep_for_mli :
 del_mli_setup : 
 	@echo $(MAGENTA) "remove headers from root directory"  $(RESET)
 	@rm *.hpp
+
+current_fix : rite2.cpp
+	@echo $(MAGENTA) "build current test"  $(RESET)
+	@$(CC) $(CFLAGS) $< -o $@ $(INC) 
+	@./$@
 	
