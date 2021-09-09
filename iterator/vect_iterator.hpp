@@ -2,8 +2,8 @@
 # define VECT_ITERATOR_HPP
 
 #include <cstddef>
-#include <iterator_traits.hpp>
-#include <type_traits.hpp>
+#include "iterator_traits.hpp"
+#include "type_traits.hpp"
 
 namespace ft
 {
@@ -12,8 +12,8 @@ namespace ft
 	{
 		public :
 			typedef T														value_type;
-			typedef typename ft::conditionnal<isconst, const T&, T&>::type	reference;
-			typedef typename ft::conditionnal<isconst, const T*, T*>::type	pointer;
+			typedef typename ft::conditional<isconst, const T&, T&>::type	reference;
+			typedef typename ft::conditional<isconst, const T*, T*>::type	pointer;
 			typedef std::ptrdiff_t					difference_type;
 			typedef ft::random_access_iterator_tag	iterator_category;
 

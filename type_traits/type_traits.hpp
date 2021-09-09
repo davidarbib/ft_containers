@@ -107,18 +107,18 @@ namespace ft
 	};
 
 	template <bool B, typename T, typename F>
-	struct conditionnal
+	struct conditional
 	{
 	};
 
 	template <typename T, typename F>
-	struct conditionnal<true, T, F>
+	struct conditional<true, T, F>
 	{
 		typedef T type;
 	};
 
 	template <typename T, typename F>
-	struct conditionnal<false, T, F>
+	struct conditional<false, T, F>
 	{
 		typedef F type;
 	};

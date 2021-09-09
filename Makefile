@@ -6,7 +6,7 @@
 #    By: darbib <darbib@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/06 14:53:36 by darbib            #+#    #+#              #
-#    Updated: 2021/09/08 21:21:46 by darbib           ###   ########.fr        #
+#    Updated: 2021/09/09 21:44:54 by darbib           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 SHELL = /bin/zsh
@@ -98,6 +98,7 @@ prep_for_mli :
 	@cp vector/*.hpp .
 	@cp algorithm/*.hpp .
 	@cp type_traits/*.hpp .
+	@cp stack/*.hpp .
 
 del_mli_setup : 
 	@echo $(MAGENTA) "remove headers from root directory"  $(RESET)

@@ -523,6 +523,19 @@ int main()
 	std::cout << "size : " << vm_rinsert.size() << std::endl;
 	std::cout << "capacity : " << vm_rinsert.capacity() << std::endl;
 
+	std::cout << "------------------------nested vector-----------------------" << std::endl;
+	ft::vector<ft::vector<int> > v;
+	v.push_back(ft::vector<int>());
+	v.push_back(ft::vector<int>());
+	v.push_back(ft::vector<int>());
+	v.push_back(ft::vector<int>());
+	v.push_back(ft::vector<int>());
+	v.push_back(ft::vector<int>());
+	v.push_back(ft::vector<int>());
+	v.push_back(ft::vector<int>());
+	v.push_back(ft::vector<int>());
+	//while (true) {};
+
 	return 0;
 }
 
