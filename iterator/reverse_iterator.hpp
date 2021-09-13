@@ -5,7 +5,6 @@
 
 namespace ft
 {
-
 	template <typename Iter>
 	class reverse_iterator
 	{

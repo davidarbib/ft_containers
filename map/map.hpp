@@ -2,14 +2,14 @@
 # define MAP_HPP
 namespace ft
 {
-	template <class Key, class T, class Compare = less<Key>,
+	template <class Key, class T, class Compare = std::less<Key>,
 		class Allocator = std::allocator<ft::pair<const Key, T> > >
 	class map
 	{
 		public:
 			typedef Key										key_type;
 			typedef T										mapped_type;
-			typedef pair<const Key, T>						value_type;
+			typedef ft::pair<const Key, T>					value_type;
 			typedef Compare									key_compare;
 			typedef Allocator								allocator_type;
 			typedef typename Allocator::reference			reference;
@@ -24,7 +24,7 @@ namespace ft
 			typedef ft::reverse_iterator<const_iterator>	const_reverse_iterator;
 
 			class value_compare
-			: public binary_function<value_type,value_type,bool>
+			: public std::binary_function<value_type, value_type, bool>
 			{
 				friend class map;
 
@@ -39,7 +39,9 @@ namespace ft
 			};
 
 			map(const Compare& comp = Compare(),
-					const Allocator& = Allocator());
+					const Allocator& = Allocator())
+			: value_compare::value_compare(comp), _alloc(Allocator)
+			{ }
 
 			template <class InputIterator>
 			map(InputIterator first, InputIterator last,
@@ -59,12 +61,13 @@ namespace ft
 			iterator end();
 
 			const_iterator end() const;
+
 			reverse_iterator rbegin();
 			const_reverse_iterator rbegin() const;
 			reverse_iterator rend();
 			const_reverse_iterator rend() const;
 
-			bool empty()const;
+			bool empty() const;
 
 			size_type size() const;
 
@@ -98,7 +101,11 @@ namespace ft
 			equal_range(const key_type& x);
 			pair<const_iterator,const_iterator>
 			equal_range(const key_type& x) const;
+
+		private :
+			allocator_type _alloc;
 	};
+
 	template <class Key, class T, class Compare, class Allocator>
 	bool operator==(const map<Key,T,Compare,Allocator>& x,
 				const map<Key,T,Compare,Allocator>& y);
