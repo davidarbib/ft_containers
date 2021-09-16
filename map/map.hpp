@@ -1,5 +1,11 @@
 #ifndef MAP_HPP
 # define MAP_HPP
+
+#include <functional>
+#include "rbnode.hpp"
+#include "reverse_iterator.hpp"
+#include "map_iterator.hpp"
+
 namespace ft
 {
 	template <class Key, class T, class Compare = std::less<Key>,
@@ -10,16 +16,20 @@ namespace ft
 			typedef Key										key_type;
 			typedef T										mapped_type;
 			typedef ft::pair<const Key, T>					value_type;
+			typedef ft::rbnode<Key, T>						node_type;
 			typedef Compare									key_compare;
 			typedef Allocator								allocator_type;
 			typedef typename Allocator::reference			reference;
 			typedef typename Allocator::const_reference		const_reference;
 			typedef typename Allocator::pointer				pointer;
 			typedef typename Allocator::const_pointer		const_pointer;
+			typedef typename Allocator::template rebind<node_type>::other
+															node_allocator_type;
+			typedef typename node_allocator_type::pointer	node_pointer;
     		typedef std::size_t								size_type;
     		typedef std::ptrdiff_t							difference_type;
-			typedef ft::map_iterator<T, false>				iterator;
-			typedef ft::map_iterator<T, true>				const_iterator;
+			typedef ft::map_iterator<node_type, false>		iterator;
+			typedef ft::map_iterator<node_type, true>		const_iterator;
 			typedef ft::reverse_iterator<iterator>			reverse_iterator;
 			typedef ft::reverse_iterator<const_iterator>	const_reverse_iterator;
 
@@ -40,13 +50,15 @@ namespace ft
 
 			map(const Compare& comp = Compare(),
 					const Allocator& = Allocator())
-			: value_compare::value_compare(comp), _alloc(Allocator)
-			{ }
+			: value_compare::value_compare(comp), _alloc(Allocator()),
+				_tree(make_nil_node()), _size(0)
+			{ _tree->right_child = make_test_tree(_tree); }
 
 			template <class InputIterator>
 			map(InputIterator first, InputIterator last,
-					const Compare& comp = Compare(), const Allocator& = Allocator());
-
+				const Compare& comp = Compare(), const Allocator& = Allocator());
+			//{ }
+			
 			map(const map<Key,T,Compare,Allocator>& x);
 
 			virtual ~map();
@@ -54,56 +66,203 @@ namespace ft
 			map<Key,T,Compare,Allocator>&
 			operator=(const map<Key,T,Compare,Allocator>& x);
 
-			iterator begin();
+			iterator
+			begin()
+			{ return iterator(_begin_node); }
 
-			const_iterator begin() const;
+			const_iterator
+			begin() const
+			{ return const_iterator(_begin_node); }
 
-			iterator end();
+			iterator
+			end()
+			{ return const_iterator(_end_node); }
 
-			const_iterator end() const;
+			const_iterator
+			end() const
+			{ return const_iterator(_end_node); }
 
 			reverse_iterator rbegin();
 			const_reverse_iterator rbegin() const;
 			reverse_iterator rend();
 			const_reverse_iterator rend() const;
 
-			bool empty() const;
+			bool
+			empty() const
+			{ return _size == 0; }
 
-			size_type size() const;
+			size_type
+			size() const
+			{ return _size; }
 
-			size_type max_size() const;
+			size_type
+			max_size() const;
 
-			T& operator[](const key_type& x);
+			T&
+			operator[](const key_type& x);
 
-			pair<iterator, bool> insert(const value_type& x);
+			pair<iterator, bool>
+			insert(const value_type& x);
 
-			iterator insert(iterator position, const value_type& x); template <class InputIterator>
-				void insert(InputIterator first, InputIterator last);
+			iterator
+			insert(iterator position, const value_type& x);
 
-			void erase(iteratorposition);
+			template <class InputIterator>
+			void
+			insert(InputIterator first, InputIterator last);
 
-			size_type erase(const key_type& x);
+			void
+			erase(iterator position);
 
-			void erase(iterator first, iterator last); void swap(map<Key,T,Compare,Allocator>&);
+			size_type
+			erase(const key_type& x);
 
-			void clear();
+			void
+			erase(iterator first, iterator last);
 
-			key_compare key_comp() const;
-			value_compare value_comp() const;
-			iterator find(const key_type& x);
-			const_iterator find(const key_type& x) const;
-			size_type count(const key_type& x) const;
-			iterator       lower_bound(const key_type& x);
-			const_iterator lower_bound(const key_type& x) const;
-			iterator       upper_bound(const key_type& x);
-			const_iterator upper_bound(const key_type& x) const;
-			pair<iterator,iterator>
+			void
+			swap(map<Key,T,Compare,Allocator>&);
+
+			void
+			clear();
+
+			key_compare
+			key_comp() const;
+
+			value_compare
+			value_comp() const;
+
+			iterator
+			find(const key_type& x);
+
+			const_iterator
+			find(const key_type& x) const;
+
+			size_type
+			count(const key_type& x) const;
+
+			iterator
+			lower_bound(const key_type& x);
+
+			const_iterator
+			lower_bound(const key_type& x) const;
+
+			iterator
+			upper_bound(const key_type& x);
+
+			const_iterator
+			upper_bound(const key_type& x) const;
+
+			pair<iterator, iterator>
 			equal_range(const key_type& x);
-			pair<const_iterator,const_iterator>
+
+			pair<const_iterator, const_iterator>
 			equal_range(const key_type& x) const;
 
 		private :
-			allocator_type _alloc;
+			allocator_type		_alloc;
+			node_allocator_type	_node_alloc;
+			node_pointer		_tree;	
+			size_type			_size;
+			node_pointer		_begin_node;
+			node_pointer		_end_node;
+			
+			node_pointer
+			make_nil_node(void)
+			{
+				node_pointer nil_node = _node_alloc.allocate(1);
+				nil_node->red = false;
+				nil_node->parent = nil_node;
+				nil_node->left_child = nil_node;
+				nil_node->right_child = nil_node;
+			}
+			
+			node_pointer
+			make_test_tree(pointer nil_node)
+			{
+				_size = 12;
+				node_pointer root = _node_alloc.allocate(1);
+				node_pointer one = _node_alloc.allocate(1);
+				node_pointer two = _node_alloc.allocate(1);
+				node_pointer three = _node_alloc.allocate(1);
+				node_pointer four = _node_alloc.allocate(1);
+				node_pointer five = _node_alloc.allocate(1);
+				node_pointer six = _node_alloc.allocate(1);
+				node_pointer seven = _node_alloc.allocate(1);
+				node_pointer eight = _node_alloc.allocate(1);
+				node_pointer nine = _node_alloc.allocate(1);
+				node_pointer ten = _node_alloc.allocate(1);
+				node_pointer eleven = _node_alloc.allocate(1);
+				node_pointer twelve = _node_alloc.allocate(1);
+
+				root->left_child = one;
+				root->right_child = two;
+				root->parent = nil_node;
+				root->pair = make_pair<int, int>(0, 0);
+
+				one->left_child = three;
+				one->right_child = four;
+				one->parent = root;
+				root->pair = make_pair<int, int>(1, 0);
+
+				two->left_child = five;
+				two->right_child = six;
+				two->parent = root;
+				root->pair = make_pair<int, int>(2, 0);
+
+				three->left_child = seven;
+				three->right_child = NULL;
+				three->parent = one;
+				root->pair = make_pair<int, int>(3, 0);
+
+				four->left_child = NULL;
+				four->right_child = eight;
+				four->parent = one;
+				root->pair = make_pair<int, int>(4, 0);
+
+				five->left_child = NULL;
+				five->right_child = NULL;
+				five->parent = two;
+				root->pair = make_pair<int, int>(5, 0);
+
+				six->left_child = NULL;
+				six->right_child = nine;
+				six->parent = two;
+				root->pair = make_pair<int, int>(6, 0);
+
+				seven->left_child = NULL;
+				seven->right_child = NULL;
+				seven->parent = three;
+				root->pair = make_pair<int, int>(7, 0);
+
+				eight->left_child = NULL;
+				eight->right_child = NULL;
+				eight->parent = four;
+				root->pair = make_pair<int, int>(8, 0);
+
+				nine->left_child = ten;
+				nine->right_child = NULL;
+				nine->parent = six;
+				root->pair = make_pair<int, int>(9, 0);
+
+				ten->left_child = eleven;
+				ten->right_child = twelve;
+				ten->parent = nine;
+				root->pair = make_pair<int, int>(10, 0);
+
+				eleven->left_child = NULL;
+				eleven->right_child = NULL;
+				eleven->parent = ten;
+				root->pair = make_pair<int, int>(11, 0);
+
+				twelve->left_child = NULL;
+				twelve->right_child = NULL;
+				twelve->parent = ten;
+				root->pair = make_pair<int, int>(12, 0);
+				
+				_begin_node = seven;
+				_end_node = twelve;
+			}
 	};
 
 	template <class Key, class T, class Compare, class Allocator>
@@ -111,7 +270,7 @@ namespace ft
 				const map<Key,T,Compare,Allocator>& y);
 
 	template <class Key, class T, class Compare, class Allocator>
-	bool operator< (const map<Key,T,Compare,Allocator>& x,
+	bool operator<(const map<Key,T,Compare,Allocator>& x,
 				const map<Key,T,Compare,Allocator>& y);
 
 	template <class Key, class T, class Compare, class Allocator>
@@ -119,7 +278,7 @@ namespace ft
 				const map<Key,T,Compare,Allocator>& y);
 
 	template <class Key, class T, class Compare, class Allocator>
-	bool operator> (const map<Key,T,Compare,Allocator>& x,
+	bool operator>(const map<Key,T,Compare,Allocator>& x,
 				const map<Key,T,Compare,Allocator>& y);
 
 	template <class Key, class T, class Compare, class Allocator>

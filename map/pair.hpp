@@ -21,13 +21,22 @@ namespace ft
 		{ }
 
 		template<class U, class V>
-		pair(const pair<U, V> &p);
+		pair(const pair<U, V> &p)
 		: first(p.first), second(p.second)
 		{ }
 		
+		virtual
+		~pair(void)
+		{
+			this->first.~T1();
+			this->second.~T2();
+		}
+
 		pair&
 		operator=(const pair& pr)
 		{
+			this->first.~T1();
+			this->second.~T2();
 			this->first = pr.first;
 			this->second = pr.second;
 			return *this;
@@ -68,7 +77,7 @@ namespace ft
   	pair<T1, T2>
 	make_pair(const T1& x, const T2& y)
 	{ return pair<T1, T2>(x, y); }
-	
+
 }
 
 #endif
