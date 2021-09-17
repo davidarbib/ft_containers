@@ -5,14 +5,15 @@
 
 namespace ft
 {
-	template <class Key, class T>
+	template <class Pair>
 	struct rbnode
 	{
-		ft::pair<const Key, T>	pair;
 		struct rbnode			*left_child;
 		struct rbnode			*right_child;
 		struct rbnode			*parent;
+		Pair					pair;
 		bool					red;
+		int						nb;
 	};
 }
 

@@ -4,20 +4,25 @@
 #include <cstddef>
 #include "iterator_traits.hpp"
 #include "type_traits.hpp"
+#include "rbnode.hpp"
 
 namespace ft
 {
 	template <class T, bool isconst = false>
 	class map_iterator
 	{
+		private:
+			typedef ft::rbnode<T>								node_type;
+			typedef node_type*									node_pointer;
+
 		public :
-			typedef T												value_type;
+			typedef T											value_type;
 			typedef typename
 				ft::conditional<isconst, const T&, T&>::type	reference;
 			typedef typename
 				ft::conditional<isconst, const T*, T*>::type	pointer;
-			typedef std::ptrdiff_t									difference_type;
-			typedef ft::bidirectionnal_iterator_tag					iterator_category;
+			typedef std::ptrdiff_t								difference_type;
+			typedef ft::bidirectionnal_iterator_tag				iterator_category;
 
 			map_iterator()
 			: _current_ptr(NULL)
@@ -33,7 +38,7 @@ namespace ft
 			: _current_ptr(src.getCurrentPtr())
 			{ }
 
-			map_iterator(pointer ptr)
+			map_iterator(node_pointer ptr)
 			: _current_ptr(ptr)
 			{ }
 
@@ -49,23 +54,21 @@ namespace ft
 
 			reference
 			operator*(void)
-			{ return static_cast<reference>(*this->_current_ptr); }
+			{ return static_cast<reference>(_current_ptr->pair); }
 
-			pointer
+			node_pointer
+			//pointer
 			operator->(void) const
-			{ return this->_current_ptr; }
+			{ return _current_ptr; }
+			//{ return &_current_ptr->pair; }
 
-			pointer
+			node_pointer
 			getCurrentPtr(void) const
-			{
-				return this->_current_ptr;
-			}
+			{ return _current_ptr; }
 
 			void
-			setCurrentPtr(pointer ptr)
-			{
-				this->_current_ptr = ptr;
-			}
+			setCurrentPtr(node_pointer ptr)
+			{ _current_ptr = ptr; }
 
 			map_iterator &
 			operator--(void)
@@ -112,15 +115,15 @@ namespace ft
 			}
 
 		private :
-			pointer		_current_ptr;
+			node_pointer		_current_ptr;
 			
-			pointer
-			next_node(pointer start_node)
+			node_pointer
+			next_node(node_pointer start_node)
 			{
 				if (start_node->right_child)
 					return leftmost(start_node->right_child);	
-				pointer previous = start_node;
-				pointer head = start_node->parent;
+				node_pointer previous = start_node;
+				node_pointer head = start_node->parent;
 				while (previous == head->right_child)
 				{
 					if (previous == head)
@@ -131,30 +134,30 @@ namespace ft
 				return leftmost(head->right_child);
 			}
 
-			pointer
-			previous_node(pointer start_node)
+			node_pointer
+			previous_node(node_pointer start_node)
 			{
 				if (start_node->right_child)
 					return leftmost(start_node->right_child);	
-				pointer previous = start_node;
-				pointer head = start_node->parent;
+				node_pointer previous = start_node;
+				node_pointer head = start_node->parent;
 				while (previous == head->right_child)
 					head = head->parent;
 			}
 
-			pointer
-			leftmost(pointer start_node)
+			node_pointer
+			leftmost(node_pointer start_node)
 			{
-				pointer head = start_node;
+				node_pointer head = start_node;
 				while (head->left_child)
 					head = head->left_child;
 				return head;
 			}
 
-			pointer
-			rightmost(pointer start_node)
+			node_pointer
+			rightmost(node_pointer start_node)
 			{
-				pointer head = start_node;
+				node_pointer head = start_node;
 				while (head->right_child)
 					head = head->right_child;
 				return head;

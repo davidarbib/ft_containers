@@ -16,22 +16,26 @@ namespace ft
 			typedef Key										key_type;
 			typedef T										mapped_type;
 			typedef ft::pair<const Key, T>					value_type;
-			typedef ft::rbnode<Key, T>						node_type;
+			typedef ft::rbnode<value_type>					node_type;
 			typedef Compare									key_compare;
 			typedef Allocator								allocator_type;
 			typedef typename Allocator::reference			reference;
 			typedef typename Allocator::const_reference		const_reference;
 			typedef typename Allocator::pointer				pointer;
 			typedef typename Allocator::const_pointer		const_pointer;
-			typedef typename Allocator::template rebind<node_type>::other
-															node_allocator_type;
-			typedef typename node_allocator_type::pointer	node_pointer;
     		typedef std::size_t								size_type;
     		typedef std::ptrdiff_t							difference_type;
-			typedef ft::map_iterator<node_type, false>		iterator;
-			typedef ft::map_iterator<node_type, true>		const_iterator;
+			typedef ft::map_iterator<value_type, false>		iterator;
+			typedef ft::map_iterator<value_type, true>		const_iterator;
 			typedef ft::reverse_iterator<iterator>			reverse_iterator;
 			typedef ft::reverse_iterator<const_iterator>	const_reverse_iterator;
+
+		private:
+			typedef node_type*								node_pointer;
+			typedef typename Allocator::template rebind<node_type>::other
+															node_allocator_type;
+
+		public:
 
 			class value_compare
 			: public std::binary_function<value_type, value_type, bool>
@@ -50,8 +54,8 @@ namespace ft
 
 			map(const Compare& comp = Compare(),
 					const Allocator& = Allocator())
-			: value_compare::value_compare(comp), _alloc(Allocator()),
-				_tree(make_nil_node()), _size(0)
+			: _alloc(Allocator()), _tree(make_nil_node()), _size(0),
+				_comp(comp)
 			{ _tree->right_child = make_test_tree(_tree); }
 
 			template <class InputIterator>
@@ -61,7 +65,8 @@ namespace ft
 			
 			map(const map<Key,T,Compare,Allocator>& x);
 
-			virtual ~map();
+			virtual ~map()
+			{ }
 
 			map<Key,T,Compare,Allocator>&
 			operator=(const map<Key,T,Compare,Allocator>& x);
@@ -76,7 +81,7 @@ namespace ft
 
 			iterator
 			end()
-			{ return const_iterator(_end_node); }
+			{ return iterator(_end_node); }
 
 			const_iterator
 			end() const
@@ -162,10 +167,11 @@ namespace ft
 		private :
 			allocator_type		_alloc;
 			node_allocator_type	_node_alloc;
-			node_pointer		_tree;	
+			node_pointer		_tree;
 			size_type			_size;
 			node_pointer		_begin_node;
 			node_pointer		_end_node;
+			key_compare			_comp;
 			
 			node_pointer
 			make_nil_node(void)
@@ -175,10 +181,11 @@ namespace ft
 				nil_node->parent = nil_node;
 				nil_node->left_child = nil_node;
 				nil_node->right_child = nil_node;
+				return nil_node;
 			}
 			
 			node_pointer
-			make_test_tree(pointer nil_node)
+			make_test_tree(node_pointer nil_node)
 			{
 				_size = 12;
 				node_pointer root = _node_alloc.allocate(1);
@@ -195,73 +202,89 @@ namespace ft
 				node_pointer eleven = _node_alloc.allocate(1);
 				node_pointer twelve = _node_alloc.allocate(1);
 
+				
 				root->left_child = one;
 				root->right_child = two;
 				root->parent = nil_node;
-				root->pair = make_pair<int, int>(0, 0);
+				_alloc.construct(&root->pair, make_pair<int, int>(0, 0));
+				root->nb = 5;
 
 				one->left_child = three;
 				one->right_child = four;
 				one->parent = root;
-				root->pair = make_pair<int, int>(1, 0);
+				_alloc.construct(&root->pair, make_pair<int, int>(1, 0));
+				one->nb = 10;
 
 				two->left_child = five;
 				two->right_child = six;
 				two->parent = root;
-				root->pair = make_pair<int, int>(2, 0);
+				_alloc.construct(&root->pair, make_pair<int, int>(2, 0));
+				two->nb = 15;
 
 				three->left_child = seven;
 				three->right_child = NULL;
 				three->parent = one;
-				root->pair = make_pair<int, int>(3, 0);
+				_alloc.construct(&root->pair, make_pair<int, int>(3, 0));
+				three->nb = 20;
 
 				four->left_child = NULL;
 				four->right_child = eight;
 				four->parent = one;
-				root->pair = make_pair<int, int>(4, 0);
+				_alloc.construct(&root->pair, make_pair<int, int>(4, 0));
+				four->nb = 25;
 
 				five->left_child = NULL;
 				five->right_child = NULL;
 				five->parent = two;
-				root->pair = make_pair<int, int>(5, 0);
+				_alloc.construct(&root->pair, make_pair<int, int>(5, 0));
+				five->nb = 30;
 
 				six->left_child = NULL;
 				six->right_child = nine;
 				six->parent = two;
-				root->pair = make_pair<int, int>(6, 0);
+				_alloc.construct(&root->pair, make_pair<int, int>(6, 0));
+				six->nb = 35;
 
 				seven->left_child = NULL;
 				seven->right_child = NULL;
 				seven->parent = three;
-				root->pair = make_pair<int, int>(7, 0);
+				_alloc.construct(&root->pair, make_pair<int, int>(7, 0));
+				seven->nb = 40;
 
 				eight->left_child = NULL;
 				eight->right_child = NULL;
 				eight->parent = four;
-				root->pair = make_pair<int, int>(8, 0);
+				_alloc.construct(&root->pair, make_pair<int, int>(8, 0));
+				eight->nb = 45;
 
 				nine->left_child = ten;
 				nine->right_child = NULL;
 				nine->parent = six;
-				root->pair = make_pair<int, int>(9, 0);
+				_alloc.construct(&root->pair, make_pair<int, int>(9, 0));
+				nine->nb = 50;
 
 				ten->left_child = eleven;
 				ten->right_child = twelve;
 				ten->parent = nine;
-				root->pair = make_pair<int, int>(10, 0);
+				_alloc.construct(&root->pair, make_pair<int, int>(10, 0));
+				ten->nb = 55;
 
 				eleven->left_child = NULL;
 				eleven->right_child = NULL;
 				eleven->parent = ten;
-				root->pair = make_pair<int, int>(11, 0);
+				_alloc.construct(&root->pair, make_pair<int, int>(11, 0));
+				eleven->nb = 60;
 
 				twelve->left_child = NULL;
 				twelve->right_child = NULL;
 				twelve->parent = ten;
-				root->pair = make_pair<int, int>(12, 0);
+				_alloc.construct(&root->pair, make_pair<int, int>(12, 0));
+				twelve->nb = 65;
 				
 				_begin_node = seven;
 				_end_node = twelve;
+
+				return root;
 			}
 	};
 

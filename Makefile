@@ -6,7 +6,7 @@
 #    By: darbib <darbib@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/06 14:53:36 by darbib            #+#    #+#              #
-#    Updated: 2021/09/09 21:44:54 by darbib           ###   ########.fr        #
+#    Updated: 2021/09/17 16:12:48 by darbib           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 SHELL = /bin/zsh
@@ -45,6 +45,7 @@ OBJ = $(SRC:%.cpp=$(OBJ_DIR)%.o)
 INC_DIRS = ./vector \
 		   ./iterator \
 		   ./type_traits \
+		   ./map \
 		   ./algorithm
 
 INC = $(addprefix -I, $(INC_DIRS))
@@ -104,7 +105,7 @@ del_mli_setup :
 	@echo $(MAGENTA) "remove headers from root directory"  $(RESET)
 	@rm *.hpp
 
-current_fix : rite2.cpp
+current_fix : test_map_it.cpp
 	@echo $(MAGENTA) "build current test"  $(RESET)
 	@$(CC) $(CFLAGS) $< -o $@ $(INC) 
 	@./$@
