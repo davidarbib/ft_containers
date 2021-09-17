@@ -1,6 +1,10 @@
 #ifndef MAP_HPP
 # define MAP_HPP
 
+#ifndef TEST_TREE
+# define TEST_TREE 0
+#endif
+
 #include <functional>
 #include "rbnode.hpp"
 #include "reverse_iterator.hpp"
@@ -56,10 +60,11 @@ namespace ft
 					const Allocator& = Allocator())
 			: _alloc(Allocator()), _tree(make_null_node()), _size(0),
 				_comp(comp)
-			{ 
-				_tree->right_child = make_test_tree(_tree);
-				std::cout << "tree right child (root) addr : " <<  _tree->right_child << std::endl;
-			}
+		#if TEST_TREE == 1
+			{ _tree->right_child = make_test_tree(_tree); }
+		#else
+			{ }
+		#endif  
 
 			template <class InputIterator>
 			map(InputIterator first, InputIterator last,

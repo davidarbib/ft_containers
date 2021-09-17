@@ -6,7 +6,7 @@
 #    By: darbib <darbib@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/06 14:53:36 by darbib            #+#    #+#              #
-#    Updated: 2021/09/17 16:12:48 by darbib           ###   ########.fr        #
+#    Updated: 2021/09/18 00:58:25 by darbib           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 SHELL = /bin/zsh
@@ -32,6 +32,11 @@ endif
 ifeq ($(SANITIZE), 1)
 	CFLAGS += -fsanitize=address
 endif
+
+# ------------------------------------------------------------------------------
+
+CURRENT_FIX = test_map_it.cpp
+DEFINES = -D TEST_TREE=1
 
 # ------------------------------------------------------------------------------
 
@@ -100,13 +105,15 @@ prep_for_mli :
 	@cp algorithm/*.hpp .
 	@cp type_traits/*.hpp .
 	@cp stack/*.hpp .
+	@cp map/*.hpp .
 
 del_mli_setup : 
 	@echo $(MAGENTA) "remove headers from root directory"  $(RESET)
-	@rm *.hpp
+	@mkdir -p hpptrash
+	@mv *.hpp hpptrash
 
-current_fix : test_map_it.cpp
+current_fix : $(CURRENT_FIX) 
 	@echo $(MAGENTA) "build current test"  $(RESET)
-	@$(CC) $(CFLAGS) $< -o $@ $(INC) 
+	@$(CC) $(CFLAGS) $< -o $@ $(DEFINES) $(INC) 
 	@./$@
 	
