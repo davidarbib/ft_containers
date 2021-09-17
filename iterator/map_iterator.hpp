@@ -2,6 +2,7 @@
 # define MAP_ITERATOR_HPP
 
 #include <cstddef>
+#include <iostream>
 #include "iterator_traits.hpp"
 #include "type_traits.hpp"
 #include "rbnode.hpp"
@@ -98,7 +99,7 @@ namespace ft
 #if __IT_LIFE_DEBUG__ == 1
 			{ std::cout << "prefix inc" << std::endl;}
 #endif
-				this->_current_ptr += 1;
+				_current_ptr = next_node(_current_ptr);
 				return *this;
 			}
 
@@ -110,7 +111,7 @@ namespace ft
 #endif
 				map_iterator tmp;
 				tmp._current_ptr = this->_current_ptr;
-				this->_current_ptr += 1;
+				_current_ptr = next_node(_current_ptr);
 				return tmp;
 			}
 
@@ -121,9 +122,12 @@ namespace ft
 			next_node(node_pointer start_node)
 			{
 				if (start_node->right_child)
-					return leftmost(start_node->right_child);	
+					return leftmost(start_node->right_child);
 				node_pointer previous = start_node;
 				node_pointer head = start_node->parent;
+				std::cout << "head  : " << head << std::endl;
+				std::cout << "head right child : " << head->right_child << std::endl;
+				//while (!head->right_child || previous == head->right_child)
 				while (previous == head->right_child)
 				{
 					if (previous == head)
@@ -131,7 +135,8 @@ namespace ft
 					previous = head;
 					head = head->parent;
 				}
-				return leftmost(head->right_child);
+				//return leftmost(head->right_child);
+				return head;
 			}
 
 			node_pointer
@@ -148,7 +153,9 @@ namespace ft
 			node_pointer
 			leftmost(node_pointer start_node)
 			{
+				std::cout << "start content : " << start_node->nb << std::endl;
 				node_pointer head = start_node;
+				std::cout << "head content : " << head->nb << std::endl;
 				while (head->left_child)
 					head = head->left_child;
 				return head;

@@ -54,9 +54,12 @@ namespace ft
 
 			map(const Compare& comp = Compare(),
 					const Allocator& = Allocator())
-			: _alloc(Allocator()), _tree(make_nil_node()), _size(0),
+			: _alloc(Allocator()), _tree(make_null_node()), _size(0),
 				_comp(comp)
-			{ _tree->right_child = make_test_tree(_tree); }
+			{ 
+				_tree->right_child = make_test_tree(_tree);
+				std::cout << "tree right child (root) addr : " <<  _tree->right_child << std::endl;
+			}
 
 			template <class InputIterator>
 			map(InputIterator first, InputIterator last,
@@ -174,18 +177,18 @@ namespace ft
 			key_compare			_comp;
 			
 			node_pointer
-			make_nil_node(void)
+			make_null_node(void)
 			{
-				node_pointer nil_node = _node_alloc.allocate(1);
-				nil_node->red = false;
-				nil_node->parent = nil_node;
-				nil_node->left_child = nil_node;
-				nil_node->right_child = nil_node;
-				return nil_node;
+				node_pointer null_node = _node_alloc.allocate(1);
+				null_node->red = false;
+				null_node->parent = null_node;
+				null_node->left_child = null_node;
+				null_node->right_child = null_node;
+				return null_node;
 			}
 			
 			node_pointer
-			make_test_tree(node_pointer nil_node)
+			make_test_tree(node_pointer null_node)
 			{
 				_size = 12;
 				node_pointer root = _node_alloc.allocate(1);
@@ -203,9 +206,10 @@ namespace ft
 				node_pointer twelve = _node_alloc.allocate(1);
 
 				
+				std::cout << "root addr : " <<  root << std::endl;
 				root->left_child = one;
 				root->right_child = two;
-				root->parent = nil_node;
+				root->parent = null_node;
 				_alloc.construct(&root->pair, make_pair<int, int>(0, 0));
 				root->nb = 5;
 
@@ -282,7 +286,8 @@ namespace ft
 				twelve->nb = 65;
 				
 				_begin_node = seven;
-				_end_node = twelve;
+				//_end_node = twelve;
+				_end_node = null_node;
 
 				return root;
 			}
