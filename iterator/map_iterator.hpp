@@ -143,19 +143,19 @@ namespace ft
 			previous_node(node_pointer start_node)
 			{
 				if (start_node->right_child)
-					return leftmost(start_node->right_child);	
+					return rightmost(start_node->left_child);	
 				node_pointer previous = start_node;
 				node_pointer head = start_node->parent;
-				while (previous == head->right_child)
+				while (previous == head->left_child)
 					head = head->parent;
 			}
 
 			node_pointer
 			leftmost(node_pointer start_node)
 			{
-				std::cout << "start content : " << start_node->nb << std::endl;
+				//std::cout << "start content : " << start_node->nb << std::endl;
 				node_pointer head = start_node;
-				std::cout << "head content : " << head->nb << std::endl;
+				//std::cout << "head content : " << head->nb << std::endl;
 				while (head->left_child)
 					head = head->left_child;
 				return head;
