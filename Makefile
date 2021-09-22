@@ -6,7 +6,7 @@
 #    By: darbib <darbib@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/06 14:53:36 by darbib            #+#    #+#              #
-#    Updated: 2021/09/22 16:11:59 by darbib           ###   ########.fr        #
+#    Updated: 2021/09/22 22:50:46 by darbib           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 SHELL = /bin/zsh
@@ -108,7 +108,7 @@ prep_for_mli :
 	@cp map/*.hpp .
 
 del_mli_setup : 
-	@echo $(MAGENTA) "remove headers from root directory"  $(RESET)
+	@echo $(MAGENTA) "remove headers from root directory" $(RESET)
 	@mkdir -p hpptrash
 	@mv *.hpp hpptrash
 

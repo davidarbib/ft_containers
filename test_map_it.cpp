@@ -12,9 +12,9 @@ int main()
 		std::cout << mit->nb << std::endl;
 	
 	std::cout << "---------------------------------------" << std::endl;
-	for (mit = mp.end(); mit != mp.begin(); mit--)
+
+	for (mit = --mp.end(); mit != mp.begin(); mit--)
 		std::cout << mit->nb << std::endl;
-	std::cout << mit->nb << std::endl;
 
 	return 0;
 }

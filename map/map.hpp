@@ -63,13 +63,25 @@ namespace ft
 		#if TEST_TREE == 1
 			{ _tree->right_child = make_test_tree(_tree); }
 		#else
-			{ }
+			{
+				if (!strncmp(typeid(value_type).name(), CHAR_TYPEID, 1))
+					_max_size = _alloc.max_size() / 2;
+				else
+					_max_size = _alloc.max_size();
+			}
 		#endif  
 
 			template <class InputIterator>
 			map(InputIterator first, InputIterator last,
 				const Compare& comp = Compare(), const Allocator& = Allocator());
-			//{ }
+			/*
+			{
+				if (!strncmp(typeid(value_type).name(), CHAR_TYPEID, 1))
+					_max_size = _alloc.max_size() / 2;
+				else
+					_max_size = _alloc.max_size();
+			}
+			*/
 			
 			map(const map<Key,T,Compare,Allocator>& x);
 
@@ -95,10 +107,21 @@ namespace ft
 			end() const
 			{ return const_iterator(_end_node); }
 
-			reverse_iterator rbegin();
-			const_reverse_iterator rbegin() const;
-			reverse_iterator rend();
-			const_reverse_iterator rend() const;
+			reverse_iterator
+			rbegin()
+			{ return reverse_iterator(_begin_node); }
+
+			const_reverse_iterator
+			rbegin() const
+			{ return const_reverse_iterator(_begin_node); }
+
+			reverse_iterator
+			rend()
+			{ return reverse_iterator(_end_node); }
+
+			const_reverse_iterator
+			rend() const
+			{ return const_reverse_iterator(_end_node); }
 
 			bool
 			empty() const
@@ -109,7 +132,8 @@ namespace ft
 			{ return _size; }
 
 			size_type
-			max_size() const;
+			max_size() const
+			{ return _max_size; }
 
 			T&
 			operator[](const key_type& x);
@@ -137,13 +161,19 @@ namespace ft
 			swap(map<Key,T,Compare,Allocator>&);
 
 			void
-			clear();
+			clear()
+			{
+				clear_tree(_tree);
+				_size = 0;
+			}
 
 			key_compare
-			key_comp() const;
+			key_comp() const
+			{ return _comp; }
 
 			value_compare
-			value_comp() const;
+			value_comp() const
+			{ return _val_comp; }
 
 			iterator
 			find(const key_type& x);
@@ -155,7 +185,9 @@ namespace ft
 			count(const key_type& x) const;
 
 			iterator
-			lower_bound(const key_type& x);
+			lower_bound(const key_type& x)
+			{
+			}
 
 			const_iterator
 			lower_bound(const key_type& x) const;
@@ -177,10 +209,23 @@ namespace ft
 			node_allocator_type	_node_alloc;
 			node_pointer		_tree;
 			size_type			_size;
+			size_type			_max_size;
 			node_pointer		_begin_node;
 			node_pointer		_end_node;
 			key_compare			_comp;
+			value_compare		_val_comp;
 			
+			void
+			clear_tree(node_pointer root)
+			{	
+				if (root->left_child)
+					clear_tree(root->left_child);
+				if (root->right_child)
+					clear_tree(root->right_child);
+				_alloc.destroy(&root->pair);
+				_node_alloc.deallocate(root, 1);
+			}
+
 			node_pointer
 			make_null_node(void)
 			{
@@ -210,7 +255,6 @@ namespace ft
 				node_pointer eleven = _node_alloc.allocate(1);
 				node_pointer twelve = _node_alloc.allocate(1);
 
-				
 				std::cout << "root addr : " <<  root << std::endl;
 				root->left_child = one;
 				root->right_child = two;

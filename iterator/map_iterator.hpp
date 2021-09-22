@@ -58,10 +58,8 @@ namespace ft
 			{ return static_cast<reference>(_current_ptr->pair); }
 
 			node_pointer
-			//pointer
 			operator->(void) const
 			{ return _current_ptr; }
-			//{ return &_current_ptr->pair; }
 
 			node_pointer
 			getCurrentPtr(void) const
