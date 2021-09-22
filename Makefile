@@ -6,7 +6,7 @@
 #    By: darbib <darbib@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/06 14:53:36 by darbib            #+#    #+#              #
-#    Updated: 2021/09/18 00:58:25 by darbib           ###   ########.fr        #
+#    Updated: 2021/09/22 16:11:59 by darbib           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 SHELL = /bin/zsh
@@ -115,5 +115,5 @@ del_mli_setup :
 current_fix : $(CURRENT_FIX) 
 	@echo $(MAGENTA) "build current test"  $(RESET)
 	@$(CC) $(CFLAGS) $< -o $@ $(DEFINES) $(INC) 
-	@./$@
+	#@./$@
 	
