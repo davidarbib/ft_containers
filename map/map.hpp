@@ -34,8 +34,9 @@ namespace ft
 			typedef ft::reverse_iterator<iterator>			reverse_iterator;
 			typedef ft::reverse_iterator<const_iterator>	const_reverse_iterator;
 
-		private:
+			//TODO move to private before evaluation
 			typedef node_type*								node_pointer;
+		private:
 			typedef typename Allocator::template rebind<node_type>::other
 															node_allocator_type;
 
@@ -173,7 +174,7 @@ namespace ft
 
 			value_compare
 			value_comp() const
-			{ return _val_comp; }
+			{ return value_compare(); }
 
 			iterator
 			find(const key_type& x);
@@ -185,9 +186,7 @@ namespace ft
 			count(const key_type& x) const;
 
 			iterator
-			lower_bound(const key_type& x)
-			{
-			}
+			lower_bound(const key_type& x);
 
 			const_iterator
 			lower_bound(const key_type& x) const;
@@ -204,6 +203,10 @@ namespace ft
 			pair<const_iterator, const_iterator>
 			equal_range(const key_type& x) const;
 
+			node_pointer //TODO delete this method before evaluation
+			tree(void)
+			{ return _tree; }
+
 		private :
 			allocator_type		_alloc;
 			node_allocator_type	_node_alloc;
@@ -213,7 +216,6 @@ namespace ft
 			node_pointer		_begin_node;
 			node_pointer		_end_node;
 			key_compare			_comp;
-			value_compare		_val_comp;
 			
 			void
 			clear_tree(node_pointer root)
@@ -236,7 +238,7 @@ namespace ft
 				null_node->right_child = null_node;
 				return null_node;
 			}
-			
+
 			node_pointer
 			make_test_tree(node_pointer null_node)
 			{
@@ -259,83 +261,82 @@ namespace ft
 				root->left_child = one;
 				root->right_child = two;
 				root->parent = null_node;
-				_alloc.construct(&root->pair, make_pair<int, int>(0, 0));
+				_alloc.construct(&root->value, make_pair<int, int>(0, 0));
 				root->nb = 5;
 
 				one->left_child = three;
 				one->right_child = four;
 				one->parent = root;
-				_alloc.construct(&root->pair, make_pair<int, int>(1, 0));
+				_alloc.construct(&root->value, make_pair<int, int>(1, 0));
 				one->nb = 10;
 
 				two->left_child = five;
 				two->right_child = six;
 				two->parent = root;
-				_alloc.construct(&root->pair, make_pair<int, int>(2, 0));
+				_alloc.construct(&root->value, make_pair<int, int>(2, 0));
 				two->nb = 15;
 
 				three->left_child = seven;
 				three->right_child = NULL;
 				three->parent = one;
-				_alloc.construct(&root->pair, make_pair<int, int>(3, 0));
+				_alloc.construct(&root->value, make_pair<int, int>(3, 0));
 				three->nb = 20;
 
 				four->left_child = NULL;
 				four->right_child = eight;
 				four->parent = one;
-				_alloc.construct(&root->pair, make_pair<int, int>(4, 0));
+				_alloc.construct(&root->value, make_pair<int, int>(4, 0));
 				four->nb = 25;
 
 				five->left_child = NULL;
 				five->right_child = NULL;
 				five->parent = two;
-				_alloc.construct(&root->pair, make_pair<int, int>(5, 0));
+				_alloc.construct(&root->value, make_pair<int, int>(5, 0));
 				five->nb = 30;
 
 				six->left_child = NULL;
 				six->right_child = nine;
 				six->parent = two;
-				_alloc.construct(&root->pair, make_pair<int, int>(6, 0));
+				_alloc.construct(&root->value, make_pair<int, int>(6, 0));
 				six->nb = 35;
 
 				seven->left_child = NULL;
 				seven->right_child = NULL;
 				seven->parent = three;
-				_alloc.construct(&root->pair, make_pair<int, int>(7, 0));
+				_alloc.construct(&root->value, make_pair<int, int>(7, 0));
 				seven->nb = 40;
 
 				eight->left_child = NULL;
 				eight->right_child = NULL;
 				eight->parent = four;
-				_alloc.construct(&root->pair, make_pair<int, int>(8, 0));
+				_alloc.construct(&root->value, make_pair<int, int>(8, 0));
 				eight->nb = 45;
 
 				nine->left_child = ten;
 				nine->right_child = NULL;
 				nine->parent = six;
-				_alloc.construct(&root->pair, make_pair<int, int>(9, 0));
+				_alloc.construct(&root->value, make_pair<int, int>(9, 0));
 				nine->nb = 50;
 
 				ten->left_child = eleven;
 				ten->right_child = twelve;
 				ten->parent = nine;
-				_alloc.construct(&root->pair, make_pair<int, int>(10, 0));
+				_alloc.construct(&root->value, make_pair<int, int>(10, 0));
 				ten->nb = 55;
 
 				eleven->left_child = NULL;
 				eleven->right_child = NULL;
 				eleven->parent = ten;
-				_alloc.construct(&root->pair, make_pair<int, int>(11, 0));
+				_alloc.construct(&root->value, make_pair<int, int>(11, 0));
 				eleven->nb = 60;
 
 				twelve->left_child = NULL;
 				twelve->right_child = NULL;
 				twelve->parent = ten;
-				_alloc.construct(&root->pair, make_pair<int, int>(12, 0));
+				_alloc.construct(&root->value, make_pair<int, int>(12, 0));
 				twelve->nb = 65;
 				
 				_begin_node = seven;
-				//_end_node = twelve;
 				_end_node = null_node;
 
 				return root;

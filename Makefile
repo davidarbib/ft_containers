@@ -6,7 +6,7 @@
 #    By: darbib <darbib@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/06 14:53:36 by darbib            #+#    #+#              #
-#    Updated: 2021/09/22 22:50:46 by darbib           ###   ########.fr        #
+#    Updated: 2021/09/23 18:46:49 by darbib           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 SHELL = /bin/zsh
@@ -35,7 +35,7 @@ endif
 
 # ------------------------------------------------------------------------------
 
-CURRENT_FIX = test_map_it.cpp
+CURRENT_FIX = test_rb_func.cpp
 DEFINES = -D TEST_TREE=1
 
 # ------------------------------------------------------------------------------
@@ -115,5 +115,6 @@ del_mli_setup :
 current_fix : $(CURRENT_FIX) 
 	@echo $(MAGENTA) "build current test"  $(RESET)
 	@$(CC) $(CFLAGS) $< -o $@ $(DEFINES) $(INC) 
-	#@./$@
+	#@./$@ > ft
+	#@less ft
 	
