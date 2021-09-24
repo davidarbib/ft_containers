@@ -32,7 +32,10 @@ int main()
 
 	std::cout << node_to_rot->nb << std::endl;
 	std::cout << "---------------------------------------" << std::endl;
+
 	ft::rotRight(node_to_rot);
+	std::cout << "-- after rot right --" << std::endl;
+
 	std::cout << (node_six->right_child == node_to_rot) << std::endl;
 	std::cout << (node_to_rot->right_child == node_nine) << std::endl;
 	std::cout << (node_to_rot->left_child == node_eleven) << std::endl;
@@ -44,6 +47,22 @@ int main()
 
 	for (mit = mp.begin(); mit != mp.end(); mit++)
 		std::cout << mit->nb << std::endl;
+
+	std::cout << "---------------------------------------" << std::endl;
+
+	ft::rotLeft(node_to_rot);
+	std::cout << "-- after rot left --" << std::endl;
 	
+	std::cout << (node_six->right_child == node_nine) << std::endl;
+	std::cout << (node_to_rot->right_child == node_twelve) << std::endl;
+	std::cout << (node_to_rot->left_child == node_eleven) << std::endl;
+	std::cout << (node_to_rot->parent == node_nine) << std::endl;
+	std::cout << (node_nine->parent == node_six) << std::endl;
+	std::cout << (node_nine->left_child == node_to_rot) << std::endl;
+	std::cout << (node_nine->right_child == NULL) << std::endl;
+	std::cout << "---------------------------------------" << std::endl;
+
+	for (mit = mp.begin(); mit != mp.end(); mit++)
+		std::cout << mit->nb << std::endl;
 	return 0;
 }
