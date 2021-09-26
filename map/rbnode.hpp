@@ -152,6 +152,53 @@ namespace ft
 		}
 		else
 			new_node_parent->right_child = new_node;
+		new_node->parent = new_node_parent;
+	}
+
+	template <class T>
+	void
+	rotate_recolor(rbnode<T> *new_node, uint8_t cfg)
+	{
+		switch (cfg)
+		{
+			case LL:
+				rotRight(grandParent(new_node));
+				grandParent(new_node)->red = !grandParent(new_node)->red;
+				new_node->parent->red = !new_node->parent->red;
+				break;
+			case LR:
+				rotLeft(new_node->parent);
+				rotate_recolor(new_node, LL);
+				break;
+			case RR:
+				rotLeft(grandParent(new_node));
+				grandParent(new_node)->red = !grandParent(new_node)->red;
+				new_node->parent->red = !new_node->parent->red;
+				break;
+			case RL:
+				rotRight(new_node->parent);
+				rotate_recolor(new_node, RR);
+				break;
+		}
+	}
+
+	template <class T>
+	void
+	check_recolor_rotate(rbnode<T> *root, rbnode<T> *new_node, uint8_t cfg)
+	{
+		if (new_node == root)
+			new_node->red = false;
+		if (!new_node->parent->red)
+			return ;
+		if (uncle(new_node)->red)
+		{
+			new_node->parent->red = false;
+			uncle(new_node)->red = false;
+			grandParent(new_node)->red = true;
+			check_recolor_rotate(root, grandParent(new_node), cfg);
+		}
+		else
+			rotate_recolor(new_node, cfg);
 	}
 
 	template <class T>
@@ -164,11 +211,14 @@ namespace ft
 		if (nil->right_child == NULL)
 		{
 			nil->right_child = new_node;
+			new_node->red = false;
 			return new_node;
 		}
 		rbnode<T> *root = nil->right_child;
+		new_node->red = true;
 		push_back(root, new_node, &cfg);
-			
+		check_recolor_rotate(root, new_node);
+		return new_node;
 	}
 
 	template <class T>
