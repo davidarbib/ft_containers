@@ -240,6 +240,59 @@ namespace ft
 			head = head->right_child;
 		return head;
 	}
+
+	"-------------for tree printing-------------------
+	template <class T>
+	rbnode<T>*
+	previous_node(rbnode<T>* start_node, int *height)
+	{
+		if (start_node->left_child)
+		{
+			rbnode<T>* head = start_node;
+			while (head->right_child)
+			{
+				(*height)++;
+				head = head->right_child;
+			}
+		}
+		node_pointer previous = start_node;
+		node_pointer head = start_node->parent;
+		while (previous == head->left_child)
+		{
+			if (previous == head)
+				return head;
+			previous = head;
+			(*height)--;
+			head = head->parent;
+		}
+		return head;
+	}
+
+	#define RED "\u001b[31m"
+	#define RESET "\u001b[0m"
+	template <class T>
+	void
+	print_tree(rbnode<T> *nil_node)
+	{
+		int height = 0;
+
+		rbnode<T>* head = nil_node;
+		while (head->right_child)
+		{
+			head = head->right_child;
+			height++;
+		}
+		while (head != nil_node)
+		{
+			for (int i = 0; i < height; i++)
+				std::cout << "  ";
+			if (head->red)
+				std::cout << RED << "| " << head->value << " |" <<  RESET << std::endl;
+			else
+				std::cout << "| " << head->value << " |" << std::endl;
+			head = previous_node(head, &height);
+		}
+	}
 }
 
 #endif

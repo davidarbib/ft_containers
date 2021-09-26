@@ -8,5 +8,6 @@
 
 int main()
 {
+	rbnode<int>* tree;
 	return 0;
 }
