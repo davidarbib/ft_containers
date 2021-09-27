@@ -7,9 +7,10 @@
 # define TESTED_NAMESPACE ft
 #endif
 
+/*
 int main()
 {
-	/*-----------Test tree visualizer-------------*/
+	//-----------Test tree visualizer-------------
 
 	ft::rbnode<int>* nil = new ft::rbnode<int>();
 	ft::rbnode<int>* node0 = new ft::rbnode<int>();
@@ -46,18 +47,65 @@ int main()
 	node2->parent = node0;
 	node2->red = true;
 
-//	std::cout << "root is : " << 
 	print_tree(nil);
-	/*
-	rbnode<int>* node0 = malloc(sizeof(rbnode<int>);
-	node0->value = 10;
+	return 0;
+}
+*/
 
-	rbnode<int>* node0 = malloc(sizeof(rbnode<int>);
-	node0->value = 10;
+int main()
+{
+	ft::rbnode<int>* nil = new ft::rbnode<int>();
+	ft::rbnode<int>* node0 = new ft::rbnode<int>();
+	ft::rbnode<int>* node1 = new ft::rbnode<int>();
+	ft::rbnode<int>* node2 = new ft::rbnode<int>();
+	ft::rbnode<int>* node3 = new ft::rbnode<int>();
+	ft::rbnode<int>* node4 = new ft::rbnode<int>();
+	ft::rbnode<int>* node5 = new ft::rbnode<int>();
+	ft::rbnode<int>* node6 = new ft::rbnode<int>();
+	ft::rbnode<int>* node7 = new ft::rbnode<int>();
+	ft::rbnode<int>* node8 = new ft::rbnode<int>();
+	ft::rbnode<int>* node9 = new ft::rbnode<int>();
+	ft::rbnode<int>* node10 = new ft::rbnode<int>();
 
-	rbnode<int>* node0 = malloc(sizeof(rbnode<int>);
+	nil->value = 0;
+	nil->left_child = nil;
+	nil->right_child = NULL;
+	nil->parent = nil;
+
 	node0->value = 10;
-	*/
-	
+	node1->value = 5;
+	node2->value = 15;
+	node3->value = 3;
+	node4->value = 7;
+	node5->value = 2;
+	node6->value = 1;
+	node7->value = 20;
+	node8->value = 12;
+	node9->value = 23;
+	node10->value = 21;
+
+	ft::insert(nil, node0);
+	print_tree(nil);
+	std::cout << std::endl;
+	ft::insert(nil, node1);
+	print_tree(nil);
+	ft::insert(nil, node2);
+	print_tree(nil);
+	ft::insert(nil, node3);
+	print_tree(nil);
+	ft::insert(nil, node4);
+	print_tree(nil);
+	ft::insert(nil, node5);
+	print_tree(nil);
+	ft::insert(nil, node6);
+	print_tree(nil);
+	ft::insert(nil, node7);
+	print_tree(nil);
+	ft::insert(nil, node8);
+	print_tree(nil);
+	ft::insert(nil, node9);
+	print_tree(nil);
+	ft::insert(nil, node10);
+	print_tree(nil);
 	return 0;
 }
