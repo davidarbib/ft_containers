@@ -3,6 +3,7 @@
 
 #include "pair.hpp"
 #include <iostream>
+#include <iomanip>
 
 #define LEFTMOST	2
 #define LEFTCHILD	1
@@ -138,9 +139,10 @@ namespace ft
 	rbnode<T>*
 	push_back(rbnode<T> *root, rbnode<T> *new_node, uint8_t *cfg)
 	{
+		rbnode<T>* new_node_parent;
 		if (new_node->value < root->value)
 		{
-			new_node_parent = leftmost(root);
+			rbnode<T>* new_node_parent = leftmost(root);
 			*cfg |= LEFTMOST;
 		}
 		else
@@ -148,7 +150,7 @@ namespace ft
 		if (new_node->value < new_node_parent->value)
 		{
 			new_node_parent->left_child = new_node;
-			*cfg |= LEFT;
+			*cfg |= LEFTCHILD;
 		}
 		else
 			new_node_parent->right_child = new_node;
@@ -241,22 +243,25 @@ namespace ft
 		return head;
 	}
 
-	"-------------for tree printing-------------------
+	//-------------for tree printing-------------------
 	template <class T>
 	rbnode<T>*
 	previous_node(rbnode<T>* start_node, int *height)
 	{
 		if (start_node->left_child)
 		{
-			rbnode<T>* head = start_node;
+			rbnode<T>* head = start_node->left_child;
+			(*height)++;
 			while (head->right_child)
 			{
 				(*height)++;
 				head = head->right_child;
 			}
+			return head;
 		}
-		node_pointer previous = start_node;
-		node_pointer head = start_node->parent;
+		rbnode<T>* previous = start_node;
+		rbnode<T>* head = start_node->parent;
+		(*height)--;
 		while (previous == head->left_child)
 		{
 			if (previous == head)
@@ -268,15 +273,16 @@ namespace ft
 		return head;
 	}
 
-	#define RED "\u001b[31m"
-	#define RESET "\u001b[0m"
+	#define RED "\e[0;31m"
+	#define RESET "\e[0;0m"
+
 	template <class T>
 	void
 	print_tree(rbnode<T> *nil_node)
 	{
 		int height = 0;
 
-		rbnode<T>* head = nil_node;
+		rbnode<T>* head = nil_node->right_child;
 		while (head->right_child)
 		{
 			head = head->right_child;
@@ -285,11 +291,21 @@ namespace ft
 		while (head != nil_node)
 		{
 			for (int i = 0; i < height; i++)
-				std::cout << "  ";
+				std::cout << "      ";
 			if (head->red)
-				std::cout << RED << "| " << head->value << " |" <<  RESET << std::endl;
+			{
+				std::cout << RED;
+				std::cout  << "|";
+				std::cout << std::setw(3) << head->value;
+				std::cout << "|";
+				std::cout <<  RESET << std::endl;
+			}
 			else
-				std::cout << "| " << head->value << " |" << std::endl;
+			{
+				std::cout << "|";
+				std::cout << std::setw(3) << head->value;
+				std::cout << "|" << std::endl;
+			}
 			head = previous_node(head, &height);
 		}
 	}
