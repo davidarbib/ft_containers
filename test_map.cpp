@@ -79,10 +79,13 @@ int main()
 	node4->value = 7;
 	node5->value = 2;
 	node6->value = 1;
-	node7->value = 20;
-	node8->value = 12;
-	node9->value = 23;
-	node10->value = 21;
+	node7->value = 13;
+	//node8->value = 12;
+	//node9->value = 23;
+	//node10->value = 21;
+	node8->value = 14;
+	node9->value = 11;
+	node10->value = 12;
 
 	ft::insert(nil, node0);
 	print_tree(nil);

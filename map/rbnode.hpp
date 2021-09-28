@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   rbnode.hpp                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: darbib <darbib@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/09/28 12:22:14 by darbib            #+#    #+#             */
+/*   Updated: 2021/09/28 13:53:17 by darbib           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef RBNODE_HPP
 # define RBNODE_HPP
 
@@ -104,12 +116,8 @@ namespace ft
 	{
 		std::cout << "######## internal of rotLeft #######" << std::endl;
 
-		rbnode<T>* tmp;
+		rbnode<T>* tmp = node->right_child->left_child;
 		
-		std::cout << "node " << node->parent;
-		std::cout << " go to node->right_child->parent" << std::endl;
-		node->right_child->parent = node->parent;
-
 		if (isLeftChild(node->parent, node))
 			node->parent->left_child = node->right_child;
 		else
@@ -119,22 +127,24 @@ namespace ft
 		std::cout << " go to node->right_child->parent" << std::endl;
 		node->right_child->parent = node->parent;
 
+
+		std::cout << "node " << node->parent;
+		std::cout << " go to node->right_child->parent" << std::endl;
+		node->right_child->parent = node->parent;
+
 		std::cout << "node " << node->right_child;
 		std::cout << " go to node->parent" << std::endl;
 		node->parent = node->right_child;
 
-		std::cout << "node " << node->right_child->left_child;
-		std::cout << " go to tmp" << std::endl;
-		tmp = node->right_child->left_child;
-
 		std::cout << "node " << node << "go to ";
-		std::cout << "node->right_child->left_child" << std::endl;
-		node->right_child->left_child = node;
-		
+		std::cout << "node->parent->left_child" << std::endl;
+		node->parent->left_child = node;
+
 		std::cout << "node " << tmp << "go to ";
 		std::cout << "node->right_child" << std::endl;
 		node->right_child = tmp;
 
+		std::cout << "node->value : " << node->value << std::endl;
 		std::cout << "######## internal of rotLeft #######" << std::endl;
 
 		return node;
@@ -192,36 +202,57 @@ namespace ft
 			push_back(root->right_child, new_node, cfg);
 		}
 	}
+	
+	template <class T>
+	rbnode<T>*
+	get_nil(rbnode<T> *start_node)
+	{
+		rbnode<T>* head = start_node;
+		
+		while (head != head->parent)
+			head = head->parent;
+		return head;
+	}
 
 	template <class T>
 	void
 	rotate_recolor(rbnode<T> *new_node, uint8_t cfg)
 	{
+		rbnode<T> *grand_parent = grandParent(new_node);
+		rbnode<T> *parent = new_node->parent;
+
 		switch (cfg)
 		{
 			case LL:
 				std::cout << "LL" << std::endl;
-				rotRight(grandParent(new_node));
-				new_node->parent->right_child->red
-					= !new_node->parent->right_child->red;
-				new_node->parent->red = !new_node->parent->red;
+				rotRight(grand_parent);
+				grand_parent->red = !grand_parent->red;
+				parent->red = !parent->red;
 				break;
 			case LR:
 				std::cout << "LR" << std::endl;
-				rotLeft(new_node->parent);
-				rotate_recolor(new_node, LL);
+				rotLeft(parent);
+				rotRight(grand_parent);
+				new_node->red = !new_node->red;
+				new_node->right_child->red = !new_node->right_child->red;
 				break;
 			case RR:
 				std::cout << "RR" << std::endl;
-				rotLeft(grandParent(new_node));
-				new_node->parent->left_child->red
-					= !new_node->parent->left_child->red;
-				new_node->parent->red = !new_node->parent->red;
+				rotLeft(grand_parent);
+				grand_parent->red = !grand_parent->red;
+				parent->red = !parent->red;
 				break;
 			case RL:
 				std::cout << "RL" << std::endl;
-				rotRight(new_node->parent);
-				rotate_recolor(new_node, RR);
+				rotRight(parent);
+				std::cout << "intermediary print" << std::endl;
+				print_tree(get_nil(new_node));
+				rotLeft(grand_parent);
+				new_node->red = !new_node->red;
+				new_node->left_child->red = !new_node->left_child->red;
+				std::cout << "grand_parent value : " << grand_parent->value;
+				std::cout << std::endl;
+				std::cout << "parent value : " << parent->value << std::endl;
 				break;
 		}
 	}
