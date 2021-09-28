@@ -6,7 +6,7 @@
 /*   By: darbib <darbib@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/28 12:22:14 by darbib            #+#    #+#             */
-/*   Updated: 2021/09/28 18:12:19 by darbib           ###   ########.fr       */
+/*   Updated: 2021/09/28 20:28:24 by darbib           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ namespace ft
 		struct rbnode			*parent;
 		T						value;
 		bool					red;
-		int						nb;
 	};
 }
 

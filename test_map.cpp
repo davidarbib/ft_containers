@@ -1,7 +1,7 @@
 #include <iostream>
 #include <map>
 #include "map.hpp"
-#include "rbnode.hpp"
+#include "rbtree.hpp"
 
 #ifndef TESTED_NAMESPACE
 # define TESTED_NAMESPACE ft
@@ -54,61 +54,30 @@ int main()
 
 int main()
 {
-	ft::rbnode<int>* nil = new ft::rbnode<int>();
-	ft::rbnode<int>* node0 = new ft::rbnode<int>();
-	ft::rbnode<int>* node1 = new ft::rbnode<int>();
-	ft::rbnode<int>* node2 = new ft::rbnode<int>();
-	ft::rbnode<int>* node3 = new ft::rbnode<int>();
-	ft::rbnode<int>* node4 = new ft::rbnode<int>();
-	ft::rbnode<int>* node5 = new ft::rbnode<int>();
-	ft::rbnode<int>* node6 = new ft::rbnode<int>();
-	ft::rbnode<int>* node7 = new ft::rbnode<int>();
-	ft::rbnode<int>* node8 = new ft::rbnode<int>();
-	ft::rbnode<int>* node9 = new ft::rbnode<int>();
-	ft::rbnode<int>* node10 = new ft::rbnode<int>();
+	ft::rbTree<int> tree;
 
-	nil->value = 0;
-	nil->left_child = nil;
-	nil->right_child = NULL;
-	nil->parent = nil;
+	tree.insert(10);
+	tree.print_tree();
+	tree.insert(5);
+	tree.print_tree();
+	tree.insert(15);
+	tree.print_tree();
+	tree.insert(3);
+	tree.print_tree();
+	tree.insert(7);
+	tree.print_tree();
+	tree.insert(2);
+	tree.print_tree();
+	tree.insert(1);
+	tree.print_tree();
+	tree.insert(13);
+	tree.print_tree();
+	tree.insert(14);
+	tree.print_tree();
+	tree.insert(11);
+	tree.print_tree();
+	tree.insert(12);
+	tree.print_tree();
 
-	node0->value = 10;
-	node1->value = 5;
-	node2->value = 15;
-	node3->value = 3;
-	node4->value = 7;
-	node5->value = 2;
-	node6->value = 1;
-	node7->value = 13;
-	//node8->value = 12;
-	//node9->value = 23;
-	//node10->value = 21;
-	node8->value = 14;
-	node9->value = 11;
-	node10->value = 12;
-
-	ft::insert(nil, node0);
-	print_tree(nil);
-	std::cout << std::endl;
-	ft::insert(nil, node1);
-	print_tree(nil);
-	ft::insert(nil, node2);
-	print_tree(nil);
-	ft::insert(nil, node3);
-	print_tree(nil);
-	ft::insert(nil, node4);
-	print_tree(nil);
-	ft::insert(nil, node5);
-	print_tree(nil);
-	ft::insert(nil, node6);
-	print_tree(nil);
-	ft::insert(nil, node7);
-	print_tree(nil);
-	ft::insert(nil, node8);
-	print_tree(nil);
-	ft::insert(nil, node9);
-	print_tree(nil);
-	ft::insert(nil, node10);
-	print_tree(nil);
 	return 0;
 }

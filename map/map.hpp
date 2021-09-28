@@ -6,7 +6,7 @@
 #endif
 
 #include <functional>
-#include "rbnode.hpp"
+#include "rbtree.hpp"
 #include "reverse_iterator.hpp"
 #include "map_iterator.hpp"
 
@@ -20,13 +20,13 @@ namespace ft
 			typedef Key										key_type;
 			typedef T										mapped_type;
 			typedef ft::pair<const Key, T>					value_type;
-			typedef ft::rbTree<value_type, allocator_type>	tree_type;
 			typedef Compare									key_compare;
 			typedef Allocator								allocator_type;
 			typedef typename Allocator::reference			reference;
 			typedef typename Allocator::const_reference		const_reference;
 			typedef typename Allocator::pointer				pointer;
 			typedef typename Allocator::const_pointer		const_pointer;
+			typedef ft::rbTree<value_type, allocator_type>	tree_type;
     		typedef std::size_t								size_type;
     		typedef std::ptrdiff_t							difference_type;
 			typedef ft::map_iterator<value_type, false>		iterator;
@@ -51,7 +51,7 @@ namespace ft
 
 			map(const Compare& comp = Compare(),
 					const Allocator& = Allocator())
-			: _alloc(Allocator()), _tree(make_null_node()), _size(0),
+			: _alloc(Allocator()), _tree(tree_type()), _size(0),
 				_comp(comp)
 		#if TEST_TREE == 1
 			{ _tree->right_child = make_test_tree(_tree); }
@@ -200,6 +200,7 @@ namespace ft
 			{ return _tree; }
 
 		private :
+			allocator_type		_alloc;
 			tree_type			_tree;
 			size_type			_size;
 			size_type			_max_size;
