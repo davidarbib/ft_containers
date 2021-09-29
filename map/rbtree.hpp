@@ -53,6 +53,18 @@ namespace ft
 			{ return _nil->right_child; }
 
 			node_pointer
+			get_node_whose_value(node_pointer root, const_reference value) const
+			{
+				if (root == NULL)
+					return NULL;
+				if (root->value == value)
+					return root;
+				if (value < root->value)
+					return get_node_whose_value(root->left_child, value);
+				return get_node_whose_value(root->right_child, value);
+			}
+
+			node_pointer
 			insert(const_reference value)
 			{
 				uint8_t		cfg = 0;
@@ -71,12 +83,16 @@ namespace ft
 				check_recolor_rotate(root, new_node, cfg);
 				return new_node;
 			}
+			
+			node_pointer
+			_erase_(const_reference value)
+			{ erase(get_node_whose_value(tree.root(), value)); }
 
-			/*
 			node_pointer
 			erase(node_pointer *node_to_del)
-			{ }
-			*/
+			{
+
+			}
 
 			#define RED "\e[0;31m"
 			#define RESET "\e[0;0m"
@@ -142,7 +158,6 @@ namespace ft
 					std::cout << e.what() << std::endl;
 				}
 				return node;
-
 			}
 
 			bool
@@ -171,6 +186,16 @@ namespace ft
 				if (isLeftChild(grandParent(node), node->parent))
 					return grandParent(node)->right_child;
 				return grandParent(node)->left_child;
+			}
+
+			node_pointer
+			sibling(node_pointer node)
+			{
+				if (node->parent == NULL)
+					return NULL;
+				if (isLeftChild(node->parent, node))
+					return node->parent->right_child;
+				return node->parent->left_child;
 			}
 
 			node_pointer
@@ -363,12 +388,28 @@ namespace ft
 			 * just pointers update (and eventually more rotations)
 			 * to avoid large data copy for complex_type
 			 */
-			node_pointer
+			void
 			bst_delete(node_pointer del_node)
 			{
 				if (!del_node->left_child && !del_node->right_child)
 				{
+					destroy_node(del_node);
+					return ;
 				}
+			}
+
+			void
+			destroy_node(node_pointer node)
+			{
+				if (node->parent)
+				{
+					if (isLeftChild(node->parent, node))
+						node->parent->left_child = NULL;
+					else
+						node->parent->right_child = NULL;
+				}
+				_alloc.destroy(&node->value);
+				_node_alloc.deallocate(node, 1);
 			}
 
 			node_pointer
