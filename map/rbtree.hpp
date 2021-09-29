@@ -396,6 +396,14 @@ namespace ft
 					destroy_node(del_node);
 					return ;
 				}
+				if (!del_node->left_child)
+					
+				else
+				{
+					del_node_parent->
+					destroy_node(del_node);
+					return ;
+				}
 			}
 
 			void
