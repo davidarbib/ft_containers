@@ -91,6 +91,7 @@ namespace ft
 			node_pointer
 			erase(node_pointer *node_to_del)
 			{
+				
 
 			}
 
@@ -396,14 +397,18 @@ namespace ft
 					destroy_node(del_node);
 					return ;
 				}
-				if (!del_node->left_child)
-					
+				if (del_node->right_child)
+				{
+					del_node->parent->right_child;
+				}
+				/*
 				else
 				{
 					del_node_parent->
 					destroy_node(del_node);
 					return ;
 				}
+				*/
 			}
 
 			void
