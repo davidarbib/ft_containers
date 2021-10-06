@@ -84,16 +84,13 @@ namespace ft
 				return new_node;
 			}
 			
-			node_pointer
+			void
 			_erase_(const_reference value)
-			{ erase(get_node_whose_value(tree.root(), value)); }
+			{ erase(get_node_whose_value(root(), value)); }
 
-			node_pointer
-			erase(node_pointer *node_to_del)
-			{
-				
-
-			}
+			void
+			erase(node_pointer node_to_del)
+			{ bst_delete(node_to_del); }
 
 			#define RED "\e[0;31m"
 			#define RESET "\e[0;0m"
@@ -132,6 +129,16 @@ namespace ft
 					}
 					head = previous_node(head, &height);
 				}
+			}
+
+			node_pointer//TODO move to private methods
+			sibling(node_pointer node)
+			{
+				if (node->parent == NULL)
+					return NULL;
+				if (isLeftChild(node->parent, node))
+					return node->parent->right_child;
+				return node->parent->left_child;
 			}
 
 		private :
@@ -189,15 +196,6 @@ namespace ft
 				return grandParent(node)->left_child;
 			}
 
-			node_pointer
-			sibling(node_pointer node)
-			{
-				if (node->parent == NULL)
-					return NULL;
-				if (isLeftChild(node->parent, node))
-					return node->parent->right_child;
-				return node->parent->left_child;
-			}
 
 			node_pointer
 			rotRight(node_pointer node)
@@ -399,16 +397,33 @@ namespace ft
 				}
 				if (del_node->right_child)
 				{
-					del_node->parent->right_child;
+					del_node->right_child->parent = del_node->parent;	
+					if (isLeftChild(del_node->parent, del_node))
+						del_node->parent->left_child = del_node->right_child;
+					else
+						del_node->parent->right_child = del_node->right_child;
+					if (del_node->left_child)
+					{
+						node_pointer tmp = del_node->right_child->left_child;
+
+						del_node->right_child->left_child = del_node->left_child;
+						del_node->left_child->parent = del_node->right_child;
+						node_pointer old_rightmost = rightmost(del_node->left_child);
+						rightmost(del_node->left_child)->right_child = tmp;
+						if (tmp)
+							tmp->parent = old_rightmost;
+					}
 				}
-				/*
 				else
 				{
-					del_node_parent->
-					destroy_node(del_node);
-					return ;
+					if (isLeftChild(del_node->parent, del_node))
+						del_node->parent->left_child = del_node->left_child;
+					else
+						del_node->parent->right_child = del_node->left_child;
+					del_node->left_child->parent = del_node->parent;	
 				}
-				*/
+				del_node->parent = NULL;
+				destroy_node(del_node);
 			}
 
 			void

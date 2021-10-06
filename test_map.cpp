@@ -40,5 +40,12 @@ int main()
 	std::cout << tree.sibling(tree.get_node_whose_value(tree.root(), 13))->value;
 	std::cout << std::endl;
 
+	tree._erase_(12);
+	tree.print_tree();
+	tree._erase_(13);
+	tree.print_tree();
+	tree._erase_(10);
+	tree.print_tree();
+
 	return 0;
 }
