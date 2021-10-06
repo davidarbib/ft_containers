@@ -88,9 +88,53 @@ namespace ft
 			_erase_(const_reference value)
 			{ erase(get_node_whose_value(root(), value)); }
 
+			/*
+			 * in this implementation of red black delete
+			 * there isnt copy of predecessor/successor
+			 * just pointers update (and eventually more rotations)
+			 * to avoid large data copy for complex_type
+			 */
 			void
-			erase(node_pointer node_to_del)
-			{ bst_delete(node_to_del); }
+			erase(node_pointer del_node)
+			{ 
+				if (!del_node->left_child && !del_node->right_child)
+				{
+					destroy_node(del_node);
+					return ;
+				}
+				if (del_node->left_child)
+				{
+					node_pointer moved_node = rightmost(del_node->left_child); 
+					node_pointer tmp_left = moved_node->left_child;
+					node_pointer tmp_right = moved_node->right_child;
+
+					moved_node->parent->right_child = tmp_left;
+					tmp_left = moved_node->parent->right_child;
+					leftmost(del_node->right_child)->left_child = tmp_right;
+					tmp_right->parent = leftmost(del_node->right_child);
+					if (isLeftChild(del_node->parent, del_node))
+						del_node->parent->left_child = moved_node;
+					else
+						del_node->parent->right_child = moved_node;
+					moved_node->parent = del_node->parent;
+					moved_node->left_child = del_node->left_child;
+					del_node->left_child->parent = moved_node;
+					moved_node->right_child = del_node->left_child;
+					del_node->right_child->parent = moved_node;
+					moved_node->red = del_node->red;
+				}
+				else
+				{
+					if (isLeftChild(del_node->parent, del_node))
+						del_node->parent->left_child = del_node->right_child;
+					else
+						del_node->parent->right_child = del_node->right_child;
+					del_node->right_child->parent = del_node->parent;	
+					del_node->left_child->red = del_node->red;
+				}
+				del_node->parent = NULL;
+				destroy_node(del_node);
+			}
 
 			#define RED "\e[0;31m"
 			#define RESET "\e[0;0m"
