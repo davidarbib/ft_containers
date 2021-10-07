@@ -42,10 +42,12 @@ int main()
 
 	tree._erase_(12);
 	tree.print_tree();
+	/*
 	tree._erase_(13);
 	tree.print_tree();
 	tree._erase_(10);
 	tree.print_tree();
+	*/
 
 	return 0;
 }

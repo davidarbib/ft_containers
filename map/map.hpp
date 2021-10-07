@@ -67,14 +67,6 @@ namespace ft
 			template <class InputIterator>
 			map(InputIterator first, InputIterator last,
 				const Compare& comp = Compare(), const Allocator& = Allocator());
-			/*
-			{
-				if (!strncmp(typeid(value_type).name(), CHAR_TYPEID, 1))
-					_max_size = _alloc.max_size() / 2;
-				else
-					_max_size = _alloc.max_size();
-			}
-			*/
 			
 			map(const map<Key,T,Compare,Allocator>& x);
 

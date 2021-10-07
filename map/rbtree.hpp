@@ -106,21 +106,25 @@ namespace ft
 				{
 					node_pointer moved_node = rightmost(del_node->left_child); 
 					node_pointer tmp_left = moved_node->left_child;
-					node_pointer tmp_right = moved_node->right_child;
 
-					moved_node->parent->right_child = tmp_left;
-					tmp_left = moved_node->parent->right_child;
-					leftmost(del_node->right_child)->left_child = tmp_right;
-					tmp_right->parent = leftmost(del_node->right_child);
+					if (moved_node != del_node->left_child)
+					{
+						moved_node->parent->right_child = tmp_left;
+						tmp_left = moved_node->parent->right_child;
+						moved_node->left_child = del_node->left_child;
+						del_node->left_child->parent = moved_node;
+					}
+
 					if (isLeftChild(del_node->parent, del_node))
 						del_node->parent->left_child = moved_node;
 					else
 						del_node->parent->right_child = moved_node;
 					moved_node->parent = del_node->parent;
-					moved_node->left_child = del_node->left_child;
-					del_node->left_child->parent = moved_node;
-					moved_node->right_child = del_node->left_child;
-					del_node->right_child->parent = moved_node;
+
+					moved_node->right_child = del_node->right_child;
+					if (del_node->right_child)
+						del_node->right_child->parent = moved_node;
+
 					moved_node->red = del_node->red;
 				}
 				else
