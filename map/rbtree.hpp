@@ -96,48 +96,10 @@ namespace ft
 			 */
 			void
 			erase(node_pointer del_node)
-			{ 
-				if (!del_node->left_child && !del_node->right_child)
-				{
-					destroy_node(del_node);
-					return ;
-				}
-				if (del_node->left_child)
-				{
-					node_pointer moved_node = rightmost(del_node->left_child); 
-					node_pointer tmp_left = moved_node->left_child;
-
-					if (moved_node != del_node->left_child)
-					{
-						moved_node->parent->right_child = tmp_left;
-						tmp_left = moved_node->parent->right_child;
-						moved_node->left_child = del_node->left_child;
-						del_node->left_child->parent = moved_node;
-					}
-
-					if (isLeftChild(del_node->parent, del_node))
-						del_node->parent->left_child = moved_node;
-					else
-						del_node->parent->right_child = moved_node;
-					moved_node->parent = del_node->parent;
-
-					moved_node->right_child = del_node->right_child;
-					if (del_node->right_child)
-						del_node->right_child->parent = moved_node;
-
-					moved_node->red = del_node->red;
-				}
-				else
-				{
-					if (isLeftChild(del_node->parent, del_node))
-						del_node->parent->left_child = del_node->right_child;
-					else
-						del_node->parent->right_child = del_node->right_child;
-					del_node->right_child->parent = del_node->parent;	
-					del_node->left_child->red = del_node->red;
-				}
-				del_node->parent = NULL;
-				destroy_node(del_node);
+			{
+				del_node_color = del_node->color;
+				node_pointer *moved_node = bst_delete(del_node);
+			//many cases	
 			}
 
 			#define RED "\e[0;31m"
@@ -435,43 +397,50 @@ namespace ft
 			 * just pointers update (and eventually more rotations)
 			 * to avoid large data copy for complex_type
 			 */
-			void
+			node_pointer
 			bst_delete(node_pointer del_node)
-			{
+			{ 
 				if (!del_node->left_child && !del_node->right_child)
 				{
 					destroy_node(del_node);
-					return ;
+					return NULL;
 				}
-				if (del_node->right_child)
+				if (del_node->left_child)
 				{
-					del_node->right_child->parent = del_node->parent;	
-					if (isLeftChild(del_node->parent, del_node))
-						del_node->parent->left_child = del_node->right_child;
-					else
-						del_node->parent->right_child = del_node->right_child;
-					if (del_node->left_child)
-					{
-						node_pointer tmp = del_node->right_child->left_child;
+					node_pointer moved_node = rightmost(del_node->left_child); 
+					node_pointer tmp_left = moved_node->left_child;
 
-						del_node->right_child->left_child = del_node->left_child;
-						del_node->left_child->parent = del_node->right_child;
-						node_pointer old_rightmost = rightmost(del_node->left_child);
-						rightmost(del_node->left_child)->right_child = tmp;
-						if (tmp)
-							tmp->parent = old_rightmost;
+					if (moved_node != del_node->left_child)
+					{
+						moved_node->parent->right_child = tmp_left;
+						tmp_left = moved_node->parent->right_child;
+						moved_node->left_child = del_node->left_child;
+						del_node->left_child->parent = moved_node;
 					}
+
+					if (isLeftChild(del_node->parent, del_node))
+						del_node->parent->left_child = moved_node;
+					else
+						del_node->parent->right_child = moved_node;
+					moved_node->parent = del_node->parent;
+
+					moved_node->right_child = del_node->right_child;
+					if (del_node->right_child)
+						del_node->right_child->parent = moved_node;
+
+					moved_node->red = del_node->red;
 				}
 				else
 				{
 					if (isLeftChild(del_node->parent, del_node))
-						del_node->parent->left_child = del_node->left_child;
+						del_node->parent->left_child = del_node->right_child;
 					else
-						del_node->parent->right_child = del_node->left_child;
-					del_node->left_child->parent = del_node->parent;	
+						del_node->parent->right_child = del_node->right_child;
+					del_node->right_child->parent = del_node->parent;	
 				}
 				del_node->parent = NULL;
 				destroy_node(del_node);
+				return moved_node;
 			}
 
 			void
