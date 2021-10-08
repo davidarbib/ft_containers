@@ -94,12 +94,105 @@ namespace ft
 			 * just pointers update (and eventually more rotations)
 			 * to avoid large data copy for complex_type
 			 */
+			/*
 			void
 			erase(node_pointer del_node)
 			{
-				del_node_color = del_node->color;
 				node_pointer *moved_node = bst_delete(del_node);
-			//many cases	
+				balance(del_node->red, moved_node);
+			}
+			*/
+			void
+			erase(node_pointer del_node)
+			{ 
+				if (!del_node->left_child && !del_node->right_child)
+				{
+					if (!del_node->red)
+						resolve_double_blackness(del_node);
+					destroy_node(del_node);
+					return NULL;
+				}
+				if (del_node->left_child)
+				{
+					node_pointer moved_node = rightmost(del_node->left_child); 
+					node_pointer tmp_left = moved_node->left_child;
+
+					if (moved_node != del_node->left_child)
+					{
+						moved_node->parent->right_child = tmp_left;
+						tmp_left = moved_node->parent->right_child;
+						moved_node->left_child = del_node->left_child;
+						del_node->left_child->parent = moved_node;
+					}
+
+					if (isLeftChild(del_node->parent, del_node))
+						del_node->parent->left_child = moved_node;
+					else
+						del_node->parent->right_child = moved_node;
+					moved_node->parent = del_node->parent;
+
+					moved_node->right_child = del_node->right_child;
+					if (del_node->right_child)
+						del_node->right_child->parent = moved_node;
+
+					moved_node->red = del_node->red;
+				}
+				else
+				{
+					if (isLeftChild(del_node->parent, del_node))
+						del_node->parent->left_child = del_node->right_child;
+					else
+						del_node->parent->right_child = del_node->right_child;
+					del_node->right_child->parent = del_node->parent;	
+				}
+				balance(del_node->red, moved_node);
+				del_node->parent = NULL;
+				destroy_node(del_node);
+				return moved_node;
+			}
+
+			void
+			balance(bool del_node_red, node_pointer moved_node)
+			{
+				if (del_node_red ^ moved_node->red)
+				{
+					moved_node->red = false;
+					return ;
+				}
+				if (del_node_red == false && moved_node->red == false)
+					resolve_double_blackness(moved_node);
+			}
+
+			void resolve_double_blackness(node_pointer node)
+			{
+				if (node == root())
+				{
+					node->red = false;
+					return ;
+				}
+				if (!sibling(node)->red
+					&& (!sibling(node)->left_child
+							|| !sibling(node)->left_child->red)
+						&& (!sibling(node)->right_child)
+							|| !sibling(node)->right_child->red)
+				{
+					sibling(node)->red = true;
+					if (!node->parent->red)
+						resolve_double_blackness(node->parent);
+					else
+						node->parent->red = false;
+					return ;
+				}
+				if (!sibling(node)->red
+					&& (sibling(node)->left_child
+							&& sibling(node)->right_child)
+						&& (sibling(node)->left_child->red
+							|| sibling(node)->right_child->red))
+				{
+					rotate_recolor(node_pointer new_node, uint8_t cfg)
+
+				}
+
 			}
 
 			#define RED "\e[0;31m"
