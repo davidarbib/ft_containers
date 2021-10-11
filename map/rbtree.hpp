@@ -4,6 +4,7 @@
 #include <iostream>
 #include <iomanip>
 #include "rbnode.hpp"
+#include <stdint.h>
 
 #define LEFTMOST	2
 #define LEFTCHILD	1
@@ -110,11 +111,12 @@ namespace ft
 					if (!del_node->red)
 						resolve_double_blackness(del_node);
 					destroy_node(del_node);
-					return NULL;
+					return ;
 				}
+				node_pointer moved_node = NULL; 
 				if (del_node->left_child)
 				{
-					node_pointer moved_node = rightmost(del_node->left_child); 
+					moved_node = rightmost(del_node->left_child); 
 					node_pointer tmp_left = moved_node->left_child;
 
 					if (moved_node != del_node->left_child)
@@ -144,11 +146,11 @@ namespace ft
 					else
 						del_node->parent->right_child = del_node->right_child;
 					del_node->right_child->parent = del_node->parent;	
+					moved_node = del_node->right_child;
 				}
 				balance(del_node->red, moved_node);
 				del_node->parent = NULL;
 				destroy_node(del_node);
-				return moved_node;
 			}
 
 			void
@@ -167,10 +169,10 @@ namespace ft
 			is_sibling_black_nephews_black(node_pointer node)
 			{
 				if (!sibling(node)->red
-					&& (!sibling(node)->left_child
+					&& ((!sibling(node)->left_child
 							|| !sibling(node)->left_child->red)
-						&& (!sibling(node)->right_child)
-							|| !sibling(node)->right_child->red)
+						&& (!sibling(node)->right_child
+							|| !sibling(node)->right_child->red)))
 				{ return true; }
 				return false;
 			}
@@ -197,8 +199,20 @@ namespace ft
 			//(c)if s is red : rotation and recolor old sibling and parent
 			//	L (s is left) : right rotate
 			//	R (s is right): left rotate
-			void resolve_double_blackness(node_pointer node)
+			
+			bool
+			is_black_node(node_pointer node)
 			{
+				if (!node || !node->red)
+					return true;
+				return false;
+			}
+
+			void
+			resolve_double_blackness(node_pointer node)
+			{
+				uint8_t cfg;
+
 				if (node == root())
 				{
 					node->red = false;
@@ -206,15 +220,15 @@ namespace ft
 				}
 				if (is_sibling_black_one_nephew_red(node))
 				{
-					if (isLeftChild(node->parent, is_sibling(node)))
+					if (isLeftChild(node->parent, sibling(node)))
 						cfg = LEFTMOST;
-					if (is_sibling(node)->left_child
-						&& is_sibling(node)->left_child->red
-						&& (!is_sibling(node)->right_child)
-							|| (!is_sibling(node)->right_child->red)
-						cfg |= LEFT;
+					if ((sibling(node)->left_child
+						&& sibling(node)->left_child->red)
+						&& (!sibling(node)->right_child
+							|| !sibling(node)->right_child->red))
+						cfg |= LEFTCHILD;
 					
-					rotate_recolor(node_pointer new_node, uint8_t cfg)
+					rotate_recolor(node, cfg);
 
 				}
 				if (is_sibling_black_nephews_black(node))
@@ -531,9 +545,10 @@ namespace ft
 					destroy_node(del_node);
 					return NULL;
 				}
+				node_pointer moved_node; 
 				if (del_node->left_child)
 				{
-					node_pointer moved_node = rightmost(del_node->left_child); 
+					moved_node = rightmost(del_node->left_child); 
 					node_pointer tmp_left = moved_node->left_child;
 
 					if (moved_node != del_node->left_child)
