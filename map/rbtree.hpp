@@ -189,16 +189,6 @@ namespace ft
 				return false;
 			}
 
-			//(a)if sibling (s) black and at least one sibling child is red (r) : rotations
-			//	LL (s is a left child of his parent and r left child or both children are red
-			//	LR (s is left, r right)
-			//	RL (s is right, r left)
-			//	RR (s is right, r right or both)
-			//(b)if s is black and both children are black
-			//	recoloring and recur on parent if parent is black
-			//(c)if s is red : rotation and recolor old sibling and parent
-			//	L (s is left) : right rotate
-			//	R (s is right): left rotate
 			
 			bool
 			is_black_node(node_pointer node)
@@ -208,6 +198,20 @@ namespace ft
 				return false;
 			}
 
+			bool
+			is_red_node(node_pointer node)
+			{ return !is_black_node(node); }
+
+			//(a)if sibling (s) black and at least one sibling child is red (r) : rotations of parent (eventually sibling pre rotation)
+			//	LL (s is a left child of his parent and r left child or both children are red
+			//	LR (s is left, r right)
+			//	RL (s is right, r left)
+			//	RR (s is right, r right or both)
+			//(b)if s is black and both children are black
+			//	recoloring and recur on parent if parent is black
+			//(c)if s is red : rotation and recolor old sibling and parent
+			//	L (s is left) : right rotate
+			//	R (s is right): left rotate
 			void
 			resolve_double_blackness(node_pointer node)
 			{
@@ -220,16 +224,21 @@ namespace ft
 				}
 				if (is_sibling_black_one_nephew_red(node))
 				{
-					if (isLeftChild(node->parent, sibling(node)))
-						cfg = LEFTMOST;
-					if ((sibling(node)->left_child
-						&& sibling(node)->left_child->red)
-						&& (!sibling(node)->right_child
-							|| !sibling(node)->right_child->red))
-						cfg |= LEFTCHILD;
-					
-					rotate_recolor(node, cfg);
-
+					if (isLeftChild(node->parent, sibling(node))
+						&& is_red_node(sibling(node)->left_child))
+						cfg = LL;
+					if (isLeftChild(node->parent, sibling(node))
+						&& is_red_node(sibling(node)->right_child)
+						&& is_black_node(sibling(node)->left_child))
+						cfg = LR;
+					if (!isLeftChild(node->parent, sibling(node))
+						&& is_red_node(sibling(node)->left_child)
+						&& is_black_node(sibling(node)->right_child)
+						cfg |= RL;
+					if (!isLeftChild(node->parent, sibling(node))
+						&& is_red_node(sibling(node)->right_child)
+						cfg |= RR;
+					rotate_recolor_erase(parent, cfg); //TODO define node to recolor rotate
 				}
 				if (is_sibling_black_nephews_black(node))
 				{
@@ -239,6 +248,9 @@ namespace ft
 					else
 						node->parent->red = false;
 					return ;
+				}
+				if (sibling(node)->red)
+				{
 				}
 			}
 
@@ -345,7 +357,6 @@ namespace ft
 					return grandParent(node)->right_child;
 				return grandParent(node)->left_child;
 			}
-
 
 			node_pointer
 			rotRight(node_pointer node)
@@ -466,7 +477,39 @@ namespace ft
 			}
 
 			void
-			rotate_recolor(node_pointer new_node, uint8_t cfg)
+			rotate_recolor_erase(node_pointer sibling, uint8_t cfg)
+			{
+				node_pointer parent = sibling->parent;
+
+				switch (cfg)
+				{
+					case LL:
+						std::cout << "LL" << std::endl;
+						sibling->left_child->red = false;
+						rotRight(parent);
+						break;
+					case LR:
+						std::cout << "LR" << std::endl;
+						sibling->right_child->red = false;
+						rotLeft(sibling);
+						rotRight(parent);
+						break;
+					case RR:
+						std::cout << "RR" << std::endl;
+						sibling->right_child->red = false;
+						rotLeft(parent);
+						break;
+					case RL:
+						std::cout << "RL" << std::endl;
+						sibling->left_child->red = false;
+						rotRight(sibling);
+						rotLeft(parent);
+						break;
+				}
+			}
+
+			void
+			rotate_recolor_insert(node_pointer new_node, uint8_t cfg)
 			{
 				node_pointer grand_parent = grandParent(new_node);
 				node_pointer parent = new_node->parent;
@@ -517,7 +560,7 @@ namespace ft
 					return ;
 				if (!uncle(new_node))
 				{
-					rotate_recolor(new_node, cfg);
+					rotate_recolor_insert(new_node, cfg);
 					return ;
 				}
 				if (uncle(new_node)->red)
@@ -528,7 +571,7 @@ namespace ft
 					check_recolor_rotate(root, grandParent(new_node), cfg);
 				}
 				else
-					rotate_recolor(new_node, cfg);
+					rotate_recolor_insert(new_node, cfg);
 			}
 
 			/*

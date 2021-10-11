@@ -53,16 +53,12 @@ namespace ft
 					const Allocator& = Allocator())
 			: _alloc(Allocator()), _tree(tree_type()), _size(0),
 				_comp(comp)
-		#if TEST_TREE == 1
-			{ _tree->right_child = make_test_tree(_tree); }
-		#else
 			{
 				if (!strncmp(typeid(value_type).name(), CHAR_TYPEID, 1))
 					_max_size = _alloc.max_size() / 2;
 				else
 					_max_size = _alloc.max_size();
 			}
-		#endif  
 
 			template <class InputIterator>
 			map(InputIterator first, InputIterator last,
