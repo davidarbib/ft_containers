@@ -188,7 +188,6 @@ namespace ft
 				{ return true; }
 				return false;
 			}
-
 			
 			bool
 			is_black_node(node_pointer node)
@@ -238,7 +237,7 @@ namespace ft
 					if (!isLeftChild(node->parent, sibling(node))
 						&& is_red_node(sibling(node)->right_child)
 						cfg |= RR;
-					rotate_recolor_erase(parent, cfg); //TODO define node to recolor rotate
+					rotate_recolor_erase(sibling, cfg); //TODO define node to recolor rotate
 				}
 				if (is_sibling_black_nephews_black(node))
 				{
