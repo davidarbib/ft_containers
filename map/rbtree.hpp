@@ -406,26 +406,12 @@ namespace ft
 					node->parent->left_child = node->right_child;
 				else
 					node->parent->right_child = node->right_child;
-
-				std::cout << "node " << node->parent;
-				std::cout << " go to node->right_child->parent" << std::endl;
 				node->right_child->parent = node->parent;
-
-				std::cout << "node " << node->parent;
-				std::cout << " go to node->right_child->parent" << std::endl;
-				node->right_child->parent = node->parent;
-
-				std::cout << "node " << node->right_child;
-				std::cout << " go to node->parent" << std::endl;
 				node->parent = node->right_child;
-
-				std::cout << "node " << node << "go to ";
-				std::cout << "node->parent->left_child" << std::endl;
 				node->parent->left_child = node;
-
-				std::cout << "node " << tmp << "go to ";
-				std::cout << "node->right_child" << std::endl;
 				node->right_child = tmp;
+				if (tmp)
+					tmp->parent = node;
 
 				std::cout << "node->value : " << node->value << std::endl;
 				std::cout << "######## internal of rotLeft #######" << std::endl;
