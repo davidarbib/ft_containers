@@ -5,6 +5,8 @@
 # define TEST_TREE 0
 #endif
 
+#define CHAR_TYPEID "c"
+
 #include <functional>
 #include "rbtree.hpp"
 #include "reverse_iterator.hpp"

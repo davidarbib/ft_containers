@@ -89,20 +89,6 @@ namespace ft
 			_erase_(const_reference value)
 			{ erase(get_node_whose_value(root(), value)); }
 
-			/*
-			 * in this implementation of red black delete
-			 * there isnt copy of predecessor/successor
-			 * just pointers update (and eventually more rotations)
-			 * to avoid large data copy for complex_type
-			 */
-			/*
-			void
-			erase(node_pointer del_node)
-			{
-				node_pointer *moved_node = bst_delete(del_node);
-				balance(del_node->red, moved_node);
-			}
-			*/
 			void
 			erase(node_pointer del_node)
 			{ 
@@ -166,31 +152,27 @@ namespace ft
 			}
 
 			bool
-			is_sibling_black_nephews_black(node_pointer node)
+			isSiblingBlackNephewsBlack(node_pointer node)
 			{
 				if (!sibling(node)->red
-					&& ((!sibling(node)->left_child
-							|| !sibling(node)->left_child->red)
-						&& (!sibling(node)->right_child
-							|| !sibling(node)->right_child->red)))
-				{ return true; }
+					&& isBlackNode(nephewL(node))
+					&& isBlackNode(nephewR(node)))
+					return true;
 				return false;
 			}
 
 			bool
-			is_sibling_black_one_nephew_red(node_pointer node)
+			isSiblingBlackNephewRed(node_pointer node)
 			{
 				if (!sibling(node)->red
-					&& (sibling(node)->left_child
-							&& sibling(node)->right_child)
-						&& (sibling(node)->left_child->red
-							|| sibling(node)->right_child->red))
-				{ return true; }
+					&& (isRedNode(nephewL(node))
+						|| isRedNode(nephewR(node))))
+					return true;
 				return false;
 			}
 			
 			bool
-			is_black_node(node_pointer node)
+			isBlackNode(node_pointer node)
 			{
 				if (!node || !node->red)
 					return true;
@@ -198,8 +180,16 @@ namespace ft
 			}
 
 			bool
-			is_red_node(node_pointer node)
-			{ return !is_black_node(node); }
+			isRedNode(node_pointer node)
+			{ return !isBlackNode(node); }
+
+			node_pointer
+			nephewL(node_pointer node)
+			{ return sibling(node)->left_child; }
+
+			node_pointer
+			nephewR(node_pointer node)
+			{ return sibling(node)->right_child; }
 
 			//(a)if sibling (s) black and at least one sibling child is red (r) : rotations of parent (eventually sibling pre rotation)
 			//	LL (s is a left child of his parent and r left child or both children are red
@@ -221,25 +211,26 @@ namespace ft
 					node->red = false;
 					return ;
 				}
-				if (is_sibling_black_one_nephew_red(node))
+				if (isSiblingBlackNephewRed(node))
 				{
 					if (isLeftChild(node->parent, sibling(node))
-						&& is_red_node(sibling(node)->left_child))
+						&& isRedNode(sibling(node)->left_child))
 						cfg = LL;
 					if (isLeftChild(node->parent, sibling(node))
-						&& is_red_node(sibling(node)->right_child)
-						&& is_black_node(sibling(node)->left_child))
+						&& isRedNode(sibling(node)->right_child)
+						&& isBlackNode(sibling(node)->left_child))
 						cfg = LR;
 					if (!isLeftChild(node->parent, sibling(node))
-						&& is_red_node(sibling(node)->left_child)
-						&& is_black_node(sibling(node)->right_child)
-						cfg |= RL;
+						&& isRedNode(sibling(node)->left_child)
+						&& isBlackNode(sibling(node)->right_child))
+						cfg = RL;
 					if (!isLeftChild(node->parent, sibling(node))
-						&& is_red_node(sibling(node)->right_child)
-						cfg |= RR;
-					rotate_recolor_erase(sibling, cfg); //TODO define node to recolor rotate
+						&& isRedNode(sibling(node)->right_child))
+						cfg = RR;
+					rotate_recolor_erase(sibling(node), cfg);
+					return ;
 				}
-				if (is_sibling_black_nephews_black(node))
+				if (isSiblingBlackNephewsBlack(node))
 				{
 					sibling(node)->red = true;
 					if (!node->parent->red)
@@ -250,6 +241,11 @@ namespace ft
 				}
 				if (sibling(node)->red)
 				{
+					if (isLeftChild(node->parent, node))
+						rotLeft(node->parent);
+					else
+						rotRight(node->parent);
+					resolve_double_blackness(node);
 				}
 			}
 
