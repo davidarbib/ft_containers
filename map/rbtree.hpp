@@ -241,10 +241,13 @@ namespace ft
 				}
 				if (sibling(node)->red)
 				{
+					node_pointer old_sibling = sibling(node);
 					if (isLeftChild(node->parent, node))
 						rotLeft(node->parent);
 					else
 						rotRight(node->parent);
+					node->parent->red = !node->parent->red;
+					old_sibling->red = !old_sibling->red;
 					resolve_double_blackness(node);
 				}
 			}
