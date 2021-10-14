@@ -7,7 +7,9 @@
 
 #define CHAR_TYPEID "c"
 
+#include <typeinfo>
 #include <functional>
+#include <string.h>
 #include "rbtree.hpp"
 #include "reverse_iterator.hpp"
 #include "map_iterator.hpp"

@@ -103,6 +103,7 @@ int main()
 }
 */
 
+/*
 int main()
 {
 	//c) case
@@ -123,6 +124,38 @@ int main()
 
 	std::cout << "--- erase 15 ---" << std::endl;
 	tree._erase_(10);
+	tree.print_tree();
+
+	return 0;
+}
+*/
+
+int main()
+{
+	//b) case
+	ft::rbTree<int> tree;
+
+	tree.insert(15);
+	tree.print_tree();
+	tree.insert(3);
+	tree.print_tree();
+	tree.insert(20);
+	tree.print_tree();
+	tree.insert(1);
+	tree.print_tree();
+	tree.insert(5);
+	tree.print_tree();
+	tree.insert(0);
+	tree.print_tree();
+	tree.insert(2);
+	tree.print_tree();
+	tree._erase_(0);
+	tree.print_tree();
+	tree._erase_(2);
+	tree.print_tree();
+	
+	std::cout << "--- erase 1 ---" << std::endl;
+	tree._erase_(1);
 	tree.print_tree();
 
 	return 0;
