@@ -108,7 +108,6 @@ namespace ft
 					if (moved_node != del_node->left_child)
 					{
 						moved_node->parent->right_child = tmp_left;
-						tmp_left = moved_node->parent->right_child;
 						moved_node->left_child = del_node->left_child;
 						del_node->left_child->parent = moved_node;
 					}
@@ -124,6 +123,14 @@ namespace ft
 						del_node->right_child->parent = moved_node;
 
 					moved_node->red = del_node->red;
+					if (tmp_left)
+					{
+						tmp_left->red = false;
+						return ;
+					}
+					balance(del_node->red, moved_node);
+					del_node->parent = NULL;
+					destroy_node(del_node);
 				}
 				else
 				{
@@ -133,10 +140,10 @@ namespace ft
 						del_node->parent->right_child = del_node->right_child;
 					del_node->right_child->parent = del_node->parent;	
 					moved_node = del_node->right_child;
+					balance(del_node->red, moved_node);
+					del_node->parent = NULL;
+					destroy_node(del_node);
 				}
-				balance(del_node->red, moved_node);
-				del_node->parent = NULL;
-				destroy_node(del_node);
 			}
 
 			void
