@@ -103,7 +103,6 @@ int main()
 }
 */
 
-/*
 int main()
 {
 	//c) case
@@ -128,7 +127,6 @@ int main()
 
 	return 0;
 }
-*/
 
 /*
 int main()
@@ -163,28 +161,23 @@ int main()
 }
 */
 
+/*
 int main()
 {
-	//root case
+	//intern node, left_child exists, rightmost with left_child case
 	ft::rbTree<int> tree;
 
 	tree.insert(15);
 	tree.print_tree();
-	tree.insert(3);
-	tree.print_tree();
-	tree.insert(20);
-	tree.print_tree();
-	tree.insert(1);
-	tree.print_tree();
 	tree.insert(5);
 	tree.print_tree();
-	tree.insert(0);
+	tree.insert(25);
 	tree.print_tree();
-	tree.insert(2);
+	tree.insert(3);
 	tree.print_tree();
-	tree._erase_(0);
+	tree.insert(7);
 	tree.print_tree();
-	tree._erase_(2);
+	tree.insert(6);
 	tree.print_tree();
 	
 	std::cout << "--- erase 15 ---" << std::endl;
@@ -193,3 +186,33 @@ int main()
 
 	return 0;
 }
+*/
+
+/*
+int main()
+{
+	//intern node, left_child exists, rightmost without left_child case
+	ft::rbTree<int> tree;
+
+	tree.insert(15);
+	tree.print_tree();
+	tree.insert(5);
+	tree.print_tree();
+	tree.insert(25);
+	tree.print_tree();
+	tree.insert(3);
+	tree.print_tree();
+	tree.insert(7);
+	tree.print_tree();
+	tree.insert(6);
+	tree.print_tree();
+	tree._erase_(6);
+	tree.print_tree();
+	
+	std::cout << "--- erase 15 ---" << std::endl;
+	tree._erase_(15);
+	tree.print_tree();
+
+	return 0;
+}
+*/

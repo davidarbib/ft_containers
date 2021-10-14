@@ -5,6 +5,7 @@
 #include <iomanip>
 #include "rbnode.hpp"
 #include <stdint.h>
+#include <string.h>
 
 #define LEFTMOST	2
 #define LEFTCHILD	1
@@ -90,6 +91,65 @@ namespace ft
 			{ erase(get_node_whose_value(root(), value)); }
 
 			void
+			handle_left_case(node_pointer del_node)
+			{
+				node_pointer moved_node = rightmost(del_node->left_child); 
+				node_pointer rmost_leftchild = moved_node->left_child;
+				if (rmost_leftchild)
+				{
+					moved_node->parent->right_child = rmost_leftchild;
+					rmost_leftchild->parent = moved_node->parent;
+
+					if (moved_node != del_node->left_child)
+					{
+						moved_node->left_child = del_node->left_child;
+						del_node->left_child->parent = moved_node;
+					}
+					if (isLeftChild(del_node->parent, del_node))
+						del_node->parent->left_child = moved_node;
+					else
+						del_node->parent->right_child = moved_node;
+					moved_node->parent = del_node->parent;
+
+					moved_node->right_child = del_node->right_child;
+					if (del_node->right_child)
+					del_node->right_child->parent = moved_node;
+
+					rmost_leftchild->red = false;
+					return ;
+				}
+
+				if (moved_node != del_node->left_child)
+				{
+					moved_node->left_child = del_node->left_child;
+					del_node->left_child->parent = moved_node;
+				}
+
+				node_type v_node;
+				memset(&v_node, 0, sizeof(v_node));
+				v_node.red = false;
+				v_node.parent = moved_node->parent;
+				moved_node->parent->right_child = NULL;
+
+				if (isLeftChild(del_node->parent, del_node))
+					del_node->parent->left_child = moved_node;
+				else
+					del_node->parent->right_child = moved_node;
+				moved_node->parent = del_node->parent;
+
+				moved_node->right_child = del_node->right_child;
+				if (del_node->right_child)
+					del_node->right_child->parent = moved_node;
+
+				if (moved_node->red)
+					moved_node->red = false;
+				else
+					resolve_double_blackness(&v_node);
+				del_node->parent = NULL;
+				destroy_node(del_node);
+			}
+			
+			void
 			erase(node_pointer del_node)
 			{ 
 				if (!del_node->left_child && !del_node->right_child)
@@ -99,38 +159,10 @@ namespace ft
 					destroy_node(del_node);
 					return ;
 				}
-				node_pointer moved_node = NULL; 
 				if (del_node->left_child)
 				{
-					moved_node = rightmost(del_node->left_child); 
-					node_pointer tmp_left = moved_node->left_child;
-
-					if (moved_node != del_node->left_child)
-					{
-						moved_node->parent->right_child = tmp_left;
-						moved_node->left_child = del_node->left_child;
-						del_node->left_child->parent = moved_node;
-					}
-
-					if (isLeftChild(del_node->parent, del_node))
-						del_node->parent->left_child = moved_node;
-					else
-						del_node->parent->right_child = moved_node;
-					moved_node->parent = del_node->parent;
-
-					moved_node->right_child = del_node->right_child;
-					if (del_node->right_child)
-						del_node->right_child->parent = moved_node;
-
-					moved_node->red = del_node->red;
-					if (tmp_left)
-					{
-						tmp_left->red = false;
-						return ;
-					}
-					balance(del_node->red, moved_node);
-					del_node->parent = NULL;
-					destroy_node(del_node);
+					handle_left_case(del_node);
+					return ;
 				}
 				else
 				{
@@ -139,7 +171,7 @@ namespace ft
 					else
 						del_node->parent->right_child = del_node->right_child;
 					del_node->right_child->parent = del_node->parent;	
-					moved_node = del_node->right_child;
+					node_pointer moved_node = del_node->right_child;
 					balance(del_node->red, moved_node);
 					del_node->parent = NULL;
 					destroy_node(del_node);
@@ -583,12 +615,12 @@ namespace ft
 				if (del_node->left_child)
 				{
 					moved_node = rightmost(del_node->left_child); 
-					node_pointer tmp_left = moved_node->left_child;
+					node_pointer rmost_leftchild = moved_node->left_child;
 
 					if (moved_node != del_node->left_child)
 					{
-						moved_node->parent->right_child = tmp_left;
-						tmp_left = moved_node->parent->right_child;
+						moved_node->parent->right_child = rmost_leftchild;
+						rmost_leftchild = moved_node->parent->right_child;
 						moved_node->left_child = del_node->left_child;
 						del_node->left_child->parent = moved_node;
 					}
