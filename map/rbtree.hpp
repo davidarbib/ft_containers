@@ -87,6 +87,8 @@ namespace ft
 				push_back(root, new_node, &cfg);
 				check_recolor_rotate(root, new_node, cfg);
 				_begin_node = leftmost(getRoot());
+				if (_begin_node == NULL)
+					_begin_node = _nil;
 				return new_node;
 			}
 			
@@ -163,6 +165,8 @@ namespace ft
 						resolve_double_blackness(del_node);
 					destroy_node(del_node);
 					_begin_node = leftmost(getRoot());
+					if (_begin_node == NULL)
+					_begin_node = _nil;
 					return ;
 				}
 				if (del_node->left_child)
@@ -171,6 +175,8 @@ namespace ft
 					del_node->parent = NULL;
 					destroy_node(del_node);
 					_begin_node = leftmost(getRoot());
+					if (_begin_node == NULL)
+					_begin_node = _nil;
 					return ;
 				}
 				if (isLeftChild(del_node->parent, del_node))
@@ -183,6 +189,8 @@ namespace ft
 				del_node->parent = NULL;
 				destroy_node(del_node);
 				_begin_node = leftmost(getRoot());
+				if (_begin_node == NULL)
+					_begin_node = _nil;
 			}
 
 			void
@@ -310,6 +318,11 @@ namespace ft
 				int height = 0;
 
 				node_pointer head = _nil->right_child;
+				if (head == NULL)
+				{
+					std::cout << "tree is empty" << std::endl;
+					return ;
+				}
 				while (head->right_child)
 				{
 					head = head->right_child;
@@ -440,50 +453,23 @@ namespace ft
 			node_pointer
 			rotRight(node_pointer node)
 			{
-				std::cout << "######## internal of rotRight #######" << std::endl;
-				node_pointer tmp;
-
-				std::cout << "node " << node->left_child->right_child;
-				std::cout << " go to tmp" << std::endl;
-				tmp = node->left_child->right_child;
-
+				node_pointer tmp = node->left_child->right_child;
 				if (isLeftChild(node->parent, node))
 					node->parent->left_child = node->left_child;
 				else
 					node->parent->right_child = node->left_child;
-
-				std::cout << "node " << node->parent;
-				std::cout << " go to node->left_child->parent" << std::endl;
 				node->left_child->parent = node->parent;
-
-				std::cout << "node " << node->left_child;
-				std::cout << " go to node->parent" << std::endl;
 				node->parent = node->left_child;
-
-				std::cout << "node " << node << " go to node->parent->right_child";
-				std::cout << std::endl;
 				node->parent->right_child = node;
-
 				if (tmp)
-				{
-					std::cout << "node " << node;
-					std::cout << " go to tmp->parent" << std::endl;
 					tmp->parent = node;
-				}
-
-				std::cout << "node " << tmp ;
-				std::cout << " go to node->left_child" << std::endl;
 				node->left_child = tmp;
-
-				std::cout << "######## internal of rotRight #######" << std::endl;
 				return node;
 			}
 
 			node_pointer
 			rotLeft(node_pointer node)
 			{
-				std::cout << "######## internal of rotLeft #######" << std::endl;
-
 				node_pointer tmp = node->right_child->left_child;
 
 				if (isLeftChild(node->parent, node))
@@ -496,10 +482,6 @@ namespace ft
 				node->right_child = tmp;
 				if (tmp)
 					tmp->parent = node;
-
-				std::cout << "node->value : " << node->value << std::endl;
-				std::cout << "######## internal of rotLeft #######" << std::endl;
-
 				return node;
 			}
 
@@ -710,6 +692,8 @@ namespace ft
 			leftmost(node_pointer start_node) const
 			{
 				node_pointer head = start_node;
+				if (!head)
+					return NULL;
 				while (head->left_child)
 					head = head->left_child;
 				return head;

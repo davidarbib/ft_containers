@@ -7,8 +7,8 @@
 # define TESTED_NAMESPACE ft
 #endif
 
-/*
-int main()
+void
+RRcase(void)
 {
 	//RR case
 	ft::rbTree<int> tree;
@@ -28,13 +28,10 @@ int main()
 	tree._erase_(5);
 	tree.print_tree();
 	tree.printInOrderValues();
-
-	return 0;
 }
-*/
 
-/*
-int main()
+void
+RLcase(void)
 {
 	//RL case
 	ft::rbTree<int> tree;
@@ -52,13 +49,10 @@ int main()
 	tree._erase_(5);
 	tree.print_tree();
 	tree.printInOrderValues();
-
-	return 0;
 }
-*/
 
-/*
-int main()
+void
+LLcase()
 {
 	//LL case
 	ft::rbTree<int> tree;
@@ -78,13 +72,10 @@ int main()
 	tree._erase_(15);
 	tree.print_tree();
 	tree.printInOrderValues();
-
-	return 0;
 }
-*/
 
-/*
-int main()
+void
+LRcase(void)
 {
 	//LR case
 	ft::rbTree<int> tree;
@@ -102,13 +93,10 @@ int main()
 	tree._erase_(15);
 	tree.print_tree();
 	tree.printInOrderValues();
-
-	return 0;
 }
-*/
 
-/*
-int main()
+void
+c_case(void)
 {
 	//c) case
 	ft::rbTree<int> tree;
@@ -130,13 +118,10 @@ int main()
 	tree._erase_(10);
 	tree.print_tree();
 	tree.printInOrderValues();
-
-	return 0;
 }
-*/
 
-/*
-int main()
+void
+b_case(void)
 {
 	//b) case
 	ft::rbTree<int> tree;
@@ -164,12 +149,10 @@ int main()
 	tree._erase_(1);
 	tree.print_tree();
 	tree.printInOrderValues();
-
-	return 0;
 }
-*/
 
-int main()
+void
+complex1(void)
 {
 	//intern node, left_child exists, rightmost with left_child case
 	ft::rbTree<int> tree;
@@ -191,12 +174,10 @@ int main()
 	tree._erase_(15);
 	tree.print_tree();
 	tree.printInOrderValues();
-
-	return 0;
 }
 
-/*
-int main()
+void
+complex2(void)
 {
 	//intern node, left_child exists, rightmost without left_child case
 	ft::rbTree<int> tree;
@@ -220,13 +201,10 @@ int main()
 	tree._erase_(15);
 	tree.print_tree();
 	tree.printInOrderValues();
-
-	return 0;
 }
-*/
 
-/*
-int main()
+void
+complex3(void)
 {
 	//intern node, left_child dont exist case
 	ft::rbTree<int> tree;
@@ -244,10 +222,7 @@ int main()
 	tree._erase_(20);
 	tree.print_tree();
 	tree.printInOrderValues();
-
-	return 0;
 }
-*/
 
 /*
 int main()
@@ -258,8 +233,8 @@ int main()
 }
 */
 
-/*
-int main()
+void
+smallest_tree_all_black()
 {
 	//root node, smallest tree, all black
 	ft::rbTree<int> tree;
@@ -279,13 +254,10 @@ int main()
 	tree._erase_(10);
 	tree.print_tree();
 	tree.printInOrderValues();
-
-	return 0;
 }
-*/
 
-/*
-int main()
+void
+smallest_tree_red_leafs()
 {
 	//root node, smallest tree, red leafs
 	ft::rbTree<int> tree;
@@ -301,7 +273,72 @@ int main()
 	tree._erase_(10);
 	tree.print_tree();
 	tree.printInOrderValues();
+}
 
+void
+root_node()
+{
+	//just root node
+	ft::rbTree<int> tree;
+
+	tree.insert(10);
+	tree.print_tree();
+	
+	std::cout << "--- erase 10 ---" << std::endl;
+	tree._erase_(10);
+	tree.print_tree();
+	tree.printInOrderValues();
+}
+
+void
+root_node_one_left_erase_root()
+{
+	//just root node with one left child
+	ft::rbTree<int> tree;
+
+	tree.insert(10);
+	tree.print_tree();
+	tree.insert(5);
+	tree.print_tree();
+	
+	std::cout << "--- erase 10 ---" << std::endl;
+	tree._erase_(10);
+	tree.print_tree();
+	tree.printInOrderValues();
+}
+
+void
+root_node_one_left_erase_leaf()
+{
+	//just root node with one left child
+	ft::rbTree<int> tree;
+
+	tree.insert(10);
+	tree.print_tree();
+	tree.insert(5);
+	tree.print_tree();
+	
+	std::cout << "--- erase 5 ---" << std::endl;
+	tree._erase_(5);
+	tree.print_tree();
+	tree.printInOrderValues();
+}
+
+int main()
+{
+	RRcase();
+	//RLcase();
+	//LLcase();
+	//LRcase();
+	//c_case();
+	//b_case();
+	//complex1();
+	//complex2();
+	//complex3();
+	//smallest_tree_all_black();
+	//smallest_tree_red_leafs();
+	//root_node();
+	//root_node_one_left_erase_root();
+	//root_node_one_left_erase_leaf();
 	return 0;
 }
-*/
