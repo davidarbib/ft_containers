@@ -36,11 +36,14 @@ namespace ft
 															node_allocator_type;
 		public : 
 			rbTree()
-			: _nil(make_null_node())
+			: _nil(make_null_node()), _end_node(_nil)
 			{ }
 
 			~rbTree()
-			{ clear(_nil->right_child); }
+			{
+				clear(_nil->right_child);
+				_node_alloc.deallocate(_nil, 1);
+			}
 			
 			node_pointer
 			beginNode(void) const
@@ -51,7 +54,7 @@ namespace ft
 			{ return _end_node; }
 
 			node_pointer
-			root(void) const
+			getRoot(void) const
 			{ return _nil->right_child; }
 
 			node_pointer
@@ -83,12 +86,13 @@ namespace ft
 				new_node->red = true;
 				push_back(root, new_node, &cfg);
 				check_recolor_rotate(root, new_node, cfg);
+				_begin_node = leftmost(getRoot());
 				return new_node;
 			}
 			
 			void
 			_erase_(const_reference value)
-			{ erase(get_node_whose_value(root(), value)); }
+			{ erase(get_node_whose_value(getRoot(), value)); }
 
 			void
 			handle_left_case(node_pointer del_node)
@@ -119,17 +123,20 @@ namespace ft
 					return ;
 				}
 
-				if (moved_node != del_node->left_child)
-				{
-					moved_node->left_child = del_node->left_child;
-					del_node->left_child->parent = moved_node;
-				}
-
 				node_type v_node;
 				memset(&v_node, 0, sizeof(v_node));
 				v_node.red = false;
 				v_node.parent = moved_node->parent;
-				moved_node->parent->right_child = NULL;
+
+				if (moved_node != del_node->left_child)
+				{
+					moved_node->left_child = del_node->left_child;
+					del_node->left_child->parent = moved_node;
+					moved_node->parent->right_child = NULL;
+				}
+				else
+					moved_node->parent->left_child = &v_node;
+
 
 				if (isLeftChild(del_node->parent, del_node))
 					del_node->parent->left_child = moved_node;
@@ -145,8 +152,6 @@ namespace ft
 					moved_node->red = false;
 				else
 					resolve_double_blackness(&v_node);
-				del_node->parent = NULL;
-				destroy_node(del_node);
 			}
 			
 			void
@@ -157,25 +162,27 @@ namespace ft
 					if (!del_node->red)
 						resolve_double_blackness(del_node);
 					destroy_node(del_node);
+					_begin_node = leftmost(getRoot());
 					return ;
 				}
 				if (del_node->left_child)
 				{
 					handle_left_case(del_node);
-					return ;
-				}
-				else
-				{
-					if (isLeftChild(del_node->parent, del_node))
-						del_node->parent->left_child = del_node->right_child;
-					else
-						del_node->parent->right_child = del_node->right_child;
-					del_node->right_child->parent = del_node->parent;	
-					node_pointer moved_node = del_node->right_child;
-					balance(del_node->red, moved_node);
 					del_node->parent = NULL;
 					destroy_node(del_node);
+					_begin_node = leftmost(getRoot());
+					return ;
 				}
+				if (isLeftChild(del_node->parent, del_node))
+					del_node->parent->left_child = del_node->right_child;
+				else
+					del_node->parent->right_child = del_node->right_child;
+				del_node->right_child->parent = del_node->parent;	
+				node_pointer moved_node = del_node->right_child;
+				balance(del_node->red, moved_node);
+				del_node->parent = NULL;
+				destroy_node(del_node);
+				_begin_node = leftmost(getRoot());
 			}
 
 			void
@@ -245,7 +252,7 @@ namespace ft
 			{
 				uint8_t cfg;
 
-				if (node == root())
+				if (node == getRoot())
 				{
 					node->red = false;
 					return ;
@@ -330,6 +337,24 @@ namespace ft
 				}
 			}
 
+			void
+			printInOrderValues(void) const
+			{
+				std::cout << std::endl;
+				std::cout << "-- in order values --" << std::endl;
+				std::cout << std::endl;
+
+				node_pointer head = beginNode();
+				while (head != endNode())
+				{
+					std::cout << head->value << std::endl;
+					head = next_node(head);
+				}
+				std::cout << "---------------------" << std::endl;
+				std::cout << std::endl;
+			}
+
+
 			node_pointer//TODO move to private methods
 			sibling(node_pointer node)
 			{
@@ -393,6 +418,23 @@ namespace ft
 				if (isLeftChild(grandParent(node), node->parent))
 					return grandParent(node)->right_child;
 				return grandParent(node)->left_child;
+			}
+
+			node_pointer
+			next_node(node_pointer start_node) const
+			{
+				if (start_node->right_child)
+					return leftmost(start_node->right_child);
+				node_pointer previous = start_node;
+				node_pointer head = start_node->parent;
+				while (previous == head->right_child)
+				{
+					if (previous == head)
+						return head;
+					previous = head;
+					head = head->parent;
+				}
+				return head;
 			}
 
 			node_pointer
@@ -665,7 +707,7 @@ namespace ft
 			}
 
 			node_pointer
-			leftmost(node_pointer start_node)
+			leftmost(node_pointer start_node) const
 			{
 				node_pointer head = start_node;
 				while (head->left_child)
@@ -674,7 +716,7 @@ namespace ft
 			}
 
 			node_pointer
-			rightmost(node_pointer start_node)
+			rightmost(node_pointer start_node) const
 			{
 				node_pointer head = start_node;
 				while (head->right_child)
