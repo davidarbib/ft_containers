@@ -77,6 +77,43 @@ namespace ft
 			}
 			
 			void
+			erase(node_pointer del_node)
+			{ 
+				if (!del_node->left_child && !del_node->right_child)
+				{
+					if (!del_node->red)
+						resolve_double_blackness(del_node);
+					destroy_node(del_node);
+					_begin_node = leftmost(getRoot());
+					if (_begin_node == NULL)
+					_begin_node = _nil;
+					return ;
+				}
+				if (del_node->left_child)
+				{
+					handle_left_case(del_node);
+					del_node->parent = NULL;
+					destroy_node(del_node);
+					_begin_node = leftmost(getRoot());
+					if (_begin_node == NULL)
+					_begin_node = _nil;
+					return ;
+				}
+				if (isLeftChild(del_node->parent, del_node))
+					del_node->parent->left_child = del_node->right_child;
+				else
+					del_node->parent->right_child = del_node->right_child;
+				del_node->right_child->parent = del_node->parent;	
+				node_pointer moved_node = del_node->right_child;
+				balance(del_node->red, moved_node);
+				del_node->parent = NULL;
+				destroy_node(del_node);
+				_begin_node = leftmost(getRoot());
+				if (_begin_node == NULL)
+					_begin_node = _nil;
+			}
+
+			void
 			_erase_(const_reference value)
 			{ erase(getNodeWhoseValue(getRoot(), value)); }
 
@@ -188,43 +225,6 @@ namespace ft
 				if (_begin_node == NULL)
 					_begin_node = _nil;
 				return new_node;
-			}
-
-			void
-			erase(node_pointer del_node)
-			{ 
-				if (!del_node->left_child && !del_node->right_child)
-				{
-					if (!del_node->red)
-						resolve_double_blackness(del_node);
-					destroy_node(del_node);
-					_begin_node = leftmost(getRoot());
-					if (_begin_node == NULL)
-					_begin_node = _nil;
-					return ;
-				}
-				if (del_node->left_child)
-				{
-					handle_left_case(del_node);
-					del_node->parent = NULL;
-					destroy_node(del_node);
-					_begin_node = leftmost(getRoot());
-					if (_begin_node == NULL)
-					_begin_node = _nil;
-					return ;
-				}
-				if (isLeftChild(del_node->parent, del_node))
-					del_node->parent->left_child = del_node->right_child;
-				else
-					del_node->parent->right_child = del_node->right_child;
-				del_node->right_child->parent = del_node->parent;	
-				node_pointer moved_node = del_node->right_child;
-				balance(del_node->red, moved_node);
-				del_node->parent = NULL;
-				destroy_node(del_node);
-				_begin_node = leftmost(getRoot());
-				if (_begin_node == NULL)
-					_begin_node = _nil;
 			}
 
 			//(a)if sibling (s) black and at least one sibling child is red (r) : rotations of parent (eventually sibling pre rotation)

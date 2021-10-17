@@ -55,7 +55,7 @@ namespace ft
 
 			reference
 			operator*(void)
-			{ return static_cast<reference>(_current_ptr->pair); }
+			{ return static_cast<reference>(_current_ptr->value); }
 
 			node_pointer
 			operator->(void) const
