@@ -70,10 +70,19 @@ namespace ft
 			}
 
 			node_pointer
-			_insert_(const_reference value)
+			_insert_(const_reference value, bool *success)
 			{	
-				node_pointer new_node = createNode(value);
-				return insert(new_node);
+				*success = 0;
+				try
+				{
+					node_pointer new_node = createNode(value);
+					return insert(new_node, success);
+				}
+				catch (std::bad_alloc &e)
+				{
+					e.what();
+				}
+				return NULL;
 			}
 			
 			void
@@ -178,7 +187,6 @@ namespace ft
 				std::cout << std::endl;
 			}
 
-
 		private :
 			node_allocator_type	_node_alloc;
 			allocator_type		_alloc;
@@ -207,7 +215,7 @@ namespace ft
 			}
 
 			node_pointer
-			insert(node_pointer new_node)
+			insert(node_pointer new_node, bool *success)
 			{
 				uint8_t		cfg = 0;
 				if (_nil->right_child == NULL)
@@ -215,16 +223,17 @@ namespace ft
 					_nil->right_child = new_node;
 					new_node->red = false;
 					new_node->parent = _nil;
+					_begin_node = new_node;
 					return new_node;
 				}
 				node_pointer root = _nil->right_child;
 				new_node->red = true;
-				push_back(root, new_node, &cfg);
+				node_pointer stop_node = push_back(root, new_node, &cfg, success);
 				check_recolor_rotate(root, new_node, cfg);
 				_begin_node = leftmost(getRoot());
 				if (_begin_node == NULL)
 					_begin_node = _nil;
-				return new_node;
+				return stop_node;
 			}
 
 			//(a)if sibling (s) black and at least one sibling child is red (r) : rotations of parent (eventually sibling pre rotation)
@@ -492,9 +501,25 @@ namespace ft
 				return node;
 			}
 
-			void
-			push_back(node_pointer root, node_pointer new_node, uint8_t *cfg)
+			bool
+			isElemEqual(value_type& x, value_type& y)
+			{ return x == y; }
+
+			template <typename Key, typename Value>
+			bool
+			isElemEqual(ft::pair<const Key, Value>& x,
+						ft::pair<const Key, Value>& y)
+			{ return x.first == y.first; }
+
+			node_pointer
+			push_back(node_pointer root, node_pointer new_node,
+						uint8_t *cfg, bool *success)
 			{
+				if (isElemEqual(new_node->value, root->value))
+				{
+					*success = false;
+					return root;
+				}
 				if (new_node->value < root->value)
 				{
 					if (root->left_child == NULL)
@@ -502,10 +527,11 @@ namespace ft
 						*cfg |= LEFTCHILD;
 						root->left_child = new_node;
 						new_node->parent = root;
-						return ;
+						*success = true;
+						return new_node;
 					}
 					*cfg |= LEFTMOST;
-					push_back(root->left_child, new_node, cfg);
+					return push_back(root->left_child, new_node, cfg, success);
 				}
 				else
 				{
@@ -513,10 +539,11 @@ namespace ft
 					{	
 						root->right_child = new_node;
 						new_node->parent = root;
-						return ;
+						*success = true;
+						return new_node;
 					}
 					*cfg = 0;
-					push_back(root->right_child, new_node, cfg);
+					return push_back(root->right_child, new_node, cfg, success);
 				}
 			}
 

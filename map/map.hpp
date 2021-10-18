@@ -12,7 +12,7 @@
 #include <string.h>
 #include "rbtree.hpp"
 #include "reverse_iterator.hpp"
-#include "map_iterator.hpp"
+#include "rbtree_iterator.hpp"
 
 namespace ft
 {
@@ -33,8 +33,8 @@ namespace ft
 			typedef ft::rbTree<value_type, allocator_type>	tree_type;
     		typedef std::size_t								size_type;
     		typedef std::ptrdiff_t							difference_type;
-			typedef ft::map_iterator<value_type, false>		iterator;
-			typedef ft::map_iterator<value_type, true>		const_iterator;
+			typedef ft::rbtree_iterator<value_type, false>	iterator;
+			typedef ft::rbtree_iterator<value_type, true>	const_iterator;
 			typedef ft::reverse_iterator<iterator>			reverse_iterator;
 			typedef ft::reverse_iterator<const_iterator>	const_reverse_iterator;
 
@@ -124,7 +124,13 @@ namespace ft
 			operator[](const key_type& x);
 
 			pair<iterator, bool>
-			insert(const value_type& x);
+			insert(const value_type& x)
+			{
+				bool success;
+
+				iterator it(_tree._insert_(x, &success));
+				return ft::make_pair(it, success);
+			}
 
 			iterator
 			insert(iterator position, const value_type& x);
