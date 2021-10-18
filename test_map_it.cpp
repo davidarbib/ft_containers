@@ -10,8 +10,9 @@ int main()
 {
 	TESTED_NS::map<int, int> mp;
 	
-	std::cout << mp.insert(TESTED_NS::make_pair(4, 42)).first->first << std::endl;
+	mp.insert(TESTED_NS::make_pair(4, 42));
 	mp.insert(TESTED_NS::make_pair(1, 42));
+	mp.insert(TESTED_NS::make_pair(1, 21));
 	TESTED_NS::map<int, int>::iterator mit = mp.begin();
 
 	for (; mit != mp.end(); mit++)

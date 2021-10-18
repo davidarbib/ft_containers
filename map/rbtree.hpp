@@ -17,8 +17,8 @@
 
 namespace ft
 {
-	template <typename T, class Alloc = std::allocator<T>,
-			 	class Compare = std::less<T> >
+	template <typename T, class Compare = std::less<T>, 
+			 class EqualTo = std::equal_to<T>, class Alloc = std::allocator<T> >
 	class rbTree
 	{
 		public :
@@ -35,8 +35,11 @@ namespace ft
 			typedef typename Alloc::template rebind<node_type>::other
 															node_allocator_type;
 		public : 
-			rbTree()
-			: _nil(make_null_node()), _end_node(_nil)
+			rbTree(const EqualTo& equal = EqualTo(),
+					const Alloc& alloc = Alloc(),
+					const Compare& cmp = Compare())
+			: _equal(equal), _alloc(alloc), _cmp(cmp),
+				_nil(make_null_node()), _end_node(_nil)
 			{ }
 
 			~rbTree()
@@ -85,6 +88,12 @@ namespace ft
 				return NULL;
 			}
 			
+			/*
+			 * in this implementation of red black delete
+			 * there isnt copy of predecessor/successor
+			 * just pointers update (and eventually more rotations)
+			 * to avoid large data copy for complex_type
+			 */
 			void
 			erase(node_pointer del_node)
 			{ 
@@ -189,7 +198,9 @@ namespace ft
 
 		private :
 			node_allocator_type	_node_alloc;
+			EqualTo				_equal;
 			allocator_type		_alloc;
+			Compare				_cmp;
 			node_pointer		_nil;
 			node_pointer		_begin_node;
 			node_pointer		_end_node;
@@ -298,7 +309,7 @@ namespace ft
 			}
 
 			bool
-			isLeftChild(node_pointer parent, node_pointer child)
+			isLeftChild(node_pointer parent, node_pointer child) const
 			{
 				if (parent->left_child == child)
 					return true;
@@ -306,7 +317,7 @@ namespace ft
 			}
 
 			node_pointer
-			grandParent(node_pointer node)
+			grandParent(node_pointer node) const
 			{
 				if (node->parent == NULL)
 					return NULL;
@@ -314,7 +325,7 @@ namespace ft
 			}
 
 			node_pointer
-			uncle(node_pointer node)
+			uncle(node_pointer node) const
 			{
 				if (node->parent == NULL)
 					return NULL;
@@ -326,7 +337,7 @@ namespace ft
 			}
 
 			node_pointer
-			sibling(node_pointer node)
+			sibling(node_pointer node) const
 			{
 				if (node->parent == NULL)
 					return NULL;
@@ -336,7 +347,7 @@ namespace ft
 			}
 
 			bool
-			isSiblingBlackNephewsBlack(node_pointer node)
+			isSiblingBlackNephewsBlack(node_pointer node) const
 			{
 				if (!sibling(node)->red
 					&& isBlackNode(nephewL(node))
@@ -346,7 +357,7 @@ namespace ft
 			}
 
 			bool
-			isSiblingBlackNephewRed(node_pointer node)
+			isSiblingBlackNephewRed(node_pointer node) const
 			{
 				if (!sibling(node)->red
 					&& (isRedNode(nephewL(node))
@@ -356,7 +367,7 @@ namespace ft
 			}
 			
 			bool
-			isBlackNode(node_pointer node)
+			isBlackNode(node_pointer node) const
 			{
 				if (!node || !node->red)
 					return true;
@@ -364,17 +375,16 @@ namespace ft
 			}
 
 			bool
-			isRedNode(node_pointer node)
+			isRedNode(node_pointer node) const
 			{ return !isBlackNode(node); }
 
 			node_pointer
-			nephewL(node_pointer node)
+			nephewL(node_pointer node) const
 			{ return sibling(node)->left_child; }
 
 			node_pointer
-			nephewR(node_pointer node)
+			nephewR(node_pointer node) const
 			{ return sibling(node)->right_child; }
-
 
 			void
 			handle_left_case(node_pointer del_node)
@@ -448,7 +458,6 @@ namespace ft
 					resolve_double_blackness(moved_node);
 			}
 
-
 			node_pointer
 			next_node(node_pointer start_node) const
 			{
@@ -501,26 +510,16 @@ namespace ft
 				return node;
 			}
 
-			bool
-			isElemEqual(value_type& x, value_type& y)
-			{ return x == y; }
-
-			template <typename Key, typename Value>
-			bool
-			isElemEqual(ft::pair<const Key, Value>& x,
-						ft::pair<const Key, Value>& y)
-			{ return x.first == y.first; }
-
 			node_pointer
 			push_back(node_pointer root, node_pointer new_node,
 						uint8_t *cfg, bool *success)
 			{
-				if (isElemEqual(new_node->value, root->value))
+				if (_equal(new_node->value, root->value))
 				{
 					*success = false;
 					return root;
 				}
-				if (new_node->value < root->value)
+				if (_cmp(new_node->value, root->value))
 				{
 					if (root->left_child == NULL)
 					{	
@@ -548,7 +547,7 @@ namespace ft
 			}
 
 			node_pointer
-			get_nil(node_pointer start_node)
+			get_nil(node_pointer start_node) const
 			{
 				node_pointer head = start_node;
 
@@ -640,59 +639,6 @@ namespace ft
 				}
 				else
 					rotate_recolor_insert(new_node, cfg);
-			}
-
-			/*
-			 * in this implementation of red black delete
-			 * there isnt copy of predecessor/successor
-			 * just pointers update (and eventually more rotations)
-			 * to avoid large data copy for complex_type
-			 */
-			node_pointer
-			bst_delete(node_pointer del_node)
-			{ 
-				if (!del_node->left_child && !del_node->right_child)
-				{
-					destroy_node(del_node);
-					return NULL;
-				}
-				node_pointer moved_node; 
-				if (del_node->left_child)
-				{
-					moved_node = rightmost(del_node->left_child); 
-					node_pointer rmost_leftchild = moved_node->left_child;
-
-					if (moved_node != del_node->left_child)
-					{
-						moved_node->parent->right_child = rmost_leftchild;
-						rmost_leftchild = moved_node->parent->right_child;
-						moved_node->left_child = del_node->left_child;
-						del_node->left_child->parent = moved_node;
-					}
-
-					if (isLeftChild(del_node->parent, del_node))
-						del_node->parent->left_child = moved_node;
-					else
-						del_node->parent->right_child = moved_node;
-					moved_node->parent = del_node->parent;
-
-					moved_node->right_child = del_node->right_child;
-					if (del_node->right_child)
-						del_node->right_child->parent = moved_node;
-
-					moved_node->red = del_node->red;
-				}
-				else
-				{
-					if (isLeftChild(del_node->parent, del_node))
-						del_node->parent->left_child = del_node->right_child;
-					else
-						del_node->parent->right_child = del_node->right_child;
-					del_node->right_child->parent = del_node->parent;	
-				}
-				del_node->parent = NULL;
-				destroy_node(del_node);
-				return moved_node;
 			}
 
 			void

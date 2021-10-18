@@ -30,7 +30,8 @@ namespace ft
 			typedef typename Allocator::const_reference		const_reference;
 			typedef typename Allocator::pointer				pointer;
 			typedef typename Allocator::const_pointer		const_pointer;
-			typedef ft::rbTree<value_type, allocator_type>	tree_type;
+			typedef ft::rbTree<value_type, key_compare,
+					std::equal_to<Key>, allocator_type>		tree_type;
     		typedef std::size_t								size_type;
     		typedef std::ptrdiff_t							difference_type;
 			typedef ft::rbtree_iterator<value_type, false>	iterator;
