@@ -35,10 +35,9 @@ namespace ft
 			typedef typename Alloc::template rebind<node_type>::other
 															node_allocator_type;
 		public : 
-			rbTree(const EqualTo& equal = EqualTo(),
-					const Alloc& alloc = Alloc(),
-					const Compare& cmp = Compare())
-			: _equal(equal), _alloc(alloc), _cmp(cmp),
+			rbTree( const Compare& cmp = Compare(),
+						const Alloc& alloc = Alloc())
+			: _alloc(alloc), _cmp(cmp),
 				_nil(make_null_node()), _end_node(_nil)
 			{ }
 
@@ -198,13 +197,16 @@ namespace ft
 
 		private :
 			node_allocator_type	_node_alloc;
-			EqualTo				_equal;
 			allocator_type		_alloc;
 			Compare				_cmp;
 			node_pointer		_nil;
 			node_pointer		_begin_node;
 			node_pointer		_end_node;
 			
+			bool
+			equalTo(value_type &x, value_type &y)
+			{ return !_cmp(x, y) && !_cmp(y, x); }
+
 			node_pointer
 			createNode(const_reference value)
 			{
@@ -240,6 +242,8 @@ namespace ft
 				node_pointer root = _nil->right_child;
 				new_node->red = true;
 				node_pointer stop_node = push_back(root, new_node, &cfg, success);
+				if (!*success)
+					return stop_node;
 				check_recolor_rotate(root, new_node, cfg);
 				_begin_node = leftmost(getRoot());
 				if (_begin_node == NULL)
@@ -514,7 +518,7 @@ namespace ft
 			push_back(node_pointer root, node_pointer new_node,
 						uint8_t *cfg, bool *success)
 			{
-				if (_equal(new_node->value, root->value))
+				if (equalTo(new_node->value, root->value))
 				{
 					*success = false;
 					return root;
@@ -730,4 +734,5 @@ namespace ft
 	};
 }
 #endif
+
 

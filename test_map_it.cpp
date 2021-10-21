@@ -16,13 +16,17 @@ int main()
 	TESTED_NS::map<int, int>::iterator mit = mp.begin();
 
 	for (; mit != mp.end(); mit++)
+	{
 		std::cout << mit->first << std::endl;
+		std::cout << mit->second << std::endl;
+	}
 	
 	std::cout << "---------------------------------------" << std::endl;
 
 	for (mit = --mp.end(); mit != mp.begin(); mit--)
+	{
 		std::cout << mit->first << std::endl;
-	std::cout << mit->first << std::endl;
-
+		std::cout << mit->second << std::endl;
+	}
 	return 0;
 }

@@ -1,3 +1,9 @@
 **/*.a.out
 **/*.sw*
-
+std
+ft
+.DS_Store
+tags
+current_fix
+containers_test
+.ds*

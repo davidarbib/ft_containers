@@ -30,8 +30,6 @@ namespace ft
 			typedef typename Allocator::const_reference		const_reference;
 			typedef typename Allocator::pointer				pointer;
 			typedef typename Allocator::const_pointer		const_pointer;
-			typedef ft::rbTree<value_type, key_compare,
-					std::equal_to<Key>, allocator_type>		tree_type;
     		typedef std::size_t								size_type;
     		typedef std::ptrdiff_t							difference_type;
 			typedef ft::rbtree_iterator<value_type, false>	iterator;
@@ -54,9 +52,12 @@ namespace ft
 					{ return comp(x.first, y.first); }
 			};
 
+			typedef ft::rbTree<value_type, value_compare,
+					allocator_type>							tree_type;
+
 			map(const Compare& comp = Compare(),
 					const Allocator& = Allocator())
-			: _alloc(Allocator()), _tree(tree_type()), _size(0),
+			: _alloc(Allocator()), _tree(tree_type(value_compare(comp))), _size(0),
 				_comp(comp)
 			{
 				if (!strncmp(typeid(value_type).name(), CHAR_TYPEID, 1))
