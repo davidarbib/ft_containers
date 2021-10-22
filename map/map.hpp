@@ -11,8 +11,6 @@
 #include <functional>
 #include <string.h>
 #include "rbtree.hpp"
-#include "reverse_iterator.hpp"
-#include "rbtree_iterator.hpp"
 
 namespace ft
 {
@@ -135,7 +133,15 @@ namespace ft
 			}
 
 			iterator
-			insert(iterator position, const value_type& x);
+			insert(iterator position, const value_type& x)
+			{
+				bool success = 0;
+
+				iterator after_position = position;
+				after_position++;
+				return iterator(_tree._insert_(position.getCurrentPtr(), x,
+							&success));
+			}
 
 			template <class InputIterator>
 			void
@@ -156,7 +162,7 @@ namespace ft
 			void
 			clear()
 			{
-				clear_tree(_tree);
+				_clear_(_tree);
 				_size = 0;
 			}
 
@@ -166,7 +172,7 @@ namespace ft
 
 			value_compare
 			value_comp() const
-			{ return value_compare(); }
+			{ return value_compare(_comp); }
 
 			iterator
 			find(const key_type& x);
@@ -195,7 +201,7 @@ namespace ft
 			pair<const_iterator, const_iterator>
 			equal_range(const key_type& x) const;
 
-			tree_type //TODO delete this method before evaluation
+			tree_type& //TODO delete this method before evaluation
 			tree(void)
 			{ return _tree; }
 

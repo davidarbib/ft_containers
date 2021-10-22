@@ -4,8 +4,11 @@
 #include <iostream>
 #include <iomanip>
 #include "rbnode.hpp"
+#include "rbtree_iterator.hpp"
+#include "reverse_iterator.hpp"
 #include <stdint.h>
 #include <string.h>
+#include "print_pair.hpp"
 
 #define LEFTMOST	2
 #define LEFTCHILD	1
@@ -30,6 +33,10 @@ namespace ft
 			typedef typename Alloc::const_reference			const_reference;
 			typedef typename Alloc::pointer					pointer;
 			typedef typename Alloc::const_pointer			const_pointer;
+			typedef ft::rbtree_iterator<value_type, false>	iterator;
+			typedef ft::rbtree_iterator<value_type, true>	const_iterator;
+			typedef ft::reverse_iterator<iterator>			reverse_iterator;
+			typedef ft::reverse_iterator<const_iterator>	const_reverse_iterator;
 
 		private :
 			typedef typename Alloc::template rebind<node_type>::other
@@ -43,7 +50,7 @@ namespace ft
 
 			~rbTree()
 			{
-				clear(_nil->right_child);
+				_clear_(_nil->right_child);
 				_node_alloc.deallocate(_nil, 1);
 			}
 			
@@ -74,24 +81,52 @@ namespace ft
 			node_pointer
 			_insert_(const_reference value, bool *success)
 			{	
-				*success = 0;
+				node_pointer node = NULL;
 				try
 				{
 					node_pointer new_node = createNode(value);
-					return insert(new_node, success);
+					node = insert(new_node, success);
 				}
 				catch (std::bad_alloc &e)
 				{
 					e.what();
 				}
-				return NULL;
+				return node;
+			}
+
+			node_pointer
+			_insert_(iterator hint, const_reference value, bool *success)
+			{	
+				node_pointer node = NULL;
+				try
+				{
+					node_pointer new_node = createNode(value);
+					iterator after_hint = hint;
+					after_hint++;
+					if (hint.getCurrentPtr() == _end_node)
+						node = insert(new_node, success);
+					else if (after_hint.getCurrentPtr() != _end_node
+							&& _cmp(*hint, value) && _cmp(value, *after_hint))
+						node = directInsert(hint.getCurrentPtr(),
+											new_node, success);
+					else if (after_hint.getCurrentPtr() == _end_node
+							&& _cmp(*hint, value))
+						node = directInsert(hint.getCurrentPtr(),
+											new_node, success);
+					else
+						node = insert(new_node, success);
+				}
+				catch (std::bad_alloc &e)
+				{
+					e.what();
+				}
+				return node;
 			}
 			
 			/*
 			 * in this implementation of red black delete
 			 * there isnt copy of predecessor/successor
-			 * just pointers update (and eventually more rotations)
-			 * to avoid large data copy for complex_type
+			 * just pointers update, to avoid large data copy for complex_type
 			 */
 			void
 			erase(node_pointer del_node)
@@ -249,6 +284,37 @@ namespace ft
 				if (_begin_node == NULL)
 					_begin_node = _nil;
 				return stop_node;
+			}
+
+			node_pointer
+			directInsert(node_pointer hint, node_pointer new_node, bool *success)
+			{
+				uint8_t		cfg = 0;
+				if (hint->right_child)
+				{
+					node_pointer parent = leftmost(hint->right_child);
+					parent->left_child = new_node;		
+					new_node->parent = parent;
+					if (isLeftChild(parent->parent, parent))
+						cfg = LL;
+					else
+						cfg = RL;
+				}
+				else
+				{
+					node_pointer parent = hint;	
+					parent->right_child = new_node;
+					new_node->parent = parent;
+					if (isLeftChild(parent->parent, parent))
+						cfg = LR;
+					else
+						cfg = RR;
+				}
+				new_node->red = true;
+				*success = 1;
+				check_recolor_rotate(getRoot(), new_node, cfg);
+				_begin_node = leftmost(getRoot());
+				return new_node;
 			}
 
 			//(a)if sibling (s) black and at least one sibling child is red (r) : rotations of parent (eventually sibling pre rotation)
@@ -709,16 +775,17 @@ namespace ft
 			}
 
 			void
-			clear(node_pointer root)
+			_clear_(node_pointer root)
 			{	
 				if (root == NULL)
 					return ;
 				if (root->left_child)
-					clear(root->left_child);
+					_clear_(root->left_child);
 				if (root->right_child)
-					clear(root->right_child);
+					_clear_(root->right_child);
 				_alloc.destroy(&root->value);
 				_node_alloc.deallocate(root, 1);
+				_begin_node = _end_node;
 			}
 
 			node_pointer
