@@ -145,16 +145,41 @@ namespace ft
 
 			template <class InputIterator>
 			void
-			insert(InputIterator first, InputIterator last);
+			insert(InputIterator first, InputIterator last,
+					typename ft::enable_if<!ft::is_integral<InputIterator>::value>
+					::type* = 0)
+			{
+				bool success = 0;
+
+				InputIterator it = first;
+				for (; it != last; it++)
+					_tree._insert_(*it, &success);
+			}
 
 			void
-			erase(iterator position);
+			erase(iterator position)
+			{ _tree._erase_(position.getCurrentPtr()); }
 
 			size_type
-			erase(const key_type& x);
+			erase(const key_type& x)
+			{
+				size_type key_nbr = 1;
+
+				iterator elem_to_del = _tree.find(x);
+				if (elem_to_del == end())
+					key_nbr = 0;
+				else
+					_tree._erase_(_tree.find(x));
+				return key_nbr;
+			}
 
 			void
-			erase(iterator first, iterator last);
+			erase(iterator first, iterator last)
+			{	
+				iterator it = first;
+				for (; it != last; it++)
+			 		_tree._erase_(it.getCurrentPtr());
+			}
 
 			void
 			swap(map<Key,T,Compare,Allocator>&);
@@ -175,10 +200,12 @@ namespace ft
 			{ return value_compare(_comp); }
 
 			iterator
-			find(const key_type& x);
+			find(const key_type& x)
+			{ return iterator(_tree.find(x)); }
 
 			const_iterator
-			find(const key_type& x) const;
+			find(const key_type& x) const
+			{ return const_iterator(_tree.find(x)); }
 
 			size_type
 			count(const key_type& x) const;

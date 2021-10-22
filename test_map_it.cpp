@@ -44,10 +44,84 @@ test_insert(void)
 	mit = mp.begin();
 	for (; mit != mp.end(); mit++)
 		std::cout << mit->first << ", " << mit->second << std::endl;
+
+	std::cout << "----------range insert-------------" << std::endl;
+	
+	TESTED_NS::map<int, int> mp_dest;
+	
+	std::cout << "mp_dest before " << std::endl;
+	std::cout << std::endl;
+	mp_dest.insert(TESTED_NS::make_pair(7, 777));
+	mp_dest.insert(TESTED_NS::make_pair(0, 777));
+	mp_dest.tree().print_tree();
+	mit = mp_dest.begin();
+	for (; mit != mp_dest.end(); mit++)
+		std::cout << mit->first << ", " << mit->second << std::endl;
+
+	std::cout << "mp_dest after " << std::endl;
+	std::cout << std::endl;
+
+	mp_dest.insert(mp.begin(), mp.end());
+	mp_dest.tree().print_tree();
+	mit = mp_dest.begin();
+	for (; mit != mp_dest.end(); mit++)
+		std::cout << mit->first << ", " << mit->second << std::endl;
+}
+
+void
+test_erase()
+{
+	TESTED_NS::map<int, int> mp;
+	
+	mp.insert(TESTED_NS::make_pair(4, 42));
+	mp.insert(TESTED_NS::make_pair(1, 42));
+	mp.insert(TESTED_NS::make_pair(1, 21));
+	TESTED_NS::map<int, int>::iterator mit;
+
+	std::cout << "before erase" << std::endl;
+	std::cout << std::endl;
+	mit = mp.begin();
+	for (; mit != mp.end(); mit++)
+		std::cout << mit->first << ", " << mit->second << std::endl;
+	
+	mp.erase(mp.begin());
+
+	std::cout << "after erase" << std::endl;
+	std::cout << std::endl;
+	mit = mp.begin();
+	for (; mit != mp.end(); mit++)
+		std::cout << mit->first << ", " << mit->second << std::endl;
+
+	std::cout << std::endl;
+	std::cout << "----------range erase-----------" << std::endl;
+	std::cout << std::endl;
+	
+	mp.insert(mit, TESTED_NS::make_pair(5, 100));
+	mp.insert(mit, TESTED_NS::make_pair(7, 72));
+	mp.insert(mit, TESTED_NS::make_pair(65, 02));
+
+	std::cout << "before erase" << std::endl;
+	std::cout << std::endl;
+	mit = mp.begin();
+	for (; mit != mp.end(); mit++)
+		std::cout << mit->first << ", " << mit->second << std::endl;
+
+	mp.erase(mp.find(5), mp.find(7));
+
+	std::cout << "after erase" << std::endl;
+	std::cout << std::endl;
+	mit = mp.begin();
+	for (; mit != mp.end(); mit++)
+		std::cout << mit->first << ", " << mit->second << std::endl;
+
+
+	
+
 }
 
 int main()
 {
 	test_insert();
+	test_erase();
 	return 0;
 }

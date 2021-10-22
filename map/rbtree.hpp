@@ -21,7 +21,7 @@
 namespace ft
 {
 	template <typename T, class Compare = std::less<T>, 
-			 class EqualTo = std::equal_to<T>, class Alloc = std::allocator<T> >
+			 	class Alloc = std::allocator<T> >
 	class rbTree
 	{
 		public :
@@ -138,7 +138,7 @@ namespace ft
 					destroy_node(del_node);
 					_begin_node = leftmost(getRoot());
 					if (_begin_node == NULL)
-					_begin_node = _nil;
+						_begin_node = _nil;
 					return ;
 				}
 				if (del_node->left_child)
@@ -148,7 +148,7 @@ namespace ft
 					destroy_node(del_node);
 					_begin_node = leftmost(getRoot());
 					if (_begin_node == NULL)
-					_begin_node = _nil;
+						_begin_node = _nil;
 					return ;
 				}
 				if (isLeftChild(del_node->parent, del_node))
@@ -169,6 +169,48 @@ namespace ft
 			_erase_(const_reference value)
 			{ erase(getNodeWhoseValue(getRoot(), value)); }
 
+			void
+			_erase_(node_pointer node_to_del)
+			{ erase(node_to_del); }
+
+			node_pointer
+			find(const_reference value)
+			{
+				node_pointer node;
+
+				node = getNodeWhoseValue(getRoot(), value);
+				if (!node)
+					node = _end_node;
+				return node;
+			}
+			
+			template <typename Key, typename Value>
+			node_pointer
+			find(const Key& key,
+					typename ft::enable_if<ft::is_same<value_type,
+					ft::pair<const Key, Value> >::value>::type* = 0)
+			{
+				node_pointer node;
+
+				node = getNodeWithKey(getRoot(), key);
+				if (!node)
+					node = _end_node;
+				return node;
+			}
+
+			template <typename Key>
+			node_pointer
+			getNodeWithKey(node_pointer root, const Key& key) const
+			{
+				if (root == NULL)
+					return NULL;
+				if (root->value.first == key)
+					return root;
+				if (_cmp(key, root->value.first))
+					return getNodeWithKey(root->left_child, key);
+				return getNodeWithKey(root->right_child, key);
+			}
+			
 			#define RED "\e[0;31m"
 			#define RESET "\e[0;0m"
 
@@ -486,9 +528,10 @@ namespace ft
 				}
 
 				node_type v_node;
-				memset(&v_node, 0, sizeof(v_node));
 				v_node.red = false;
 				v_node.parent = moved_node->parent;
+				v_node.left_child = NULL;
+				v_node.right_child = NULL;
 
 				if (moved_node != del_node->left_child)
 				{
@@ -498,7 +541,6 @@ namespace ft
 				}
 				else
 					moved_node->parent->left_child = &v_node;
-
 
 				if (isLeftChild(del_node->parent, del_node))
 					del_node->parent->left_child = moved_node;
