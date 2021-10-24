@@ -51,7 +51,7 @@ namespace ft
 			};
 
 			typedef ft::rbTree<value_type, value_compare,
-					allocator_type>							tree_type;
+					key_compare, allocator_type>							tree_type;
 
 			map(const Compare& comp = Compare(),
 					const Allocator& = Allocator())
@@ -201,20 +201,26 @@ namespace ft
 
 			iterator
 			find(const key_type& x)
-			{ return iterator(_tree.find(x)); }
+			{ return iterator(_tree.find(x, mapped_type())); }
 
 			const_iterator
 			find(const key_type& x) const
-			{ return const_iterator(_tree.find(x)); }
+			{ return const_iterator(_tree.find(x, mapped_type())); }
 
 			size_type
-			count(const key_type& x) const;
+			count(const key_type& x) const
+			{
+				if (_tree.find(x, mapped_type()) != _tree.endNode())
+					return 1;
+				return 0;
 
 			iterator
-			lower_bound(const key_type& x);
+			lower_bound(const key_type& x)
+			{ return iterator(_tree.find(x, mapped_type())); }
 
 			const_iterator
-			lower_bound(const key_type& x) const;
+			lower_bound(const key_type& x) const
+			{ return const_iterator(_tree.find(x, mapped_type())); }
 
 			iterator
 			upper_bound(const key_type& x);
@@ -222,9 +228,15 @@ namespace ft
 			const_iterator
 			upper_bound(const key_type& x) const;
 
+			/*
 			pair<iterator, iterator>
-			equal_range(const key_type& x);
+			equal_range(const key_type& x)
+			{ 
+				iterator it = iterator(_tree.find(x, mapped_type()));
 
+				if (it.getCurrentPtr() != _tree.endNode())
+					return make_pair(it, it);
+			*/
 			pair<const_iterator, const_iterator>
 			equal_range(const key_type& x) const;
 

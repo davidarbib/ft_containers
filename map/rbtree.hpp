@@ -20,8 +20,8 @@
 
 namespace ft
 {
-	template <typename T, class Compare = std::less<T>, 
-			 	class Alloc = std::allocator<T> >
+	template <typename T, class Compare = std::less<T>,
+			 	class KeyCompare = std::less<T>, class Alloc = std::allocator<T> >
 	class rbTree
 	{
 		public :
@@ -42,9 +42,9 @@ namespace ft
 			typedef typename Alloc::template rebind<node_type>::other
 															node_allocator_type;
 		public : 
-			rbTree( const Compare& cmp = Compare(),
+			rbTree( const Compare& cmp = Compare(), const KeyCompare& key_cmp = KeyCompare(),
 						const Alloc& alloc = Alloc())
-			: _alloc(alloc), _cmp(cmp),
+			: _alloc(alloc), _cmp(cmp), _key_cmp(key_cmp),
 				_nil(make_null_node()), _end_node(_nil)
 			{ }
 
@@ -186,10 +186,11 @@ namespace ft
 			
 			template <typename Key, typename Value>
 			node_pointer
-			find(const Key& key,
+			find(const Key& key, Value value,
 					typename ft::enable_if<ft::is_same<value_type,
 					ft::pair<const Key, Value> >::value>::type* = 0)
 			{
+				(void)value;
 				node_pointer node;
 
 				node = getNodeWithKey(getRoot(), key);
@@ -206,7 +207,20 @@ namespace ft
 					return NULL;
 				if (root->value.first == key)
 					return root;
-				if (_cmp(key, root->value.first))
+				if (_key_cmp(key, root->value.first))
+					return getNodeWithKey(root->left_child, key);
+				return getNodeWithKey(root->right_child, key);
+			}
+
+			template <typename Key>
+			node_pointer
+			getNodeWithUpperKey(node_pointer root, const Key& key) const
+			{
+				if (root == NULL)
+					return NULL;
+				if (root->value.first == key)
+					return root;
+				if (_key_cmp(key, root->value.first))
 					return getNodeWithKey(root->left_child, key);
 				return getNodeWithKey(root->right_child, key);
 			}
@@ -276,6 +290,7 @@ namespace ft
 			node_allocator_type	_node_alloc;
 			allocator_type		_alloc;
 			Compare				_cmp;
+			KeyCompare			_key_cmp;
 			node_pointer		_nil;
 			node_pointer		_begin_node;
 			node_pointer		_end_node;
@@ -283,6 +298,11 @@ namespace ft
 			bool
 			equalTo(value_type &x, value_type &y)
 			{ return !_cmp(x, y) && !_cmp(y, x); }
+
+			template <typename Key>
+			bool
+			keyEqualTo(Key &x, Key &y)
+			{ return !_key_cmp(x, y) && !_key_cmp(y, x); }
 
 			node_pointer
 			createNode(const_reference value)
@@ -843,5 +863,3 @@ namespace ft
 	};
 }
 #endif
-
-
