@@ -7,3 +7,6 @@ tags
 current_fix
 containers_test
 .ds*
+objs
+*.dS*
+containers
