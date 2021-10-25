@@ -82,11 +82,7 @@ test_erase()
 	std::cout << std::endl;
 	mit = mp.begin();
 	for (; mit != mp.end(); mit++)
-	{
-		std::cout << "address : " << mit.getCurrentPtr() << std::endl;
-		std::cout << "pair address : " << &mit->first << std::endl;
 		std::cout << mit->first << ", " << mit->second << std::endl;
-	}
 	
 	mp.erase(mp.begin());
 
@@ -109,11 +105,7 @@ test_erase()
 	mp.tree().print_tree();
 	mit = mp.begin();
 	for (; mit != mp.end(); mit++)
-	{
-		std::cout << "address : " << mit.getCurrentPtr() << std::endl;
-		std::cout << "pair address : " << &mit->first << std::endl;
 		std::cout << mit->first << ", " << mit->second << std::endl;
-	}
 
 	mp.erase(mp.find(5), mp.find(7));
 
@@ -122,11 +114,7 @@ test_erase()
 	mp.tree().print_tree();
 	mit = mp.begin();
 	for (; mit != mp.end(); mit++)
-	{
-		std::cout << "address : " << mit.getCurrentPtr() << std::endl;
-		std::cout << "pair address : " << &mit->first << std::endl;
 		std::cout << mit->first << ", " << mit->second << std::endl;
-	}
 
 	std::cout << std::endl;
 	std::cout << "----------clear erase-----------" << std::endl;
@@ -165,11 +153,7 @@ test_erase_isolated()
 	mp.tree().print_tree();
 	mit = mp.begin();
 	for (; mit != mp.end(); mit++)
-	{
-		std::cout << "address : " << mit.getCurrentPtr() << std::endl;
-		std::cout << "pair address : " << &mit->first << std::endl;
 		std::cout << mit->first << ", " << mit->second << std::endl;
-	}
 	
 	mp.erase(mp.begin());
 
@@ -180,12 +164,32 @@ test_erase_isolated()
 		std::cout << mit->first << ", " << mit->second << std::endl;
 }
 
+void
+test_brackets_op(void)
+{
+	TESTED_NS::map<char, int> mp;
+
+	mp['a'] = 42;
+	mp['b'] = 43;
+	mp['c'] = 44;
+	mp['d'] = 45;
+
+	TESTED_NS::map<char, int>::iterator mit;
+
+	mit = mp.begin();
+	for (; mit != mp.end(); mit++)
+		std::cout << mit->first << ", " << mit->second << std::endl;
+	
+	std::cout << mp['b'] << std::endl;
+}
+
 int main()
 {
 	//test_insert();
 	//test_erase();
 	//test_clear();
-	test_erase_isolated();
+	//test_erase_isolated();
+	test_brackets_op();
 	while (1) {};
 	return 0;
 }

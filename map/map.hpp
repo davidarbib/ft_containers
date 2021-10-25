@@ -124,8 +124,13 @@ namespace ft
 			max_size() const
 			{ return _max_size; }
 
-			T&
-			operator[](const key_type& x);
+			mapped_type&
+			operator[](const key_type& x)
+			{
+				ft::pair<iterator, bool> pair
+					= insert(ft::make_pair(x, mapped_type()));
+				return pair.first->second;
+			}
 
 			pair<iterator, bool>
 			insert(const value_type& x)
