@@ -82,7 +82,11 @@ test_erase()
 	std::cout << std::endl;
 	mit = mp.begin();
 	for (; mit != mp.end(); mit++)
+	{
+		std::cout << "address : " << mit.getCurrentPtr() << std::endl;
+		std::cout << "pair address : " << &mit->first << std::endl;
 		std::cout << mit->first << ", " << mit->second << std::endl;
+	}
 	
 	mp.erase(mp.begin());
 
@@ -105,7 +109,11 @@ test_erase()
 	mp.tree().print_tree();
 	mit = mp.begin();
 	for (; mit != mp.end(); mit++)
+	{
+		std::cout << "address : " << mit.getCurrentPtr() << std::endl;
+		std::cout << "pair address : " << &mit->first << std::endl;
 		std::cout << mit->first << ", " << mit->second << std::endl;
+	}
 
 	mp.erase(mp.find(5), mp.find(7));
 
@@ -114,7 +122,11 @@ test_erase()
 	mp.tree().print_tree();
 	mit = mp.begin();
 	for (; mit != mp.end(); mit++)
+	{
+		std::cout << "address : " << mit.getCurrentPtr() << std::endl;
+		std::cout << "pair address : " << &mit->first << std::endl;
 		std::cout << mit->first << ", " << mit->second << std::endl;
+	}
 
 	std::cout << std::endl;
 	std::cout << "----------clear erase-----------" << std::endl;
@@ -128,14 +140,52 @@ test_erase()
 	mit = mp.begin();
 	for (; mit != mp.end(); mit++)
 		std::cout << mit->first << ", " << mit->second << std::endl;
-	
+}
 
+void
+test_clear()
+{
+	TESTED_NS::map<int, int> mp;
+	mp.insert(ft::make_pair(1, 1));
+	mp.erase(1);
+}
+
+void
+test_erase_isolated()
+{
+	TESTED_NS::map<int, int> mp;
 	
+	mp.insert(TESTED_NS::make_pair(4, 42));
+	mp.insert(TESTED_NS::make_pair(1, 42));
+	mp.insert(TESTED_NS::make_pair(1, 21));
+	TESTED_NS::map<int, int>::iterator mit;
+
+	std::cout << "before erase" << std::endl;
+	std::cout << std::endl;
+	mp.tree().print_tree();
+	mit = mp.begin();
+	for (; mit != mp.end(); mit++)
+	{
+		std::cout << "address : " << mit.getCurrentPtr() << std::endl;
+		std::cout << "pair address : " << &mit->first << std::endl;
+		std::cout << mit->first << ", " << mit->second << std::endl;
+	}
+	
+	mp.erase(mp.begin());
+
+	std::cout << "after erase" << std::endl;
+	std::cout << std::endl;
+	mit = mp.begin();
+	for (; mit != mp.end(); mit++)
+		std::cout << mit->first << ", " << mit->second << std::endl;
 }
 
 int main()
 {
-	test_insert();
-	test_erase();
+	//test_insert();
+	//test_erase();
+	//test_clear();
+	test_erase_isolated();
+	while (1) {};
 	return 0;
 }

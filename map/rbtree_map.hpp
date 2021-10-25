@@ -21,7 +21,8 @@
 namespace ft
 {
 	template <typename Key, typename T, class Compare = std::less<T>,
-			 	class KeyCompare = std::less<Key>, class Alloc = std::allocator<ft::pair<const Key, T> > >
+			 	class KeyCompare = std::less<Key>,
+				class Alloc = std::allocator<ft::pair<const Key, T> > >
 	class rbTreeMap
 	{
 		public :
@@ -54,7 +55,8 @@ namespace ft
 
 			~rbTreeMap()
 			{
-				_clear_(_nil->right_child);
+				std::cout << "rbtree destructor" << std::endl;
+				_clear_(getRoot());
 				_node_alloc.deallocate(_nil, 1);
 			}
 			
@@ -88,8 +90,7 @@ namespace ft
 				node_pointer node = NULL;
 				try
 				{
-					node_pointer new_node = createNode(value);
-					node = insert(new_node, success);
+					node = insert(value, success);
 				}
 				catch (std::bad_alloc &e)
 				{
@@ -104,21 +105,26 @@ namespace ft
 				node_pointer node = NULL;
 				try
 				{
-					node_pointer new_node = createNode(value);
 					iterator after_hint = hint;
 					after_hint++;
 					if (hint.getCurrentPtr() == _end_node)
-						node = insert(new_node, success);
+						node = insert(value, success);
 					else if (after_hint.getCurrentPtr() != _end_node
 							&& _cmp(*hint, value) && _cmp(value, *after_hint))
+					{
+						node_pointer new_node = createNode(value);
 						node = directInsert(hint.getCurrentPtr(),
 											new_node, success);
+					}
 					else if (after_hint.getCurrentPtr() == _end_node
 							&& _cmp(*hint, value))
+					{
+						node_pointer new_node = createNode(value);
 						node = directInsert(hint.getCurrentPtr(),
 											new_node, success);
+					}
 					else
-						node = insert(new_node, success);
+						node = insert(value, success);
 				}
 				catch (std::bad_alloc &e)
 				{
@@ -168,10 +174,6 @@ namespace ft
 				if (_begin_node == NULL)
 					_begin_node = _nil;
 			}
-
-			void
-			_erase_(const_reference value)
-			{ erase(getNodeWhoseValue(getRoot(), value)); }
 
 			void
 			_erase_(node_pointer node_to_del)
@@ -323,7 +325,7 @@ namespace ft
 			node_pointer		_end_node;
 			
 			bool
-			equalTo(value_type &x, value_type &y)
+			equalTo(const_reference x, const_reference y)
 			{ return !_cmp(x, y) && !_cmp(y, x); }
 
 			bool
@@ -340,7 +342,11 @@ namespace ft
 					node->left_child = NULL;
 					node->right_child = NULL;
 					node->parent = NULL;
+					node->red = true;
 					_alloc.construct(&node->value, value);
+					std::cout << "node : " << node << std::endl;
+					std::cout << "with value : " << node->value << "created";
+					std::cout << std::endl;
 					return node;
 				}
 				catch (std::bad_alloc &e)
@@ -351,11 +357,13 @@ namespace ft
 			}
 
 			node_pointer
-			insert(node_pointer new_node, bool *success)
+			insert(const_reference value, bool *success)
 			{
 				uint8_t		cfg = 0;
 				if (_nil->right_child == NULL)
 				{
+					*success = 1;
+					node_pointer new_node = createNode(value);
 					_nil->right_child = new_node;
 					new_node->red = false;
 					new_node->parent = _nil;
@@ -363,11 +371,10 @@ namespace ft
 					return new_node;
 				}
 				node_pointer root = _nil->right_child;
-				new_node->red = true;
-				node_pointer stop_node = push_back(root, new_node, &cfg, success);
+				node_pointer stop_node = push_back(root, value, &cfg, success);
 				if (!*success)
 					return stop_node;
-				check_recolor_rotate(root, new_node, cfg);
+				check_recolor_rotate(root, stop_node, cfg);
 				_begin_node = leftmost(getRoot());
 				if (_begin_node == NULL)
 					_begin_node = _nil;
@@ -670,38 +677,40 @@ namespace ft
 			}
 
 			node_pointer
-			push_back(node_pointer root, node_pointer new_node,
+			push_back(node_pointer root, const_reference value,
 						uint8_t *cfg, bool *success)
 			{
-				if (equalTo(new_node->value, root->value))
+				if (equalTo(value, root->value))
 				{
 					*success = false;
 					return root;
 				}
-				if (_cmp(new_node->value, root->value))
+				if (_cmp(value, root->value))
 				{
 					if (root->left_child == NULL)
 					{	
 						*cfg |= LEFTCHILD;
+						node_pointer new_node = createNode(value);
 						root->left_child = new_node;
 						new_node->parent = root;
 						*success = true;
 						return new_node;
 					}
 					*cfg |= LEFTMOST;
-					return push_back(root->left_child, new_node, cfg, success);
+					return push_back(root->left_child, value, cfg, success);
 				}
 				else
 				{
 					if (root->right_child == NULL)
 					{	
+						node_pointer new_node = createNode(value);
 						root->right_child = new_node;
 						new_node->parent = root;
 						*success = true;
 						return new_node;
 					}
 					*cfg = 0;
-					return push_back(root->right_child, new_node, cfg, success);
+					return push_back(root->right_child, value, cfg, success);
 				}
 			}
 
@@ -868,7 +877,6 @@ namespace ft
 			void
 			_clear_(node_pointer root)
 			{	
-				std::cout << "clearing rbtree" << std::endl;
 				if (root == NULL)
 					return ;
 				if (root->left_child)
@@ -888,6 +896,7 @@ namespace ft
 				null_node->parent = null_node;
 				null_node->left_child = null_node;
 				null_node->right_child = NULL;
+				std::cout << "nil address : " << null_node << std::endl;
 				return null_node;
 			}
 	};

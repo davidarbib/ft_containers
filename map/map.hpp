@@ -72,7 +72,10 @@ namespace ft
 			map(const map<Key,T,Compare,Allocator>& x);
 
 			virtual ~map()
-			{ _tree.~tree_type(); }
+			{ 
+				std::cout << "map destructor" << std::endl;
+				//_tree.~tree_type();
+			}
 
 			map<Key,T,Compare,Allocator>&
 			operator=(const map<Key,T,Compare,Allocator>& x);
@@ -170,7 +173,7 @@ namespace ft
 				if (elem_to_del == end())
 					key_nbr = 0;
 				else
-					_tree._erase_(_tree.find(x));
+					_tree._erase_(_tree.find(x).getCurrentPtr());
 				return key_nbr;
 			}
 
@@ -184,6 +187,7 @@ namespace ft
 			void
 			clear()
 			{
+				std::cout << "clearing rbtree" << std::endl;
 				_tree._clear_(_tree.getRoot());
 				_size = 0;
 			}
