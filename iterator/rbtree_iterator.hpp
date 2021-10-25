@@ -147,9 +147,11 @@ namespace ft
 			}
 
 			node_pointer
-			leftmost(node_pointer start_node)
+			leftmost(node_pointer start_node) const
 			{
 				node_pointer head = start_node;
+				if (!head)
+					return NULL;
 				while (head->left_child)
 					head = head->left_child;
 				return head;
@@ -159,6 +161,8 @@ namespace ft
 			rightmost(node_pointer start_node)
 			{
 				node_pointer head = start_node;
+				if (!head)
+					return NULL;
 				while (head->right_child)
 					head = head->right_child;
 				return head;

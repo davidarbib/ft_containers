@@ -10,7 +10,7 @@
 #include <typeinfo>
 #include <functional>
 #include <string.h>
-#include "rbtree.hpp"
+#include "rbtree_map.hpp"
 
 namespace ft
 {
@@ -50,8 +50,9 @@ namespace ft
 					{ return comp(x.first, y.first); }
 			};
 
-			typedef ft::rbTree<value_type, value_compare,
-					key_compare, allocator_type>							tree_type;
+			typedef ft::rbTreeMap<key_type, mapped_type, 
+					value_compare, key_compare,
+					allocator_type>							tree_type; 
 
 			map(const Compare& comp = Compare(),
 					const Allocator& = Allocator())
@@ -71,7 +72,7 @@ namespace ft
 			map(const map<Key,T,Compare,Allocator>& x);
 
 			virtual ~map()
-			{ }
+			{ _tree.~tree_type(); }
 
 			map<Key,T,Compare,Allocator>&
 			operator=(const map<Key,T,Compare,Allocator>& x);
@@ -175,11 +176,7 @@ namespace ft
 
 			void
 			erase(iterator first, iterator last)
-			{	
-				iterator it = first;
-				for (; it != last; it++)
-			 		_tree._erase_(it.getCurrentPtr());
-			}
+			{ _tree._erase_(first, last); }
 
 			void
 			swap(map<Key,T,Compare,Allocator>&);
@@ -187,7 +184,7 @@ namespace ft
 			void
 			clear()
 			{
-				_clear_(_tree);
+				_tree._clear_(_tree.getRoot());
 				_size = 0;
 			}
 
@@ -201,18 +198,15 @@ namespace ft
 
 			iterator
 			find(const key_type& x)
-			{ return iterator(_tree.find(x, mapped_type())); }
+			{ return _tree.find(x); }
 
 			const_iterator
 			find(const key_type& x) const
-			{ return const_iterator(_tree.find(x, mapped_type())); }
+			{ return _tree.find(x); }
 
 			size_type
 			count(const key_type& x) const
-			{
-				if (_tree.find(x, mapped_type()) != _tree.endNode())
-					return 1;
-				return 0;
+			{ return _tree.count(x); }
 
 			iterator
 			lower_bound(const key_type& x)

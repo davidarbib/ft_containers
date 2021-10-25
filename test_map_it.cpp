@@ -102,6 +102,7 @@ test_erase()
 
 	std::cout << "before erase" << std::endl;
 	std::cout << std::endl;
+	mp.tree().print_tree();
 	mit = mp.begin();
 	for (; mit != mp.end(); mit++)
 		std::cout << mit->first << ", " << mit->second << std::endl;
@@ -110,13 +111,26 @@ test_erase()
 
 	std::cout << "after erase" << std::endl;
 	std::cout << std::endl;
+	mp.tree().print_tree();
 	mit = mp.begin();
 	for (; mit != mp.end(); mit++)
 		std::cout << mit->first << ", " << mit->second << std::endl;
 
+	std::cout << std::endl;
+	std::cout << "----------clear erase-----------" << std::endl;
+	std::cout << std::endl;
 
+	mp.erase(mp.find(4), mp.end());
+
+	std::cout << "after erase" << std::endl;
+	std::cout << std::endl;
+	mp.tree().print_tree();
+	mit = mp.begin();
+	for (; mit != mp.end(); mit++)
+		std::cout << mit->first << ", " << mit->second << std::endl;
 	
 
+	
 }
 
 int main()
