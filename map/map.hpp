@@ -219,27 +219,37 @@ namespace ft
 
 			iterator
 			lower_bound(const key_type& x)
-			{ return iterator(_tree.find(x, mapped_type())); }
+			{ return _tree.find(x); }
 
 			const_iterator
 			lower_bound(const key_type& x) const
-			{ return const_iterator(_tree.find(x, mapped_type())); }
+			{ return _tree.find(x); }
 
 			iterator
-			upper_bound(const key_type& x);
+			upper_bound(const key_type& x)
+			{
+				iterator it = _tree.find(x);
+				it++;
+				return it;
+			}
 
 			const_iterator
-			upper_bound(const key_type& x) const;
+			upper_bound(const key_type& x) const
+			{
+				const_iterator it = _tree.find(x);
+				it++;
+				return it;
+			}
 
-			/*
 			pair<iterator, iterator>
 			equal_range(const key_type& x)
 			{ 
-				iterator it = iterator(_tree.find(x, mapped_type()));
+				iterator it = iterator(_tree.find(x));
 
 				if (it.getCurrentPtr() != _tree.endNode())
 					return make_pair(it, it);
-			*/
+			}
+
 			pair<const_iterator, const_iterator>
 			equal_range(const key_type& x) const;
 

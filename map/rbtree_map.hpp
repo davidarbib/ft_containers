@@ -230,6 +230,46 @@ namespace ft
 				return const_iterator(node);
 			}
 
+			iterator
+			findNext(const Key& key)
+			{
+				node_pointer node;
+
+				node = getNodeWithKeyElseNext(getRoot(), key);
+				return iterator(node);
+			}
+
+			const_iterator
+			findNext(const Key& key) const
+			{
+				node_pointer node;
+
+				node = getNodeWithKeyElseNext(getRoot(), key);
+				return const_iterator(node);
+			}
+
+			node_pointer
+			getNodeWithKeyElseNext(node_pointer root, const Key& key) const
+			{
+				if (root == NULL)
+					return NULL;
+				if (root->value.first == key)
+					return root;
+				if (_key_cmp(key, root->value.first))
+				{
+					node_pointer node
+						= getNodeWithKeyElseNext(root->left_child, key);
+					if (!node)
+						return root;
+					return node;
+				}
+				node_pointer node
+					= getNodeWithKeyElseNext(root->right_child, key);
+				if (!node)
+					return root->parent;
+				return node;
+			}
+
 			node_pointer
 			getNodeWithKey(node_pointer root, const Key& key) const
 			{
