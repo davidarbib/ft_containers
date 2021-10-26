@@ -3,6 +3,8 @@
 #include <iostream>
 #include "print_pair.hpp" //TODO delete before evaluation
 
+//#define TESTED_NS ft
+
 #ifndef TESTED_NS
 # define TESTED_NS std
 #endif
@@ -31,7 +33,6 @@ test_insert(void)
 	mit = mp.insert(mit, TESTED_NS::make_pair(5, 100));
 	std::cout << "insert return value : ";
 	std::cout << mit->first << ", " << mit->second << std::endl;
-	mp.tree().print_tree();
 	mit = mp.begin();
 	for (; mit != mp.end(); mit++)
 		std::cout << mit->first << ", " << mit->second << std::endl;
@@ -40,7 +41,6 @@ test_insert(void)
 	mit = mp.insert(mit, TESTED_NS::make_pair(3, 82));
 	std::cout << "insert return value : ";
 	std::cout << mit->first << ", " << mit->second << std::endl;
-	mp.tree().print_tree();
 	mit = mp.begin();
 	for (; mit != mp.end(); mit++)
 		std::cout << mit->first << ", " << mit->second << std::endl;
@@ -53,7 +53,6 @@ test_insert(void)
 	std::cout << std::endl;
 	mp_dest.insert(TESTED_NS::make_pair(7, 777));
 	mp_dest.insert(TESTED_NS::make_pair(0, 777));
-	mp_dest.tree().print_tree();
 	mit = mp_dest.begin();
 	for (; mit != mp_dest.end(); mit++)
 		std::cout << mit->first << ", " << mit->second << std::endl;
@@ -62,7 +61,6 @@ test_insert(void)
 	std::cout << std::endl;
 
 	mp_dest.insert(mp.begin(), mp.end());
-	mp_dest.tree().print_tree();
 	mit = mp_dest.begin();
 	for (; mit != mp_dest.end(); mit++)
 		std::cout << mit->first << ", " << mit->second << std::endl;
@@ -102,7 +100,6 @@ test_erase()
 
 	std::cout << "before erase" << std::endl;
 	std::cout << std::endl;
-	mp.tree().print_tree();
 	mit = mp.begin();
 	for (; mit != mp.end(); mit++)
 		std::cout << mit->first << ", " << mit->second << std::endl;
@@ -111,7 +108,6 @@ test_erase()
 
 	std::cout << "after erase" << std::endl;
 	std::cout << std::endl;
-	mp.tree().print_tree();
 	mit = mp.begin();
 	for (; mit != mp.end(); mit++)
 		std::cout << mit->first << ", " << mit->second << std::endl;
@@ -124,7 +120,6 @@ test_erase()
 
 	std::cout << "after erase" << std::endl;
 	std::cout << std::endl;
-	mp.tree().print_tree();
 	mit = mp.begin();
 	for (; mit != mp.end(); mit++)
 		std::cout << mit->first << ", " << mit->second << std::endl;
@@ -134,7 +129,7 @@ void
 test_clear()
 {
 	TESTED_NS::map<int, int> mp;
-	mp.insert(ft::make_pair(1, 1));
+	mp.insert(TESTED_NS::make_pair(1, 1));
 	mp.erase(1);
 }
 
@@ -150,7 +145,6 @@ test_erase_isolated()
 
 	std::cout << "before erase" << std::endl;
 	std::cout << std::endl;
-	mp.tree().print_tree();
 	mit = mp.begin();
 	for (; mit != mp.end(); mit++)
 		std::cout << mit->first << ", " << mit->second << std::endl;
@@ -183,13 +177,60 @@ test_brackets_op(void)
 	std::cout << mp['b'] << std::endl;
 }
 
+void
+test_bounds_range(void)
+{
+	std::cout << "----------------bounds--------------------" << std::endl;
+
+	TESTED_NS::map<char,int> mymap;
+	TESTED_NS::map<char,int>::iterator itlow,itup;
+
+	mymap['a']=20;
+	mymap['b']=40;
+	mymap['c']=60;
+	mymap['d']=80;
+	mymap['e']=100;
+
+	itlow=mymap.lower_bound('b');  // itlow points to b
+	itup=mymap.upper_bound('d');   // itup points to e (not d!)
+
+	mymap.erase(itlow,itup);        // erases [itlow,itup)
+
+	// print content:
+	for (TESTED_NS::map<char,int>::iterator it=mymap.begin(); it!=mymap.end(); ++it)
+		std::cout << it->first << " => " << it->second << '\n';
+
+	std::cout << "----------------equal_range--------------" << std::endl;
+
+	TESTED_NS::map<char,int> mp2;
+
+	mp2['a']=10;
+	mp2['b']=20;
+	mp2['c']=30;
+
+	TESTED_NS::pair<TESTED_NS::map<char,int>::iterator,TESTED_NS::map<char,int>::iterator> ret;
+	ret = mp2.equal_range('b');
+
+	std::cout << "lower bound points to: ";
+	std::cout << ret.first->first << " => " << ret.first->second << '\n';
+
+	std::cout << "upper bound points to: ";
+	std::cout << ret.second->first << " => " << ret.second->second << '\n';
+}
+
 int main()
 {
+#ifdef FT 
+	std::cout << "Namespace tested : ft" << std::endl;
+#else
+	std::cout << "Namespace tested : std" << std::endl;
+#endif
 	//test_insert();
 	//test_erase();
 	//test_clear();
 	//test_erase_isolated();
-	test_brackets_op();
-	while (1) {};
+	//test_brackets_op();
+	test_bounds_range();
+	//while (1) {};
 	return 0;
 }

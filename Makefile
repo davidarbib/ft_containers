@@ -6,7 +6,7 @@
 #    By: darbib <darbib@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/06 14:53:36 by darbib            #+#    #+#              #
-#    Updated: 2021/10/18 17:36:37 by darbib           ###   ########.fr        #
+#    Updated: 2021/10/26 23:32:56 by darbib           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 SHELL = /bin/zsh
@@ -33,14 +33,14 @@ ifeq ($(SANITIZE), 1)
 	CFLAGS += -fsanitize=address
 endif
 
-ifeq ($(FT), 1)
-	CFLAGS += -D TESTED_NS=ft 
-endif
-
 # ------------------------------------------------------------------------------
 
 CURRENT_FIX = test_map_it.cpp
 DEFINES = -D TEST_TREE=1
+
+ifeq ($(FT), 1)
+	DEFINES += -D TESTED_NS=ft -D FT=1
+endif
 
 # ------------------------------------------------------------------------------
 
@@ -118,7 +118,4 @@ del_mli_setup :
 
 current_fix : $(CURRENT_FIX) 
 	@echo $(MAGENTA) "build current test"  $(RESET)
-	@$(CC) $(CFLAGS) $< -o $@ $(DEFINES) $(INC) 
-	#@./$@ > ft
-	#@less ft
-	
+	$(CC) $(CFLAGS) $< -o $@ $(DEFINES) $(INC) 

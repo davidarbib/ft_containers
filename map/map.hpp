@@ -69,11 +69,15 @@ namespace ft
 			map(InputIterator first, InputIterator last,
 				const Compare& comp = Compare(), const Allocator& = Allocator());
 			
-			map(const map<Key,T,Compare,Allocator>& x);
+			/*
+			map(const map<Key,T,Compare,Allocator>& x)
+			{
+			}
+			*/
 
 			virtual ~map()
 			{ 
-				std::cout << "map destructor" << std::endl;
+				//std::cout << "map destructor" << std::endl;
 				//_tree.~tree_type();
 			}
 
@@ -192,7 +196,7 @@ namespace ft
 			void
 			clear()
 			{
-				std::cout << "clearing rbtree" << std::endl;
+				//std::cout << "clearing rbtree" << std::endl;
 				_tree._clear_(_tree.getRoot());
 				_size = 0;
 			}
@@ -243,15 +247,19 @@ namespace ft
 
 			pair<iterator, iterator>
 			equal_range(const key_type& x)
-			{ 
-				iterator it = iterator(_tree.find(x));
-
-				if (it.getCurrentPtr() != _tree.endNode())
-					return make_pair(it, it);
+			{
+				iterator low_it = lower_bound(x);
+				iterator up_it = upper_bound(x);
+				return make_pair(low_it, up_it);
 			}
 
 			pair<const_iterator, const_iterator>
-			equal_range(const key_type& x) const;
+			equal_range(const key_type& x) const
+			{ 
+				const_iterator low_it = lower_bound(x);
+				const_iterator up_it = upper_bound(x);
+				return make_pair(low_it, up_it);
+			}
 
 			tree_type& //TODO delete this method before evaluation
 			tree(void)

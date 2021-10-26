@@ -55,10 +55,16 @@ namespace ft
 
 			~rbTreeMap()
 			{
-				std::cout << "rbtree destructor" << std::endl;
+				//std::cout << "rbtree destructor" << std::endl;
 				_clear_(getRoot());
 				_node_alloc.deallocate(_nil, 1);
 			}
+			
+			/*
+			rbTreeMap(const rbTreeMap<Key, T, Compare, KeyCompare, Alloc>& src)
+			{
+			}
+			*/
 			
 			node_pointer
 			beginNode(void) const
@@ -384,9 +390,9 @@ namespace ft
 					node->parent = NULL;
 					node->red = true;
 					_alloc.construct(&node->value, value);
-					std::cout << "node : " << node << std::endl;
-					std::cout << "with value : " << node->value << "created";
-					std::cout << std::endl;
+					//std::cout << "node : " << node << std::endl;
+					//std::cout << "with value : " << node->value << "created";
+					//std::cout << std::endl;
 					return node;
 				}
 				catch (std::bad_alloc &e)
@@ -625,7 +631,7 @@ namespace ft
 				v_node.parent = moved_node->parent;
 				v_node.left_child = NULL;
 				v_node.right_child = NULL;
-				std::cout << "v_node address : " << &v_node << std::endl;
+				//std::cout << "v_node address : " << &v_node << std::endl;
 
 				if (moved_node != del_node->left_child)
 				{
@@ -936,7 +942,7 @@ namespace ft
 				null_node->parent = null_node;
 				null_node->left_child = null_node;
 				null_node->right_child = NULL;
-				std::cout << "nil address : " << null_node << std::endl;
+				//std::cout << "nil address : " << null_node << std::endl;
 				return null_node;
 			}
 	};
