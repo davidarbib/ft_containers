@@ -1,344 +1,236 @@
-#include <iostream>
-#include <map>
 #include "map.hpp"
-#include "rbtree.hpp"
+#include <map>
+#include <iostream>
+#include "print_pair.hpp" //TODO delete before evaluation
 
-#ifndef TESTED_NAMESPACE
-# define TESTED_NAMESPACE ft
+//#define TESTED_NS ft
+
+#ifndef TESTED_NS
+# define TESTED_NS std
 #endif
 
 void
-RRcase(void)
+test_insert(void)
 {
-	//RR case
-	ft::rbTree<int> tree;
-
-	tree.insert(10);
-	tree.print_tree();
-	tree.insert(5);
-	tree.print_tree();
-	tree.insert(15);
-	tree.print_tree();
-	tree.insert(12);
-	tree.print_tree();
-	tree.insert(17);
-	tree.print_tree();
-
-	std::cout << "--- erase 5 ---" << std::endl;
-	tree._erase_(5);
-	tree.print_tree();
-	tree.printInOrderValues();
-}
-
-void
-RLcase(void)
-{
-	//RL case
-	ft::rbTree<int> tree;
-
-	tree.insert(10);
-	tree.print_tree();
-	tree.insert(5);
-	tree.print_tree();
-	tree.insert(15);
-	tree.print_tree();
-	tree.insert(12);
-	tree.print_tree();
-
-	std::cout << "--- erase 5 ---" << std::endl;
-	tree._erase_(5);
-	tree.print_tree();
-	tree.printInOrderValues();
-}
-
-void
-LLcase()
-{
-	//LL case
-	ft::rbTree<int> tree;
-
-	tree.insert(10);
-	tree.print_tree();
-	tree.insert(5);
-	tree.print_tree();
-	tree.insert(15);
-	tree.print_tree();
-	tree.insert(3);
-	tree.print_tree();
-	tree.insert(6);
-	tree.print_tree();
-
-	std::cout << "--- erase 15 ---" << std::endl;
-	tree._erase_(15);
-	tree.print_tree();
-	tree.printInOrderValues();
-}
-
-void
-LRcase(void)
-{
-	//LR case
-	ft::rbTree<int> tree;
-
-	tree.insert(10);
-	tree.print_tree();
-	tree.insert(5);
-	tree.print_tree();
-	tree.insert(15);
-	tree.print_tree();
-	tree.insert(6);
-	tree.print_tree();
-
-	std::cout << "--- erase 15 ---" << std::endl;
-	tree._erase_(15);
-	tree.print_tree();
-	tree.printInOrderValues();
-}
-
-void
-c_case(void)
-{
-	//c) case
-	ft::rbTree<int> tree;
-
-	tree.insert(20);
-	tree.print_tree();
-	tree.insert(10);
-	tree.print_tree();
-	tree.insert(25);
-	tree.print_tree();
-	tree.insert(21);
-	tree.print_tree();
-	tree.insert(35);
-	tree.print_tree();
-	tree.insert(30);
-	tree.print_tree();
-
-	std::cout << "--- erase 15 ---" << std::endl;
-	tree._erase_(10);
-	tree.print_tree();
-	tree.printInOrderValues();
-}
-
-void
-b_case(void)
-{
-	//b) case
-	ft::rbTree<int> tree;
-
-	tree.insert(15);
-	tree.print_tree();
-	tree.insert(3);
-	tree.print_tree();
-	tree.insert(20);
-	tree.print_tree();
-	tree.insert(1);
-	tree.print_tree();
-	tree.insert(5);
-	tree.print_tree();
-	tree.insert(0);
-	tree.print_tree();
-	tree.insert(2);
-	tree.print_tree();
-	tree._erase_(0);
-	tree.print_tree();
-	tree._erase_(2);
-	tree.print_tree();
+	TESTED_NS::map<int, int> mp;
 	
-	std::cout << "--- erase 1 ---" << std::endl;
-	tree._erase_(1);
-	tree.print_tree();
-	tree.printInOrderValues();
+	mp.insert(TESTED_NS::make_pair(4, 42));
+	mp.insert(TESTED_NS::make_pair(1, 42));
+	mp.insert(TESTED_NS::make_pair(1, 21));
+	TESTED_NS::map<int, int>::iterator mit = mp.begin();
+	for (; mit != mp.end(); mit++)
+		std::cout << mit->first << ", " << mit->second << std::endl;
+
+	std::cout << "---------------------------------------" << std::endl;
+
+	for (mit = --mp.end(); mit != mp.begin(); mit--)
+		std::cout << mit->first << ", " << mit->second << std::endl;
+	
+	std::cout << "----------tests direct insertion-------------" << std::endl;
+
+	mit = mp.begin();
+	mit++;
+	mit = mp.insert(mit, TESTED_NS::make_pair(5, 100));
+	std::cout << "insert return value : ";
+	std::cout << mit->first << ", " << mit->second << std::endl;
+	mit = mp.begin();
+	for (; mit != mp.end(); mit++)
+		std::cout << mit->first << ", " << mit->second << std::endl;
+
+	mit = mp.begin();
+	mit = mp.insert(mit, TESTED_NS::make_pair(3, 82));
+	std::cout << "insert return value : ";
+	std::cout << mit->first << ", " << mit->second << std::endl;
+	mit = mp.begin();
+	for (; mit != mp.end(); mit++)
+		std::cout << mit->first << ", " << mit->second << std::endl;
+
+	std::cout << "----------range insert-------------" << std::endl;
+	
+	TESTED_NS::map<int, int> mp_dest;
+	
+	std::cout << "mp_dest before " << std::endl;
+	std::cout << std::endl;
+	mp_dest.insert(TESTED_NS::make_pair(7, 777));
+	mp_dest.insert(TESTED_NS::make_pair(0, 777));
+	mit = mp_dest.begin();
+	for (; mit != mp_dest.end(); mit++)
+		std::cout << mit->first << ", " << mit->second << std::endl;
+
+	std::cout << "mp_dest after " << std::endl;
+	std::cout << std::endl;
+
+	mp_dest.insert(mp.begin(), mp.end());
+	mit = mp_dest.begin();
+	for (; mit != mp_dest.end(); mit++)
+		std::cout << mit->first << ", " << mit->second << std::endl;
 }
 
 void
-complex1(void)
+test_erase()
 {
-	//intern node, left_child exists, rightmost with left_child case
-	ft::rbTree<int> tree;
-
-	tree.insert(15);
-	tree.print_tree();
-	tree.insert(5);
-	tree.print_tree();
-	tree.insert(25);
-	tree.print_tree();
-	tree.insert(3);
-	tree.print_tree();
-	tree.insert(7);
-	tree.print_tree();
-	tree.insert(6);
-	tree.print_tree();
+	TESTED_NS::map<int, int> mp;
 	
-	std::cout << "--- erase 15 ---" << std::endl;
-	tree._erase_(15);
-	tree.print_tree();
-	tree.printInOrderValues();
+	mp.insert(TESTED_NS::make_pair(4, 42));
+	mp.insert(TESTED_NS::make_pair(1, 42));
+	mp.insert(TESTED_NS::make_pair(1, 21));
+	TESTED_NS::map<int, int>::iterator mit;
+
+	std::cout << "before erase" << std::endl;
+	std::cout << std::endl;
+	mit = mp.begin();
+	for (; mit != mp.end(); mit++)
+		std::cout << mit->first << ", " << mit->second << std::endl;
+	
+	mp.erase(mp.begin());
+
+	std::cout << "after erase" << std::endl;
+	std::cout << std::endl;
+	mit = mp.begin();
+	for (; mit != mp.end(); mit++)
+		std::cout << mit->first << ", " << mit->second << std::endl;
+
+	std::cout << std::endl;
+	std::cout << "----------range erase-----------" << std::endl;
+	std::cout << std::endl;
+	
+	mp.insert(mit, TESTED_NS::make_pair(5, 100));
+	mp.insert(mit, TESTED_NS::make_pair(7, 72));
+	mp.insert(mit, TESTED_NS::make_pair(65, 02));
+
+	std::cout << "before erase" << std::endl;
+	std::cout << std::endl;
+	mit = mp.begin();
+	for (; mit != mp.end(); mit++)
+		std::cout << mit->first << ", " << mit->second << std::endl;
+
+	mp.erase(mp.find(5), mp.find(7));
+
+	std::cout << "after erase" << std::endl;
+	std::cout << std::endl;
+	mit = mp.begin();
+	for (; mit != mp.end(); mit++)
+		std::cout << mit->first << ", " << mit->second << std::endl;
+
+	std::cout << std::endl;
+	std::cout << "----------clear erase-----------" << std::endl;
+	std::cout << std::endl;
+
+	mp.erase(mp.find(4), mp.end());
+
+	std::cout << "after erase" << std::endl;
+	std::cout << std::endl;
+	mit = mp.begin();
+	for (; mit != mp.end(); mit++)
+		std::cout << mit->first << ", " << mit->second << std::endl;
 }
 
 void
-complex2(void)
+test_clear()
 {
-	//intern node, left_child exists, rightmost without left_child case
-	ft::rbTree<int> tree;
-
-	tree.insert(15);
-	tree.print_tree();
-	tree.insert(5);
-	tree.print_tree();
-	tree.insert(25);
-	tree.print_tree();
-	tree.insert(3);
-	tree.print_tree();
-	tree.insert(7);
-	tree.print_tree();
-	tree.insert(6);
-	tree.print_tree();
-	tree._erase_(6);
-	tree.print_tree();
-	
-	std::cout << "--- erase 15 ---" << std::endl;
-	tree._erase_(15);
-	tree.print_tree();
-	tree.printInOrderValues();
+	TESTED_NS::map<int, int> mp;
+	mp.insert(TESTED_NS::make_pair(1, 1));
+	mp.erase(1);
 }
 
 void
-complex3(void)
+test_erase_isolated()
 {
-	//intern node, left_child dont exist case
-	ft::rbTree<int> tree;
-
-	tree.insert(10);
-	tree.print_tree();
-	tree.insert(5);
-	tree.print_tree();
-	tree.insert(20);
-	tree.print_tree();
-	tree.insert(25);
-	tree.print_tree();
+	TESTED_NS::map<int, int> mp;
 	
-	std::cout << "--- erase 20 ---" << std::endl;
-	tree._erase_(20);
-	tree.print_tree();
-	tree.printInOrderValues();
-}
+	mp.insert(TESTED_NS::make_pair(4, 42));
+	mp.insert(TESTED_NS::make_pair(1, 42));
+	mp.insert(TESTED_NS::make_pair(1, 21));
+	TESTED_NS::map<int, int>::iterator mit;
 
-/*
-int main()
-{
-	ft::rbTree<int> tree;
-	std::cout << tree.isRedNode(NULL) << std::endl;
-	return 0;
-}
-*/
-
-void
-smallest_tree_all_black()
-{
-	//root node, smallest tree, all black
-	ft::rbTree<int> tree;
-
-	tree.insert(10);
-	tree.print_tree();
-	tree.insert(5);
-	tree.print_tree();
-	tree.insert(20);
-	tree.print_tree();
-	tree.insert(25);
-	tree.print_tree();
-	tree._erase_(25);
-	tree.print_tree();
+	std::cout << "before erase" << std::endl;
+	std::cout << std::endl;
+	mit = mp.begin();
+	for (; mit != mp.end(); mit++)
+		std::cout << mit->first << ", " << mit->second << std::endl;
 	
-	std::cout << "--- erase 10 ---" << std::endl;
-	tree._erase_(10);
-	tree.print_tree();
-	tree.printInOrderValues();
+	mp.erase(mp.begin());
+
+	std::cout << "after erase" << std::endl;
+	std::cout << std::endl;
+	mit = mp.begin();
+	for (; mit != mp.end(); mit++)
+		std::cout << mit->first << ", " << mit->second << std::endl;
 }
 
 void
-smallest_tree_red_leafs()
+test_brackets_op(void)
 {
-	//root node, smallest tree, red leafs
-	ft::rbTree<int> tree;
+	TESTED_NS::map<char, int> mp;
 
-	tree.insert(10);
-	tree.print_tree();
-	tree.insert(5);
-	tree.print_tree();
-	tree.insert(20);
-	tree.print_tree();
+	mp['a'] = 42;
+	mp['b'] = 43;
+	mp['c'] = 44;
+	mp['d'] = 45;
+
+	TESTED_NS::map<char, int>::iterator mit;
+
+	mit = mp.begin();
+	for (; mit != mp.end(); mit++)
+		std::cout << mit->first << ", " << mit->second << std::endl;
 	
-	std::cout << "--- erase 10 ---" << std::endl;
-	tree._erase_(10);
-	tree.print_tree();
-	tree.printInOrderValues();
+	std::cout << mp['b'] << std::endl;
 }
 
 void
-root_node()
+test_bounds_range(void)
 {
-	//just root node
-	ft::rbTree<int> tree;
+	std::cout << "----------------bounds--------------------" << std::endl;
 
-	tree.insert(10);
-	tree.print_tree();
-	
-	std::cout << "--- erase 10 ---" << std::endl;
-	tree._erase_(10);
-	tree.print_tree();
-	tree.printInOrderValues();
-}
+	TESTED_NS::map<char,int> mymap;
+	TESTED_NS::map<char,int>::iterator itlow,itup;
 
-void
-root_node_one_left_erase_root()
-{
-	//just root node with one left child
-	ft::rbTree<int> tree;
+	mymap['a']=20;
+	mymap['b']=40;
+	mymap['c']=60;
+	mymap['d']=80;
+	mymap['e']=100;
 
-	tree.insert(10);
-	tree.print_tree();
-	tree.insert(5);
-	tree.print_tree();
-	
-	std::cout << "--- erase 10 ---" << std::endl;
-	tree._erase_(10);
-	tree.print_tree();
-	tree.printInOrderValues();
-}
+	itlow=mymap.lower_bound('b');  // itlow points to b
+	itup=mymap.upper_bound('d');   // itup points to e (not d!)
 
-void
-root_node_one_left_erase_leaf()
-{
-	//just root node with one left child
-	ft::rbTree<int> tree;
+	mymap.erase(itlow,itup);        // erases [itlow,itup)
 
-	tree.insert(10);
-	tree.print_tree();
-	tree.insert(5);
-	tree.print_tree();
-	
-	std::cout << "--- erase 5 ---" << std::endl;
-	tree._erase_(5);
-	tree.print_tree();
-	tree.printInOrderValues();
+	// print content:
+	for (TESTED_NS::map<char,int>::iterator it=mymap.begin(); it!=mymap.end(); ++it)
+		std::cout << it->first << " => " << it->second << '\n';
+
+	std::cout << "----------------equal_range--------------" << std::endl;
+
+	TESTED_NS::map<char,int> mp2;
+
+	mp2['a']=10;
+	mp2['b']=20;
+	mp2['c']=30;
+
+	TESTED_NS::pair<TESTED_NS::map<char,int>::iterator,TESTED_NS::map<char,int>::iterator> ret;
+	ret = mp2.equal_range('b');
+
+	std::cout << "lower bound points to: ";
+	std::cout << ret.first->first << " => " << ret.first->second << '\n';
+
+	std::cout << "upper bound points to: ";
+	std::cout << ret.second->first << " => " << ret.second->second << '\n';
 }
 
 int main()
 {
-	RRcase();
-	//RLcase();
-	//LLcase();
-	//LRcase();
-	//c_case();
-	//b_case();
-	//complex1();
-	//complex2();
-	//complex3();
-	//smallest_tree_all_black();
-	//smallest_tree_red_leafs();
-	//root_node();
-	//root_node_one_left_erase_root();
-	//root_node_one_left_erase_leaf();
+#ifdef FT 
+	std::cout << "Namespace tested : ft" << std::endl;
+#else
+	std::cout << "Namespace tested : std" << std::endl;
+#endif
+	//test_insert();
+	//test_erase();
+	//test_clear();
+	//test_erase_isolated();
+	//test_brackets_op();
+	test_bounds_range();
+	//while (1) {};
 	return 0;
 }

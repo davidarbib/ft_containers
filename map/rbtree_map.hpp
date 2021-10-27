@@ -51,7 +51,12 @@ namespace ft
 						const Alloc& alloc = Alloc())
 			: _alloc(alloc), _cmp(cmp), _key_cmp(key_cmp),
 				_nil(make_null_node()), _end_node(_nil)
-			{ }
+			{ 
+				if (!strncmp(typeid(value_type).name(), CHAR_TYPEID, 1))
+					_max_size = _alloc.max_size() / 2;
+				else
+					_max_size = _alloc.max_size();
+			}
 
 			~rbTreeMap()
 			{
@@ -60,11 +65,10 @@ namespace ft
 				_node_alloc.deallocate(_nil, 1);
 			}
 			
-			/*
 			rbTreeMap(const rbTreeMap<Key, T, Compare, KeyCompare, Alloc>& src)
-			{
-			}
-			*/
+			: _alloc(src._alloc), _cmp(src._cmp), _key_cmp(src._key_cmp),
+				_nil(make_null_node()), _end_node(_nil)
+			{ duplicateTree(src.getRoot(), _nil); }
 			
 			node_pointer
 			beginNode(void) const
@@ -73,6 +77,18 @@ namespace ft
 			node_pointer
 			endNode(void) const
 			{ return _end_node; }
+
+			bool
+			empty() const
+			{ return _size == 0; }
+			
+			size_type
+			size() const
+			{ return _size; }
+
+			size_type
+			max_size() const
+			{ return _max_size; }
 
 			node_pointer
 			getRoot(void) const
@@ -139,48 +155,6 @@ namespace ft
 				return node;
 			}
 			
-			/*
-			 * in this implementation of red black delete
-			 * there isnt copy of predecessor/successor
-			 * just pointers update, to avoid large data copy for complex_type
-			 */
-			void
-			erase(node_pointer del_node)
-			{ 
-				if (!del_node->left_child && !del_node->right_child)
-				{
-					if (!del_node->red)
-						resolve_double_blackness(del_node);
-					destroy_node(del_node);
-					_begin_node = leftmost(getRoot());
-					if (_begin_node == NULL)
-						_begin_node = _nil;
-					return ;
-				}
-				if (del_node->left_child)
-				{
-					handle_left_case(del_node);
-					del_node->parent = NULL;
-					destroy_node(del_node);
-					_begin_node = leftmost(getRoot());
-					if (_begin_node == NULL)
-						_begin_node = _nil;
-					return ;
-				}
-				if (isLeftChild(del_node->parent, del_node))
-					del_node->parent->left_child = del_node->right_child;
-				else
-					del_node->parent->right_child = del_node->right_child;
-				del_node->right_child->parent = del_node->parent;	
-				node_pointer moved_node = del_node->right_child;
-				balance(del_node->red, moved_node);
-				del_node->parent = NULL;
-				destroy_node(del_node);
-				_begin_node = leftmost(getRoot());
-				if (_begin_node == NULL)
-					_begin_node = _nil;
-			}
-
 			void
 			_erase_(node_pointer node_to_del)
 			{ erase(node_to_del); }
@@ -369,6 +343,8 @@ namespace ft
 			node_pointer		_nil;
 			node_pointer		_begin_node;
 			node_pointer		_end_node;
+			size_type			_size;
+			size_type			_max_size;
 			
 			bool
 			equalTo(const_reference x, const_reference y)
@@ -377,6 +353,23 @@ namespace ft
 			bool
 			keyEqualTo(Key &x, Key &y)
 			{ return !_key_cmp(x, y) && !_key_cmp(y, x); }
+
+			void
+			duplicateTree(node_pointer root, node_pointer parent_dest_tree, bool left = false)
+			{
+				if (root)
+				{
+					node_pointer new_node = createNode(root->value);
+					new_node->parent = parent_dest_tree;
+					if (left)
+						parent_dest_tree->left_child = new_node;
+					else
+						parent_dest_tree->right_child = new_node;
+					duplicateTree(root->left_child, root, true);
+					duplicateTree(root->right_child, root, false);
+				}
+			}
+			
 
 			node_pointer
 			createNode(const_reference value)
@@ -406,6 +399,7 @@ namespace ft
 			insert(const_reference value, bool *success)
 			{
 				uint8_t		cfg = 0;
+
 				if (_nil->right_child == NULL)
 				{
 					*success = 1;
@@ -414,16 +408,19 @@ namespace ft
 					new_node->red = false;
 					new_node->parent = _nil;
 					_begin_node = new_node;
+					_size++;
 					return new_node;
 				}
 				node_pointer root = _nil->right_child;
 				node_pointer stop_node = push_back(root, value, &cfg, success);
-				if (!*success)
-					return stop_node;
-				check_recolor_rotate(root, stop_node, cfg);
-				_begin_node = leftmost(getRoot());
-				if (_begin_node == NULL)
-					_begin_node = _nil;
+				if (*success)
+				{
+					check_recolor_rotate(root, stop_node, cfg);
+					_begin_node = leftmost(getRoot());
+					if (_begin_node == NULL)
+						_begin_node = _nil;
+					_size++;
+				}
 				return stop_node;
 			}
 
@@ -431,6 +428,8 @@ namespace ft
 			directInsert(node_pointer hint, node_pointer new_node, bool *success)
 			{
 				uint8_t		cfg = 0;
+
+				_size++;
 				if (hint->right_child)
 				{
 					node_pointer parent = leftmost(hint->right_child);
@@ -457,6 +456,50 @@ namespace ft
 				_begin_node = leftmost(getRoot());
 				return new_node;
 			}
+
+			/*
+			 * in this implementation of red black delete
+			 * there isnt copy of predecessor/successor
+			 * just pointers update, to avoid large data copy for complex_type
+			 */
+			void
+			erase(node_pointer del_node)
+			{ 
+				_size--;
+				if (!del_node->left_child && !del_node->right_child)
+				{
+					if (!del_node->red)
+						resolve_double_blackness(del_node);
+					destroy_node(del_node);
+					_begin_node = leftmost(getRoot());
+					if (_begin_node == NULL)
+						_begin_node = _nil;
+					return ;
+				}
+				if (del_node->left_child)
+				{
+					handle_left_case(del_node);
+					del_node->parent = NULL;
+					destroy_node(del_node);
+					_begin_node = leftmost(getRoot());
+					if (_begin_node == NULL)
+						_begin_node = _nil;
+					return ;
+				}
+				if (isLeftChild(del_node->parent, del_node))
+					del_node->parent->left_child = del_node->right_child;
+				else
+					del_node->parent->right_child = del_node->right_child;
+				del_node->right_child->parent = del_node->parent;	
+				node_pointer moved_node = del_node->right_child;
+				balance(del_node->red, moved_node);
+				del_node->parent = NULL;
+				destroy_node(del_node);
+				_begin_node = leftmost(getRoot());
+				if (_begin_node == NULL)
+					_begin_node = _nil;
+			}
+
 
 			//(a)if sibling (s) black and at least one sibling child is red (r) : rotations of parent (eventually sibling pre rotation)
 			//	LL (s is a left child of his parent and r left child or both children are red
@@ -932,6 +975,7 @@ namespace ft
 				_alloc.destroy(&root->value);
 				_node_alloc.deallocate(root, 1);
 				_begin_node = _end_node;
+				_size = 0;
 			}
 
 			node_pointer

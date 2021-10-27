@@ -56,30 +56,20 @@ namespace ft
 
 			map(const Compare& comp = Compare(),
 					const Allocator& = Allocator())
-			: _alloc(Allocator()), _tree(tree_type(value_compare(comp))), _size(0),
+			: _tree(tree_type(value_compare(comp))),
 				_comp(comp)
-			{
-				if (!strncmp(typeid(value_type).name(), CHAR_TYPEID, 1))
-					_max_size = _alloc.max_size() / 2;
-				else
-					_max_size = _alloc.max_size();
-			}
+			{ }
 
 			template <class InputIterator>
 			map(InputIterator first, InputIterator last,
 				const Compare& comp = Compare(), const Allocator& = Allocator());
 			
-			/*
 			map(const map<Key,T,Compare,Allocator>& x)
-			{
-			}
-			*/
+			: _tree(tree_type(x._tree)), _comp(x._comp)
+			{ }
 
 			virtual ~map()
-			{ 
-				//std::cout << "map destructor" << std::endl;
-				//_tree.~tree_type();
-			}
+			{ }
 
 			map<Key,T,Compare,Allocator>&
 			operator=(const map<Key,T,Compare,Allocator>& x);
@@ -118,15 +108,15 @@ namespace ft
 
 			bool
 			empty() const
-			{ return _size == 0; }
+			{ return _tree.empty(); }
 
 			size_type
 			size() const
-			{ return _size; }
+			{ return _tree.size(); }
 
 			size_type
 			max_size() const
-			{ return _max_size; }
+			{ return _tree.max_size(); }
 
 			mapped_type&
 			operator[](const key_type& x)
@@ -152,8 +142,9 @@ namespace ft
 
 				iterator after_position = position;
 				after_position++;
-				return iterator(_tree._insert_(position.getCurrentPtr(), x,
+				iterator it = iterator(_tree._insert_(after_position.getCurrentPtr(), x,
 							&success));
+				return it;
 			}
 
 			template <class InputIterator>
@@ -195,11 +186,7 @@ namespace ft
 
 			void
 			clear()
-			{
-				//std::cout << "clearing rbtree" << std::endl;
-				_tree._clear_(_tree.getRoot());
-				_size = 0;
-			}
+			{ _tree._clear_(_tree.getRoot()); }
 
 			key_compare
 			key_comp() const
@@ -266,10 +253,7 @@ namespace ft
 			{ return _tree; }
 
 		private :
-			allocator_type		_alloc;
 			tree_type			_tree;
-			size_type			_size;
-			size_type			_max_size;
 			key_compare			_comp;
 	};
 
