@@ -197,6 +197,14 @@ test_bounds_range(void)
 	mymap['d']=80;
 	mymap['e']=100;
 
+	itlow = mymap.lower_bound('k');
+	itup = mymap.upper_bound('k');
+
+	std::cout << "results for inexistant elem :" << std::endl;
+	std::cout << itlow->first << ", " << itlow->second << std::endl;
+	std::cout << itup->first << ", " << itup->second << std::endl;
+	std::cout << "*****************************" << std::endl;
+
 	itlow=mymap.lower_bound('b');  // itlow points to b
 	itup=mymap.upper_bound('d');   // itup points to e (not d!)
 
@@ -270,6 +278,52 @@ test_ctors_assign(void)
 		std::cout << it->first << " => " << it->second << '\n';
 }
 
+void
+test_swap(void)
+{
+	TESTED_NS::map<char,int> mp1;
+	mp1['a'] = 41;
+	mp1['b'] = 51;
+	mp1['c'] = 61;
+	mp1['d'] = 71;
+	mp1['e'] = 81;
+	mp1['f'] = 91;
+
+	TESTED_NS::map<char,int> mp2;
+	mp2['a'] = 42;
+	mp2['b'] = 52;
+	mp2['c'] = 62;
+	mp2['d'] = 72;
+	mp2['e'] = 82;
+	mp2['f'] = 92;
+	
+	std::cout << "------------before swap-------------" << std::endl;
+	std::cout << std::endl;
+	for (TESTED_NS::map<char,int>::iterator it=mp1.begin();
+			it!=mp1.end(); ++it)
+		std::cout << it->first << " => " << it->second << '\n';
+
+	std::cout << std::endl;
+
+	for (TESTED_NS::map<char,int>::iterator it=mp2.begin();
+			it!=mp2.end(); ++it)
+		std::cout << it->first << " => " << it->second << '\n';
+
+	mp1.swap(mp2);
+
+	std::cout << "------------after swap-------------" << std::endl;
+	std::cout << std::endl;
+	for (TESTED_NS::map<char,int>::iterator it=mp1.begin();
+			it!=mp1.end(); ++it)
+		std::cout << it->first << " => " << it->second << '\n';
+
+	std::cout << std::endl;
+
+	for (TESTED_NS::map<char,int>::iterator it=mp2.begin();
+			it!=mp2.end(); ++it)
+		std::cout << it->first << " => " << it->second << '\n';
+}
+
 int main()
 {
 #ifdef FT 
@@ -279,11 +333,12 @@ int main()
 #endif
 	//test_insert();
 	//test_erase();
-	test_clear();
+	//test_clear();
 	//test_erase_isolated();
 	//test_brackets_op();
-	//test_bounds_range();
+	test_bounds_range();
 	//test_ctors_assign();
+	//test_swap();
 	//while (1) {};
 	return 0;
 }

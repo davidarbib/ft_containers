@@ -78,7 +78,20 @@ namespace ft
 			operator=(const map<Key,T,Compare,Allocator>& x)
 			{
 				_tree = x._tree;
+				_comp = x._comp;
 				return *this;
+			}
+
+			void
+			swap(map<Key,T,Compare,Allocator>& other)
+			{	
+				key_compare tmp_comp = this->_comp;
+				tree_type tmp_tree = this->_tree;
+
+				this->_comp = other._comp;
+				this->_tree = other._tree;
+				other._comp = tmp_comp;
+				other._tree = tmp_tree;
 			}
 
 			iterator
@@ -189,9 +202,6 @@ namespace ft
 			{ _tree._erase_(first, last); }
 
 			void
-			swap(map<Key,T,Compare,Allocator>&);
-
-			void
 			clear()
 			{ _tree._clear_(_tree.getRoot()); }
 
@@ -226,16 +236,14 @@ namespace ft
 			iterator
 			upper_bound(const key_type& x)
 			{
-				iterator it = _tree.find(x);
-				it++;
+				iterator it = _tree.findUpper(x);
 				return it;
 			}
 
 			const_iterator
 			upper_bound(const key_type& x) const
 			{
-				const_iterator it = _tree.find(x);
-				it++;
+				const_iterator it = _tree.findUpper(x);
 				return it;
 			}
 

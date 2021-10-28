@@ -226,44 +226,12 @@ namespace ft
 			}
 
 			iterator
-			findNext(const Key& key)
-			{
-				node_pointer node;
-
-				node = getNodeWithKeyElseNext(getRoot(), key);
-				return iterator(node);
-			}
+			findUpper(const Key& key)
+			{ return iterator(getNodeWithKeyGreater(getRoot(), key)); }
 
 			const_iterator
-			findNext(const Key& key) const
-			{
-				node_pointer node;
-
-				node = getNodeWithKeyElseNext(getRoot(), key);
-				return const_iterator(node);
-			}
-
-			node_pointer
-			getNodeWithKeyElseNext(node_pointer root, const Key& key) const
-			{
-				if (root == NULL)
-					return NULL;
-				if (root->value.first == key)
-					return root;
-				if (_key_cmp(key, root->value.first))
-				{
-					node_pointer node
-						= getNodeWithKeyElseNext(root->left_child, key);
-					if (!node)
-						return root;
-					return node;
-				}
-				node_pointer node
-					= getNodeWithKeyElseNext(root->right_child, key);
-				if (!node)
-					return root->parent;
-				return node;
-			}
+			findUpper(const Key& key) const
+			{ return const_iterator(getNodeWithKeyGreater(getRoot(), key)); }
 
 			node_pointer
 			getNodeWithKey(node_pointer root, const Key& key) const
@@ -278,17 +246,24 @@ namespace ft
 			}
 
 			node_pointer
-			getNodeWithUpperKey(node_pointer root, const Key& key) const
+			getNodeWithKeyGreater(node_pointer root, const Key& key) const
 			{
-				if (root == NULL)
-					return NULL;
-				if (root->value.first == key)
-					return root;
-				if (_key_cmp(key, root->value.first))
-					return getNodeWithKey(root->left_child, key);
-				return getNodeWithKey(root->right_child, key);
+				node_pointer greatest = _end_node;
+				node_pointer head = root;
+
+				while (head)
+				{
+					if (_key_cmp(key, head->value.first))
+					{
+						greatest = head;
+						head = head->left_child;
+					}
+					else
+						head = head->right_child;
+				}
+				return greatest;
 			}
-			
+
 			#define RED "\e[0;31m"
 			#define RESET "\e[0;0m"
 
