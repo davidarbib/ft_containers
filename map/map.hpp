@@ -227,11 +227,11 @@ namespace ft
 
 			iterator
 			lower_bound(const key_type& x)
-			{ return _tree.find(x); }
+			{ return _tree.findNotLess(x); }
 
 			const_iterator
 			lower_bound(const key_type& x) const
-			{ return _tree.find(x); }
+			{ return _tree.findNotLess(x); }
 
 			iterator
 			upper_bound(const key_type& x)

@@ -53,9 +53,9 @@ namespace ft
 				_nil(make_null_node()), _end_node(_nil), _size(0)
 			{ 
 				if (!strncmp(typeid(value_type).name(), CHAR_TYPEID, 1))
-					_max_size = _alloc.max_size() / 2;
+					_max_size = _node_alloc.max_size() / 2;
 				else
-					_max_size = _alloc.max_size();
+					_max_size = _node_alloc.max_size();
 			}
 
 			rbTreeMap(const rbTreeMap<Key, T, Compare, KeyCompare, Alloc>& src)
@@ -226,6 +226,14 @@ namespace ft
 			}
 
 			iterator
+			findNotLess(const Key& key)
+			{ return iterator(getNodeWithKeyNotLess(getRoot(), key)); }
+
+			const_iterator
+			findNotLess(const Key& key) const
+			{ return const_iterator(getNodeWithKeyNotLess(getRoot(), key)); }
+
+			iterator
 			findUpper(const Key& key)
 			{ return iterator(getNodeWithKeyGreater(getRoot(), key)); }
 
@@ -262,6 +270,30 @@ namespace ft
 						head = head->right_child;
 				}
 				return greatest;
+			}
+
+			node_pointer
+			getNodeWithKeyNotLess(node_pointer root, const Key& key) const
+			{
+				node_pointer notless = _end_node;
+				node_pointer head = root;
+
+				while (head)
+				{
+					if (keyEqualTo(key, head->value.first))
+					{
+						notless = head;
+						break;
+					}
+					if (_key_cmp(key, head->value.first))
+					{
+						notless = head;
+						head = head->left_child;
+					}
+					else
+						head = head->right_child;
+				}
+				return notless;
 			}
 
 			#define RED "\e[0;31m"
@@ -341,7 +373,7 @@ namespace ft
 			{ return !_cmp(x, y) && !_cmp(y, x); }
 
 			bool
-			keyEqualTo(Key &x, Key &y)
+			keyEqualTo(const Key &x, const Key &y) const
 			{ return !_key_cmp(x, y) && !_key_cmp(y, x); }
 
 			void
