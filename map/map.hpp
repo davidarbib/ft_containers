@@ -62,7 +62,10 @@ namespace ft
 
 			template <class InputIterator>
 			map(InputIterator first, InputIterator last,
-				const Compare& comp = Compare(), const Allocator& = Allocator());
+				const Compare& comp = Compare(), const Allocator& = Allocator())
+			: _tree(tree_type(value_compare(comp))),
+				_comp(comp)
+			{ insert(first, last); }
 			
 			map(const map<Key,T,Compare,Allocator>& x)
 			: _tree(tree_type(x._tree)), _comp(x._comp)
@@ -72,7 +75,11 @@ namespace ft
 			{ }
 
 			map<Key,T,Compare,Allocator>&
-			operator=(const map<Key,T,Compare,Allocator>& x);
+			operator=(const map<Key,T,Compare,Allocator>& x)
+			{
+				_tree = x._tree;
+				return *this;
+			}
 
 			iterator
 			begin()

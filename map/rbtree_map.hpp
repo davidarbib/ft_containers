@@ -50,7 +50,7 @@ namespace ft
 						const KeyCompare& key_cmp = KeyCompare(),
 						const Alloc& alloc = Alloc())
 			: _alloc(alloc), _cmp(cmp), _key_cmp(key_cmp),
-				_nil(make_null_node()), _end_node(_nil)
+				_nil(make_null_node()), _end_node(_nil), _size(0)
 			{ 
 				if (!strncmp(typeid(value_type).name(), CHAR_TYPEID, 1))
 					_max_size = _alloc.max_size() / 2;
@@ -58,17 +58,32 @@ namespace ft
 					_max_size = _alloc.max_size();
 			}
 
-			~rbTreeMap()
+			rbTreeMap(const rbTreeMap<Key, T, Compare, KeyCompare, Alloc>& src)
+			: _alloc(src._alloc), _cmp(src._cmp), _key_cmp(src._key_cmp),
+				_nil(make_null_node()), _size(src._size), _max_size(src._max_size)
+			{
+				duplicateTree(src.getRoot(), _nil);
+				_begin_node = leftmost(getRoot());
+				_end_node = _nil;
+			}
+
+			virtual ~rbTreeMap()
 			{
 				//std::cout << "rbtree destructor" << std::endl;
 				_clear_(getRoot());
 				_node_alloc.deallocate(_nil, 1);
 			}
 			
-			rbTreeMap(const rbTreeMap<Key, T, Compare, KeyCompare, Alloc>& src)
-			: _alloc(src._alloc), _cmp(src._cmp), _key_cmp(src._key_cmp),
-				_nil(make_null_node()), _end_node(_nil)
-			{ duplicateTree(src.getRoot(), _nil); }
+			rbTreeMap&
+			operator=(const rbTreeMap<Key, T, Compare, KeyCompare, Alloc>& src)
+			{
+				_clear_(getRoot());
+				duplicateTree(src.getRoot(), _nil);
+				_begin_node = leftmost(getRoot());
+				_size = src._size;
+				_max_size = src._max_size;
+				return *this;
+			}
 			
 			node_pointer
 			beginNode(void) const
@@ -355,22 +370,22 @@ namespace ft
 			{ return !_key_cmp(x, y) && !_key_cmp(y, x); }
 
 			void
-			duplicateTree(node_pointer root, node_pointer parent_dest_tree, bool left = false)
+			duplicateTree(node_pointer src_root, node_pointer parent_dest_tree, bool left = false)
 			{
-				if (root)
+				if (src_root)
 				{
-					node_pointer new_node = createNode(root->value);
+					node_pointer new_node = createNode(src_root->value);
 					new_node->parent = parent_dest_tree;
 					if (left)
 						parent_dest_tree->left_child = new_node;
 					else
 						parent_dest_tree->right_child = new_node;
-					duplicateTree(root->left_child, root, true);
-					duplicateTree(root->right_child, root, false);
+					new_node->red = src_root->red;
+					duplicateTree(src_root->left_child, new_node, true);
+					duplicateTree(src_root->right_child, new_node, false);
 				}
 			}
 			
-
 			node_pointer
 			createNode(const_reference value)
 			{

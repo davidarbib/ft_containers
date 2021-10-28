@@ -129,8 +129,14 @@ void
 test_clear()
 {
 	TESTED_NS::map<int, int> mp;
+	std::cout << mp.empty() << std::endl;
+	std::cout << mp.size() << std::endl;
 	mp.insert(TESTED_NS::make_pair(1, 1));
+	std::cout << mp.empty() << std::endl;
+	std::cout << mp.size() << std::endl;
 	mp.erase(1);
+	std::cout << mp.empty() << std::endl;
+	std::cout << mp.size() << std::endl;
 }
 
 void
@@ -218,6 +224,52 @@ test_bounds_range(void)
 	std::cout << ret.second->first << " => " << ret.second->second << '\n';
 }
 
+void
+test_ctors_assign(void)
+{
+	TESTED_NS::map<char,int> mp_src;
+	
+	mp_src['a'] = 4;
+	mp_src['b'] = 5;
+	mp_src['c'] = 6;
+	mp_src['d'] = 7;
+
+	for (TESTED_NS::map<char,int>::iterator it=mp_src.begin();
+			it!=mp_src.end(); ++it)
+		std::cout << it->first << " => " << it->second << '\n';
+
+	std::cout << "copy of map : " << std::endl;
+
+	TESTED_NS::map<char,int> mp_dest(mp_src);
+	for (TESTED_NS::map<char,int>::iterator it=mp_src.begin();
+			it!=mp_src.end(); ++it)
+		std::cout << it->first << " => " << it->second << '\n';
+
+	std::cout << "------------------range ctor----------------------" << std::endl;
+
+	TESTED_NS::map<char,int> mp_range(mp_src.begin(), mp_src.end());
+	for (TESTED_NS::map<char,int>::iterator it=mp_range.begin();
+			it!=mp_range.end(); ++it)
+		std::cout << it->first << " => " << it->second << '\n';
+	
+	std::cout << "--------------------assign----------------------" << std::endl;
+	
+	TESTED_NS::map<char,int> mp_src2;
+	
+	mp_src2['a'] = 41;
+	mp_src2['b'] = 51;
+	mp_src2['c'] = 61;
+	mp_src2['d'] = 71;
+	mp_src2['e'] = 81;
+	mp_src2['f'] = 91;
+
+	mp_dest = mp_src2;	
+
+	for (TESTED_NS::map<char,int>::iterator it=mp_src2.begin();
+			it!=mp_src2.end(); ++it)
+		std::cout << it->first << " => " << it->second << '\n';
+}
+
 int main()
 {
 #ifdef FT 
@@ -227,10 +279,11 @@ int main()
 #endif
 	//test_insert();
 	//test_erase();
-	//test_clear();
+	test_clear();
 	//test_erase_isolated();
 	//test_brackets_op();
-	test_bounds_range();
+	//test_bounds_range();
+	//test_ctors_assign();
 	//while (1) {};
 	return 0;
 }
