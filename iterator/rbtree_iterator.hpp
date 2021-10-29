@@ -17,11 +17,10 @@ namespace ft
 			typedef node_type*									node_pointer;
 
 		public :
-			typedef T											value_type;
-			typedef typename
-				ft::conditional<isconst, const T&, T&>::type	reference;
-			typedef typename
-				ft::conditional<isconst, const T*, T*>::type	pointer;
+			typedef typename											
+				ft::conditional<isconst, const T, T>::type		value_type;
+			typedef value_type&									reference;
+			typedef value_type*									pointer;
 			typedef std::ptrdiff_t								difference_type;
 			typedef ft::bidirectionnal_iterator_tag				iterator_category;
 
@@ -54,9 +53,9 @@ namespace ft
 			}
 
 			reference
-			operator*(void)
+			operator*(void) const
 			{ return static_cast<reference>(_current_ptr->value); }
-
+			
 			pointer
 			operator->(void) const
 			{ return &(_current_ptr->value); }

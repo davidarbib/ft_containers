@@ -6,7 +6,7 @@
 #    By: darbib <darbib@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/06 14:53:36 by darbib            #+#    #+#              #
-#    Updated: 2021/10/27 20:14:32 by darbib           ###   ########.fr        #
+#    Updated: 2021/10/29 18:21:10 by darbib           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 SHELL = /bin/zsh
@@ -35,7 +35,7 @@ endif
 
 # ------------------------------------------------------------------------------
 
-CURRENT_FIX = test_map.cpp
+CURRENT_FIX = test_mli.cpp
 DEFINES = -D TEST_TREE=1
 
 ifeq ($(FT), 1)

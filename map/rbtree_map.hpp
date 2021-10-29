@@ -51,12 +51,7 @@ namespace ft
 						const Alloc& alloc = Alloc())
 			: _alloc(alloc), _cmp(cmp), _key_cmp(key_cmp),
 				_nil(make_null_node()), _end_node(_nil), _size(0)
-			{ 
-				if (!strncmp(typeid(value_type).name(), CHAR_TYPEID, 1))
-					_max_size = _node_alloc.max_size() / 2;
-				else
-					_max_size = _node_alloc.max_size();
-			}
+			{ _max_size = _node_alloc.max_size(); }
 
 			rbTreeMap(const rbTreeMap<Key, T, Compare, KeyCompare, Alloc>& src)
 			: _alloc(src._alloc), _cmp(src._cmp), _key_cmp(src._key_cmp),
@@ -193,6 +188,24 @@ namespace ft
 				}
 				if (tmp)
 			 		_erase_(tmp);
+			}
+
+			void
+			_clear_(node_pointer root)
+			{	
+				std::cout << "node to delete is :  ";
+				std::cout << root->value.first << ", ";
+				std::cout << root->value.second << std::endl;
+				if (root == NULL)
+					return ;
+				if (root->left_child)
+					_clear_(root->left_child);
+				if (root->right_child)
+					_clear_(root->right_child);
+				_alloc.destroy(&root->value);
+				_node_alloc.deallocate(root, 1);
+				_begin_node = _end_node;
+				_size = 0;
 			}
 
 			size_type
@@ -983,21 +996,6 @@ namespace ft
 					head = head->parent;
 				}
 				return head;
-			}
-
-			void
-			_clear_(node_pointer root)
-			{	
-				if (root == NULL)
-					return ;
-				if (root->left_child)
-					_clear_(root->left_child);
-				if (root->right_child)
-					_clear_(root->right_child);
-				_alloc.destroy(&root->value);
-				_node_alloc.deallocate(root, 1);
-				_begin_node = _end_node;
-				_size = 0;
 			}
 
 			node_pointer
