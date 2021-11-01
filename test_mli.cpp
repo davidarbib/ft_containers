@@ -110,6 +110,8 @@ template <typename MAP, typename U>
 void	ft_erase(MAP &mp, U param)
 {
 	std::cout << "\t-- [" << iter++ << "] --" << std::endl;
+	std::cout << " tree values before erase :" << std::endl;
+	mp.tree().print_tree();
 	std::cout << "ret: " << mp.erase(param) << std::endl;
 	printSize(mp);
 }

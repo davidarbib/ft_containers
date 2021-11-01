@@ -558,7 +558,7 @@ namespace ft
 			void
 			resolve_double_blackness(node_pointer node)
 			{
-				uint8_t cfg;
+				uint8_t cfg = 99;
 
 				if (node == getRoot())
 				{
@@ -581,6 +581,7 @@ namespace ft
 					if (!isLeftChild(node->parent, sibling(node))
 						&& isRedNode(sibling(node)->right_child))
 						cfg = RR;
+					std::cout << "cfg is : " << (int)cfg << std::endl;
 					rotate_recolor_erase(sibling(node), cfg);
 					return ;
 				}
@@ -593,7 +594,7 @@ namespace ft
 						node->parent->red = false;
 					return ;
 				}
-				if (sibling(node)->red)
+				if (isRedNode(sibling(node)))
 				{
 					node_pointer old_sibling = sibling(node);
 					if (isLeftChild(node->parent, node))
@@ -647,7 +648,7 @@ namespace ft
 			bool
 			isSiblingBlackNephewsBlack(node_pointer node) const
 			{
-				if (!sibling(node)->red
+				if (isBlackNode(sibling(node))
 					&& isBlackNode(nephewL(node))
 					&& isBlackNode(nephewR(node)))
 					return true;
@@ -657,7 +658,7 @@ namespace ft
 			bool
 			isSiblingBlackNephewRed(node_pointer node) const
 			{
-				if (!sibling(node)->red
+				if (isBlackNode(sibling(node))
 					&& (isRedNode(nephewL(node))
 						|| isRedNode(nephewR(node))))
 					return true;
@@ -857,6 +858,7 @@ namespace ft
 				return head;
 			}
 
+			/*
 			void
 			rotate_recolor_erase(node_pointer sibling, uint8_t cfg)
 			{
@@ -884,7 +886,50 @@ namespace ft
 						break;
 				}
 			}
+			*/
 
+			void
+			rotate_recolor_erase(node_pointer sibling, uint8_t cfg)
+			{
+				node_pointer parent = sibling->parent;
+
+				switch (cfg)
+				{
+					case LL:
+						rotRight(parent);
+						break;
+					case LR:
+						rotLeft(sibling);
+						if (parent->red)
+							swapColor(sibling->parent, sibling);
+						rotRight(parent);
+						break;
+					case RR:
+						rotLeft(parent);
+						break;
+					case RL:
+						rotRight(sibling);
+						if (parent->red)
+							swapColor(sibling->parent, sibling);
+						rotLeft(parent);
+						break;
+				}
+				if (parent->red)
+				{
+					parent->red = false;
+					sibling->red = false;
+					sibling->parent->red = true;
+				}
+			}
+			
+			void
+			swapColor(node_pointer node1, node_pointer node2)
+			{
+				bool tmp_red = node1->red;
+				node1->red = node2->red;
+				node2->red = tmp_red;
+			}
+			
 			void
 			rotate_recolor_insert(node_pointer new_node, uint8_t cfg)
 			{
