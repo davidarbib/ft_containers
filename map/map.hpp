@@ -203,7 +203,7 @@ namespace ft
 
 			void
 			clear()
-			{ _tree._clear_(_tree.getRoot()); }
+			{ _tree._clear_(); }
 
 			key_compare
 			key_comp() const

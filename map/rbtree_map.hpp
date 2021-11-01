@@ -65,14 +65,14 @@ namespace ft
 			virtual ~rbTreeMap()
 			{
 				//std::cout << "rbtree destructor" << std::endl;
-				_clear_(getRoot());
+				_clear_();
 				_node_alloc.deallocate(_nil, 1);
 			}
 			
 			rbTreeMap&
 			operator=(const rbTreeMap<Key, T, Compare, KeyCompare, Alloc>& src)
 			{
-				_clear_(getRoot());
+				_clear_();
 				duplicateTree(src.getRoot(), _nil);
 				_begin_node = leftmost(getRoot());
 				_size = src._size;
@@ -191,21 +191,30 @@ namespace ft
 			}
 
 			void
-			_clear_(node_pointer root)
+			_clear_(void)
+			{
+				node_pointer tree_root = getRoot();
+				if (tree_root)
+					clear(tree_root);
+				_begin_node = _end_node;
+				_size = 0;
+				_nil->right_child = NULL;
+			}
+
+			void
+			clear(node_pointer root)
 			{	
-				std::cout << "node to delete is :  ";
-				std::cout << root->value.first << ", ";
-				std::cout << root->value.second << std::endl;
+			//	std::cout << "node to delete is :  ";
+			//	std::cout << root->value.first << ", ";
+			//	std::cout << root->value.second << std::endl;
 				if (root == NULL)
 					return ;
 				if (root->left_child)
-					_clear_(root->left_child);
+					clear(root->left_child);
 				if (root->right_child)
-					_clear_(root->right_child);
+					clear(root->right_child);
 				_alloc.destroy(&root->value);
 				_node_alloc.deallocate(root, 1);
-				_begin_node = _end_node;
-				_size = 0;
 			}
 
 			size_type
