@@ -204,9 +204,11 @@ namespace ft
 			void
 			clear(node_pointer root)
 			{	
-			//	std::cout << "node to delete is :  ";
-			//	std::cout << root->value.first << ", ";
-			//	std::cout << root->value.second << std::endl;
+				std::cout << "node to delete is :  ";
+				std::cout << root << std::endl;
+				std::cout << "pair address : " << &root->value << std::endl;
+				std::cout << root->value.first << ", ";
+				std::cout << root->value.second << std::endl;
 				if (root == NULL)
 					return ;
 				if (root->left_child)
@@ -220,7 +222,7 @@ namespace ft
 			size_type
 			count(const key_type& x) const
 			{
-				if (getNodeWithKey(x) != NULL) 
+				if (getNodeWithKey(getRoot(), x) != NULL) 
 					return 1;
 				return 0;
 			}
@@ -581,7 +583,7 @@ namespace ft
 					if (!isLeftChild(node->parent, sibling(node))
 						&& isRedNode(sibling(node)->right_child))
 						cfg = RR;
-					std::cout << "cfg is : " << (int)cfg << std::endl;
+					//std::cout << "cfg is : " << (int)cfg << std::endl;
 					rotate_recolor_erase(sibling(node), cfg);
 					return ;
 				}
@@ -897,28 +899,46 @@ namespace ft
 				{
 					case LL:
 						rotRight(parent);
+						sibling->left_child->red = false;
 						break;
 					case LR:
 						rotLeft(sibling);
-						if (parent->red)
-							swapColor(sibling->parent, sibling);
+						//if (isRedNode(parent))
+						swapColor(sibling->parent, sibling);
 						rotRight(parent);
+						sibling->red = false;
 						break;
 					case RR:
 						rotLeft(parent);
+						sibling->right_child->red = false;
 						break;
 					case RL:
 						rotRight(sibling);
-						if (parent->red)
-							swapColor(sibling->parent, sibling);
+						//if (isRedNode(parent))
+						swapColor(sibling->parent, sibling);
 						rotLeft(parent);
+						sibling->red = false;
 						break;
 				}
-				if (parent->red)
+				if (isRedNode(parent)
+					&& (cfg == RR || cfg == LL))
 				{
 					parent->red = false;
-					sibling->red = false;
+					sibling->red = true;
+					//std::cout << "sibling->parent value ";
+					//std::cout << sibling->parent->value.first;
+					//std::cout << ", " << sibling->parent->value.second;
+					//std::cout << std::endl;
+				}
+				if (isRedNode(parent)
+					&& (cfg == RL || cfg == LR))
+				{
+					parent->red = false;
 					sibling->parent->red = true;
+					//std::cout << "sibling->parent value ";
+					//std::cout << sibling->parent->value.first;
+					//std::cout << ", " << sibling->parent->value.second;
+					//std::cout << std::endl;
 				}
 			}
 			
