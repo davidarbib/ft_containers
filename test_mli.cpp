@@ -144,12 +144,14 @@ int		main(void)
 	ft_count(90);
 	ft_count(100);
 
-	mp.find(27)->second = "newly inserted mapped_value";
+	//mp.find(27)->second = "newly inserted mapped_value";
+	mp[27] = "newly inserted mapped_value";
 
 	printSize(mp);
 
 	TESTED_NS::map<T1, T2> const c_map(mp.begin(), mp.end());
 	std::cout << "const map.find(" << 42 << ")->second: [" << c_map.find(42)->second << "]" << std::endl;
 	std::cout << "const map.count(" << 80 << "): [" << c_map.count(80) << "]" << std::endl;
+	mp.tree().print_tree();
 	return (0);
 }

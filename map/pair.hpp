@@ -28,8 +28,11 @@ namespace ft
 		virtual
 		~pair(void)
 		{
-			this->first.~T1();
-			this->second.~T2();
+			std::cout << "pair " << this << " destruction : " << std::endl;
+			//this->first.~T1();
+			std::cout << "key destroyed" << std::endl;
+			//this->second.~T2();
+			std::cout << "mapped value destroyed" << std::endl;
 		}
 
 		pair&
@@ -77,7 +80,6 @@ namespace ft
   	pair<T1, T2>
 	make_pair(const T1& x, const T2& y)
 	{ return pair<T1, T2>(x, y); }
-
 }
 
 #endif

@@ -72,7 +72,7 @@ namespace ft
 			{ }
 
 			virtual ~map()
-			{ }
+			{std::cout << "map destruction" << std::endl; }
 
 			map<Key,T,Compare,Allocator>&
 			operator=(const map<Key,T,Compare,Allocator>& x)

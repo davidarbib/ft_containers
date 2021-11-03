@@ -204,19 +204,21 @@ namespace ft
 			void
 			clear(node_pointer root)
 			{	
-				std::cout << "node to delete is :  ";
-				std::cout << root << std::endl;
-				std::cout << "pair address : " << &root->value << std::endl;
-				std::cout << root->value.first << ", ";
-				std::cout << root->value.second << std::endl;
 				if (root == NULL)
 					return ;
 				if (root->left_child)
 					clear(root->left_child);
 				if (root->right_child)
 					clear(root->right_child);
+				std::cout << "-----------------------" << std::endl;
+				std::cout << "node to delete is :  ";
+				std::cout << root << std::endl;
+				std::cout << root->value.first << ", ";
+				std::cout << root->value.second << std::endl;
 				_alloc.destroy(&root->value);
+				std::cout << "before deallocation" << std::endl;
 				_node_alloc.deallocate(root, 1);
+				std::cout << "after deallocation" << std::endl;
 			}
 
 			size_type
