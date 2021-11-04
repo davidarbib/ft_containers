@@ -12,6 +12,7 @@
 #include <string.h>
 #include "rbtree_map.hpp"
 #include "algorithm.hpp"
+#include <algorithm>
 
 namespace ft
 {
@@ -87,7 +88,7 @@ namespace ft
 			swap(map<Key,T,Compare,Allocator>& other)
 			{	
 				this->_tree.swap(other._tree);
-				ft::swap(this->_comp, other._comp);
+				std::swap(this->_comp, other._comp);
 			}
 
 			iterator

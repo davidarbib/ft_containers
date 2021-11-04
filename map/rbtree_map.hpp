@@ -10,6 +10,7 @@
 #include <string.h>
 #include "print_pair.hpp"
 #include "algorithm.hpp"
+#include <algorithm>
 
 #define LEFTMOST	2
 #define LEFTCHILD	1
@@ -23,7 +24,7 @@ namespace ft
 {
 	template <typename Key, typename T, class Compare = std::less<T>,
 			 	class KeyCompare = std::less<Key>,
-				class Alloc = std::allocator<ft::pair<const Key, T> > >
+				class Alloc = std::allocator<std::pair<const Key, T> > >
 	class rbTreeMap
 	{
 		public :
@@ -74,13 +75,13 @@ namespace ft
 			void
 			swap(rbTreeMap<Key, T, Compare, KeyCompare, Alloc>& other)
 			{
-				ft::swap(this->_nil, other._nil);
-				ft::swap(this->_alloc, other._alloc);
-				ft::swap(this->_cmp, other._cmp);
-				ft::swap(this->_node_alloc, other._node_alloc);
-				ft::swap(this->_begin_node, other._begin_node);
-				ft::swap(this->_end_node, other._end_node);
-				ft::swap(this->_size, other._size);
+				std::swap(this->_nil, other._nil);
+				std::swap(this->_alloc, other._alloc);
+				std::swap(this->_cmp, other._cmp);
+				std::swap(this->_node_alloc, other._node_alloc);
+				std::swap(this->_begin_node, other._begin_node);
+				std::swap(this->_end_node, other._end_node);
+				std::swap(this->_size, other._size);
 			}
 
 			rbTreeMap&

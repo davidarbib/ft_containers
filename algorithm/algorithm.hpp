@@ -137,6 +137,7 @@ namespace ft
 		return true;
 	}
 
+	/*
 	template <typename T>
 	void
 	swap(T& a, T& b)
@@ -145,6 +146,7 @@ namespace ft
 		a = b;
 		b = tmp;
 	}
+	*/
 }
 
 #endif
