@@ -34,18 +34,19 @@ namespace ft
 			{ return _base_it; }
 
 			reference
-			operator*(void)
+			operator*(void) const
 			{
 				iterator_type tmp = _base_it;
-				return *--tmp;
+				tmp--;
+				return *tmp;
 			}
 
 			pointer
-			operator->(void)
+			operator->(void) const
 			{
 				iterator_type tmp = _base_it;
-				--tmp;
-				return tmp.getCurrentPtr();
+				tmp--;
+				return &(*tmp);
 			}
 			
 			reverse_iterator&
