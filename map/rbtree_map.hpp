@@ -50,7 +50,8 @@ namespace ft
 						const KeyCompare& key_cmp = KeyCompare(),
 						const Alloc& alloc = Alloc())
 			: _alloc(alloc), _cmp(cmp), _key_cmp(key_cmp),
-				_nil(make_null_node()), _end_node(_nil), _size(0)
+				_nil(make_null_node()), _begin_node(_nil), _end_node(_nil),
+				_size(0)
 			{ _max_size = _node_alloc.max_size(); }
 
 			rbTreeMap(const rbTreeMap<Key, T, Compare, KeyCompare, Alloc>& src)
@@ -137,11 +138,11 @@ namespace ft
 				node_pointer node = NULL;
 				try
 				{
+					if (hint.getCurrentPtr() == _end_node)
+						return insert(value, success);
 					iterator after_hint = hint;
 					after_hint++;
-					if (hint.getCurrentPtr() == _end_node)
-						node = insert(value, success);
-					else if (after_hint.getCurrentPtr() != _end_node
+					if (after_hint.getCurrentPtr() != _end_node
 							&& _cmp(*hint, value) && _cmp(value, *after_hint))
 					{
 						node_pointer new_node = createNode(value);
