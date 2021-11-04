@@ -27,13 +27,7 @@ namespace ft
 		
 		virtual
 		~pair(void)
-		{
-			std::cout << "pair " << this << " destruction : " << std::endl;
-			//this->first.~T1();
-			std::cout << "key destroyed" << std::endl;
-			//this->second.~T2();
-			std::cout << "mapped value destroyed" << std::endl;
-		}
+		{ }
 
 		pair&
 		operator=(const pair& pr)
