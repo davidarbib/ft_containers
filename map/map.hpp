@@ -160,10 +160,7 @@ namespace ft
 			{
 				bool success = 0;
 
-				iterator after_position = position;
-				after_position++;
-				iterator it = iterator(_tree._insert_(after_position.getCurrentPtr(), x,
-							&success));
+				iterator it = iterator(_tree._insert_(position, x, &success));
 				return it;
 			}
 
