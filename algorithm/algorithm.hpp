@@ -136,6 +136,15 @@ namespace ft
 			if (!p(*first1, *first2)) return false;
 		return true;
 	}
+
+	template <typename T>
+	void
+	swap(T& a, T& b)
+	{
+		T tmp = T(a);
+		a = b;
+		b = tmp;
+	}
 }
 
 #endif

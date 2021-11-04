@@ -86,13 +86,8 @@ namespace ft
 			void
 			swap(map<Key,T,Compare,Allocator>& other)
 			{	
-				key_compare tmp_comp = this->_comp;
-				tree_type tmp_tree = this->_tree;
-
-				this->_comp = other._comp;
-				this->_tree = other._tree;
-				other._comp = tmp_comp;
-				other._tree = tmp_tree;
+				this->_tree.swap(other._tree);
+				ft::swap(this->_comp, other._comp);
 			}
 
 			iterator

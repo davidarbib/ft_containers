@@ -9,6 +9,7 @@
 #include <stdint.h>
 #include <string.h>
 #include "print_pair.hpp"
+#include "algorithm.hpp"
 
 #define LEFTMOST	2
 #define LEFTCHILD	1
@@ -70,6 +71,18 @@ namespace ft
 				_node_alloc.deallocate(_nil, 1);
 			}
 			
+			void
+			swap(rbTreeMap<Key, T, Compare, KeyCompare, Alloc>& other)
+			{
+				ft::swap(this->_nil, other._nil);
+				ft::swap(this->_alloc, other._alloc);
+				ft::swap(this->_cmp, other._cmp);
+				ft::swap(this->_node_alloc, other._node_alloc);
+				ft::swap(this->_begin_node, other._begin_node);
+				ft::swap(this->_end_node, other._end_node);
+				ft::swap(this->_size, other._size);
+			}
+
 			rbTreeMap&
 			operator=(const rbTreeMap<Key, T, Compare, KeyCompare, Alloc>& src)
 			{
