@@ -528,6 +528,10 @@ namespace ft
 			void
 			erase(node_pointer del_node)
 			{ 
+				std::cout << "del_node value : ";
+				std::cout << del_node->value.first;
+				std::cout << ", " << del_node->value.second;
+				std::cout << std::endl;
 				node_pointer *to_nullify = NULL;
 				//std::cout << "----------------tree state before erase----------------" << std::endl;
 				//print_tree();
@@ -535,8 +539,15 @@ namespace ft
 				if (!del_node->left_child && !del_node->right_child)
 				{
 					if (!del_node->red)
+					{
+						if (isLeftChild(del_node->parent, del_node))
+							to_nullify = &del_node->parent->left_child;
+						else
+							to_nullify = &del_node->parent->right_child;
 						resolve_double_blackness(del_node, &to_nullify);
-					*to_nullify = NULL;
+					}
+					if (to_nullify)
+						*to_nullify = NULL;
 					destroy_node(del_node);
 					_begin_node = leftmost(getRoot());
 					if (_begin_node == NULL)
