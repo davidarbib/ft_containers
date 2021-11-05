@@ -187,7 +187,7 @@ namespace ft
 				if (elem_to_del == end())
 					key_nbr = 0;
 				else
-					_tree._erase_(_tree.find(x).getCurrentPtr());
+					_tree._erase_(elem_to_del.getCurrentPtr());
 				return key_nbr;
 			}
 
