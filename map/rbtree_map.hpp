@@ -72,6 +72,10 @@ namespace ft
 				_node_alloc.deallocate(_nil, 1);
 			}
 			
+			allocator_type
+			getAllocator() const
+			{ return _alloc; }
+
 			void
 			swap(rbTreeMap<Key, T, Compare, KeyCompare, Alloc>& other)
 			{
@@ -528,24 +532,22 @@ namespace ft
 			void
 			erase(node_pointer del_node)
 			{ 
-				std::cout << "del_node value : ";
-				std::cout << del_node->value.first;
-				std::cout << ", " << del_node->value.second;
-				std::cout << std::endl;
+				//std::cout << "del_node value : ";
+				//std::cout << del_node->value.first;
+				//std::cout << ", " << del_node->value.second;
+				//std::cout << std::endl;
 				node_pointer *to_nullify = NULL;
 				//std::cout << "----------------tree state before erase----------------" << std::endl;
 				//print_tree();
 				_size--;
 				if (!del_node->left_child && !del_node->right_child)
 				{
-					if (!del_node->red)
-					{
-						if (isLeftChild(del_node->parent, del_node))
-							to_nullify = &del_node->parent->left_child;
-						else
-							to_nullify = &del_node->parent->right_child;
+					if (isLeftChild(del_node->parent, del_node))
+						to_nullify = &del_node->parent->left_child;
+					else
+						to_nullify = &del_node->parent->right_child;
+					if (isBlackNode(del_node))
 						resolve_double_blackness(del_node, &to_nullify);
-					}
 					if (to_nullify)
 						*to_nullify = NULL;
 					destroy_node(del_node);

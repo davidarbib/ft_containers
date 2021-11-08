@@ -135,6 +135,10 @@ namespace ft
 			max_size() const
 			{ return _tree.max_size(); }
 
+			allocator_type
+			get_allocator() const
+			{ return _tree.getAllocator(); }
+
 			mapped_type&
 			operator[](const key_type& x)
 			{
@@ -265,6 +269,17 @@ namespace ft
 			tree_type			_tree;
 			key_compare			_comp;
 	};
+
+			void
+			swap(map<Key,T,Compare,Allocator>& other)
+			{	
+				this->_tree.swap(other._tree);
+				std::swap(this->_comp, other._comp);
+			}
+
+	template <class Key, class T, class Compare, class Alloc>
+  	void swap (map<Key,T,Compare,Alloc>& lhs, map<Key,T,Compare,Alloc>& rhs)
+	{ lhs.swap(rhs); }
 
 	template <class Key, class T, class Compare, class Allocator>
 	bool operator==(const map<Key,T,Compare,Allocator>& lhs,

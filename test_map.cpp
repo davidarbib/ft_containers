@@ -331,13 +331,13 @@ int main()
 #else
 	std::cout << "Namespace tested : std" << std::endl;
 #endif
-	//test_insert();
-	//test_erase();
+	test_insert();
+	test_erase();
 	//test_clear();
 	//test_erase_isolated();
 	//test_brackets_op();
 	test_bounds_range();
-	//test_ctors_assign();
+	test_ctors_assign();
 	//test_swap();
 	//while (1) {};
 	return 0;
