@@ -558,7 +558,10 @@ namespace ft
 				}
 				if (del_node->left_child)
 				{
+					//fix 
 					handle_left_case(del_node, &to_nullify);
+					if (to_nullify)
+						*to_nullify = NULL;
 					destroy_node(del_node);
 					_begin_node = leftmost(getRoot());
 					if (_begin_node == NULL)
@@ -578,6 +581,48 @@ namespace ft
 					_begin_node = _nil;
 			}
 
+			void
+			s_black_n_red_case(node_pointer node, node_pointer** to_nullify)
+			{
+				uint8_t cfg = 99;
+
+				if (isLeftChild(node->parent, sibling(node))
+						&& isRedNode(sibling(node)->left_child))
+					cfg = LL;
+				if (isLeftChild(node->parent, sibling(node))
+						&& isRedNode(sibling(node)->right_child)
+						&& isBlackNode(sibling(node)->left_child))
+					cfg = LR;
+				if (!isLeftChild(node->parent, sibling(node))
+						&& isRedNode(sibling(node)->left_child)
+						&& isBlackNode(sibling(node)->right_child))
+					cfg = RL;
+				if (!isLeftChild(node->parent, sibling(node))
+						&& isRedNode(sibling(node)->right_child))
+					cfg = RR;
+				//std::cout << "cfg is : " << (int)cfg << std::endl;
+				rotate_recolor_erase(sibling(node), cfg, to_nullify);
+			}
+
+			void
+			s_red_case(node_pointer node)
+			{
+				node_pointer old_sibling = sibling(node);
+				if (isLeftChild(node->parent, node))
+					rotLeft(node->parent);
+				else
+					rotRight(node->parent);
+				node->parent->red = !node->parent->red;
+				old_sibling->red = !old_sibling->red;
+			}
+
+			/*
+			void
+			s_black_n_black(node_pointer node)
+			{
+			}
+			*/
+
 			//(a)if sibling (s) black and at least one sibling child is red (r) : rotations of parent (eventually sibling pre rotation)
 			//	LL (s is a left child of his parent and r left child or both children are red
 			//	LR (s is left, r right)
@@ -591,8 +636,6 @@ namespace ft
 			void
 			resolve_double_blackness(node_pointer node, node_pointer** to_nullify)
 			{
-				uint8_t cfg = 99;
-
 				if (node == getRoot())
 				{
 					node->red = false;
@@ -600,22 +643,7 @@ namespace ft
 				}
 				if (isSiblingBlackNephewRed(node))
 				{
-					if (isLeftChild(node->parent, sibling(node))
-						&& isRedNode(sibling(node)->left_child))
-						cfg = LL;
-					if (isLeftChild(node->parent, sibling(node))
-						&& isRedNode(sibling(node)->right_child)
-						&& isBlackNode(sibling(node)->left_child))
-						cfg = LR;
-					if (!isLeftChild(node->parent, sibling(node))
-						&& isRedNode(sibling(node)->left_child)
-						&& isBlackNode(sibling(node)->right_child))
-						cfg = RL;
-					if (!isLeftChild(node->parent, sibling(node))
-						&& isRedNode(sibling(node)->right_child))
-						cfg = RR;
-					//std::cout << "cfg is : " << (int)cfg << std::endl;
-					rotate_recolor_erase(sibling(node), cfg, to_nullify);
+					s_black_n_red_case(node, to_nullify);
 					return ;
 				}
 				if (isSiblingBlackNephewsBlack(node))
@@ -635,13 +663,7 @@ namespace ft
 				}
 				if (isRedNode(sibling(node)))
 				{
-					node_pointer old_sibling = sibling(node);
-					if (isLeftChild(node->parent, node))
-						rotLeft(node->parent);
-					else
-						rotRight(node->parent);
-					node->parent->red = !node->parent->red;
-					old_sibling->red = !old_sibling->red;
+					s_red_case(node);
 					resolve_double_blackness(node, to_nullify);
 				}
 			}

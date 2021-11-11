@@ -9,6 +9,14 @@
 # define TESTED_NS std
 #endif
 
+template <class Key, class T>
+void	print(TESTED_NS::map<Key, T>& lst)
+{
+	for (typename TESTED_NS::map<Key, T>::iterator it = lst.begin();
+			it != lst.end(); it++)
+		std::cout << it->first << " => " << it->second << '\n';
+}
+
 void
 test_insert(void)
 {
@@ -324,6 +332,37 @@ test_swap(void)
 		std::cout << it->first << " => " << it->second << '\n';
 }
 
+int test_erase_hbaudet()
+{
+	TESTED_NS::map<char,int> mymap;
+	TESTED_NS::map<char,int>::iterator it;
+
+	// insert some values:
+	mymap['a']=10;
+	mymap['b']=20;
+	mymap['c']=30;
+	mymap['d']=40;
+	mymap['e']=50;
+	mymap['f']=60;
+
+	it=mymap.find('b');
+	std::cout << "found b\n";
+	mymap.erase (it);                   // erasing by iterator
+	std::cout << "erase iterator to b\n";
+	mymap.erase ('c');                  // erasing by key
+	std::cout << "erase by key 'c'\n";
+	it=mymap.find ('e');
+	std::cout << "erase by range 'e' to end\n";
+	mymap.erase ( it, mymap.end() );    // erasing by range
+
+	std::cout << " display :\n";
+	// show content:
+	for (it=mymap.begin(); it!=mymap.end(); ++it)
+		std::cout << it->first << " => " << it->second << '\n';
+
+	return 0;
+}
+
 int main()
 {
 #ifdef FT 
@@ -331,14 +370,15 @@ int main()
 #else
 	std::cout << "Namespace tested : std" << std::endl;
 #endif
-	test_insert();
-	test_erase();
+	//test_insert();
+	//test_erase();
 	//test_clear();
 	//test_erase_isolated();
 	//test_brackets_op();
-	test_bounds_range();
-	test_ctors_assign();
+	//test_bounds_range();
+	//test_ctors_assign();
 	//test_swap();
+	test_erase_hbaudet();
 	//while (1) {};
 	return 0;
 }
