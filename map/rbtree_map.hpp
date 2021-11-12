@@ -616,12 +616,15 @@ namespace ft
 				old_sibling->red = !old_sibling->red;
 			}
 
-			/*
 			void
-			s_black_n_black(node_pointer node)
+			s_black_n_black_p_red(node_pointer node, node_pointer** to_nullify)
 			{
+				node->parent->red = false;
+				if (isLeftChild(node->parent, node))
+					*to_nullify = &node->parent->left_child;
+				else
+					*to_nullify = &node->parent->right_child;
 			}
-			*/
 
 			//(a)if sibling (s) black and at least one sibling child is red (r) : rotations of parent (eventually sibling pre rotation)
 			//	LL (s is a left child of his parent and r left child or both children are red
@@ -633,6 +636,7 @@ namespace ft
 			//(c)if s is red : rotation and recolor old sibling and parent
 			//	L (s is left) : right rotate
 			//	R (s is right): left rotate
+			/*
 			void
 			resolve_double_blackness(node_pointer node, node_pointer** to_nullify)
 			{
@@ -652,19 +656,45 @@ namespace ft
 					if (isBlackNode(node->parent))
 						resolve_double_blackness(node->parent, to_nullify);
 					else
-					{
-						node->parent->red = false;
-						if (isLeftChild(node->parent, node))
-							*to_nullify = &node->parent->left_child;
-						else
-							*to_nullify = &node->parent->right_child;
-					}
+						s_black_n_black_p_red(node, to_nullify);
 					return ;
 				}
 				if (isRedNode(sibling(node)))
 				{
 					s_red_case(node);
 					resolve_double_blackness(node, to_nullify);
+				}
+			}
+			*/
+
+			void
+			resolve_double_blackness(node_pointer node, node_pointer** to_nullify)
+			{
+				while (true)
+				{
+					if (node == getRoot())
+					{
+						node->red = false;
+						break ;
+					}
+					else if (isSiblingBlackNephewRed(node))
+					{
+						s_black_n_red_case(node, to_nullify);
+						break ;
+					}
+					else if (isSiblingBlackNephewsBlack(node))
+					{
+						sibling(node)->red = true;
+						if (isBlackNode(node->parent))
+							node = node->parent;
+						else
+						{
+							s_black_n_black_p_red(node, to_nullify);
+							break;
+						}
+					}
+					if (isRedNode(sibling(node)))
+						s_red_case(node);
 				}
 			}
 
@@ -779,6 +809,12 @@ namespace ft
 					return ;
 				}
 
+				/*
+				if (isLeftChild(moved_node->parent, moved_node))
+					*to_nullify = &moved_node->parent->left_child;
+				else
+					*to_nullify = &moved_node->parent->right_child;
+				*/
 				node_type v_node;
 				v_node.red = false;
 				v_node.parent = moved_node->parent;
