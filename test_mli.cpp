@@ -1,11 +1,10 @@
-
 #include "map.hpp"
 #include <map>
 #include <iostream>
 #include <string>
 
 #ifndef TESTED_NS
-# define TESTED_NS std
+# define TESTED_NS ft
 #endif
 
 #define _pair TESTED_NS::pair
@@ -99,7 +98,6 @@ T	dec(T it, int n)
 }
 
 #include <list>
-
 #define T1 int
 #define T2 std::string
 typedef _pair<const T1, T2> T3;
@@ -134,6 +132,7 @@ int		main(void)
 	ft_erase(mp, ++mp.begin());
 
 	ft_erase(mp, mp.begin());
+
 	ft_erase(mp, --mp.end());
 
 	ft_erase(mp, mp.begin(), ++(++(++mp.begin())));
@@ -143,6 +142,7 @@ int		main(void)
 	mp[11] = "Hi there";
 	printSize(mp);
 	ft_erase(mp, --(--(--mp.end())), mp.end());
+
 
 	mp[12] = "ONE";
 	mp[13] = "TWO";

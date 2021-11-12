@@ -345,7 +345,7 @@ int test_erase_hbaudet()
 	mymap['e']=50;
 	mymap['f']=60;
 
-	mymap.tree().print_tree();
+//	mymap.tree().print_tree();
 	it=mymap.find('b');
 	std::cout << "found b\n";
 	mymap.erase (it);                   // erasing by iterator
