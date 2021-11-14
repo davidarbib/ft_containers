@@ -6,7 +6,7 @@
 #    By: darbib <darbib@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/06 14:53:36 by darbib            #+#    #+#              #
-#    Updated: 2021/11/12 15:10:48 by darbib           ###   ########.fr        #
+#    Updated: 2021/11/14 19:58:42 by darbib           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 SHELL = /bin/zsh
@@ -35,7 +35,7 @@ endif
 
 # ------------------------------------------------------------------------------
 
-CURRENT_FIX = test_mli.cpp
+CURRENT_FIX = inception_main.cpp
 DEFINES = -D TEST_TREE=1
 
 ifeq ($(FT), 1)
