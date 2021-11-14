@@ -536,53 +536,41 @@ namespace ft
 				//std::cout << del_node->value.first;
 				//std::cout << ", " << del_node->value.second;
 				//std::cout << std::endl;
-				node_pointer *to_nullify = NULL;
 				//std::cout << "----------------tree state before erase----------------" << std::endl;
 				//print_tree();
-				_size--;
 				if (!del_node->left_child && !del_node->right_child)
 				{
-					if (isLeftChild(del_node->parent, del_node))
-						to_nullify = &del_node->parent->left_child;
-					else
-						to_nullify = &del_node->parent->right_child;
 					if (isBlackNode(del_node))
-						resolve_double_blackness(del_node, &to_nullify);
-					if (to_nullify)
-						*to_nullify = NULL;
+						resolve_double_blackness(del_node);
+					if (isLeftChild(del_node->parent, del_node))
+						del_node->parent->left_child = NULL;
+					else
+						del_node->parent->right_child = NULL;
 					destroy_node(del_node);
-					_begin_node = leftmost(getRoot());
-					if (_begin_node == NULL)
-						_begin_node = _nil;
-					return ;
 				}
-				if (del_node->left_child)
+				else if (del_node->left_child)
 				{
-					//fix 
-					handle_left_case(del_node, &to_nullify);
-					if (to_nullify)
-						*to_nullify = NULL;
-					destroy_node(del_node);
-					_begin_node = leftmost(getRoot());
-					if (_begin_node == NULL)
-						_begin_node = _nil;
-					return ;
+					handleDelNodeHasLeftChildCase(del_node);
 				}
-				if (isLeftChild(del_node->parent, del_node))
-					del_node->parent->left_child = del_node->right_child;
 				else
-					del_node->parent->right_child = del_node->right_child;
-				del_node->right_child->parent = del_node->parent;	
-				node_pointer moved_node = del_node->right_child;
-				balance(del_node->red, moved_node, &to_nullify);
-				destroy_node(del_node);
+				{
+					if (isLeftChild(del_node->parent, del_node))
+						del_node->parent->left_child = del_node->right_child;
+					else
+						del_node->parent->right_child = del_node->right_child;
+					del_node->right_child->parent = del_node->parent;	
+					node_pointer moved_node = del_node->right_child;
+					balance(del_node->red, moved_node);
+					destroy_node(del_node);
+				}
+				_size--;
 				_begin_node = leftmost(getRoot());
 				if (_begin_node == NULL)
 					_begin_node = _nil;
 			}
 
 			void
-			s_black_n_red_case(node_pointer node, node_pointer** to_nullify)
+			s_black_n_red_case(node_pointer node)
 			{
 				uint8_t cfg = 99;
 
@@ -600,8 +588,7 @@ namespace ft
 				if (!isLeftChild(node->parent, sibling(node))
 						&& isRedNode(sibling(node)->right_child))
 					cfg = RR;
-				//std::cout << "cfg is : " << (int)cfg << std::endl;
-				rotate_recolor_erase(sibling(node), cfg, to_nullify);
+				rotate_recolor_erase(sibling(node), cfg);
 			}
 
 			void
@@ -617,13 +604,9 @@ namespace ft
 			}
 
 			void
-			s_black_n_black_p_red(node_pointer node, node_pointer** to_nullify)
+			s_black_n_black_p_red(node_pointer node)
 			{
 				node->parent->red = false;
-				if (isLeftChild(node->parent, node))
-					*to_nullify = &node->parent->left_child;
-				else
-					*to_nullify = &node->parent->right_child;
 			}
 
 			//(a)if sibling (s) black and at least one sibling child is red (r) : rotations of parent (eventually sibling pre rotation)
@@ -636,39 +619,8 @@ namespace ft
 			//(c)if s is red : rotation and recolor old sibling and parent
 			//	L (s is left) : right rotate
 			//	R (s is right): left rotate
-			/*
 			void
-			resolve_double_blackness(node_pointer node, node_pointer** to_nullify)
-			{
-				if (node == getRoot())
-				{
-					node->red = false;
-					return ;
-				}
-				if (isSiblingBlackNephewRed(node))
-				{
-					s_black_n_red_case(node, to_nullify);
-					return ;
-				}
-				if (isSiblingBlackNephewsBlack(node))
-				{
-					sibling(node)->red = true;
-					if (isBlackNode(node->parent))
-						resolve_double_blackness(node->parent, to_nullify);
-					else
-						s_black_n_black_p_red(node, to_nullify);
-					return ;
-				}
-				if (isRedNode(sibling(node)))
-				{
-					s_red_case(node);
-					resolve_double_blackness(node, to_nullify);
-				}
-			}
-			*/
-
-			void
-			resolve_double_blackness(node_pointer node, node_pointer** to_nullify)
+			resolve_double_blackness(node_pointer node)
 			{
 				while (true)
 				{
@@ -679,7 +631,7 @@ namespace ft
 					}
 					else if (isSiblingBlackNephewRed(node))
 					{
-						s_black_n_red_case(node, to_nullify);
+						s_black_n_red_case(node);
 						break ;
 					}
 					else if (isSiblingBlackNephewsBlack(node))
@@ -689,7 +641,7 @@ namespace ft
 							node = node->parent;
 						else
 						{
-							s_black_n_black_p_red(node, to_nullify);
+							s_black_n_black_p_red(node);
 							break;
 						}
 					}
@@ -770,66 +722,36 @@ namespace ft
 
 			node_pointer
 			nephewL(node_pointer node) const
-			{ return sibling(node)->left_child; }
+			{
+				if (!sibling(node))
+					return NULL;
+				return sibling(node)->left_child;
+			}
 
 			node_pointer
 			nephewR(node_pointer node) const
-			{ return sibling(node)->right_child; }
+			{
+				if (!sibling(node))
+					return NULL;
+				return sibling(node)->right_child;
+			}
 
 			void
-			handle_left_case(node_pointer del_node, node_pointer** to_nullify)
+			handleMovedNodeHasLeftChildCase(node_pointer del_node,
+					node_pointer moved_node)
 			{
-				node_pointer moved_node = rightmost(del_node->left_child); 
-				//std::cout << "rightmost(left_child) value: ";
-				//std::cout << moved_node->value.first << ", ";
-				//std::cout << moved_node->value.second << std::endl;
 				node_pointer moved_node_left_child = moved_node->left_child;
-				if (moved_node_left_child)
-				{
-					moved_node->right_child = del_node->right_child;
-					if (del_node->right_child)
+				moved_node->right_child = del_node->right_child;
+				if (del_node->right_child)
 					del_node->right_child->parent = moved_node;
-
-					if (moved_node != del_node->left_child)
-					{
-						moved_node->parent->right_child = moved_node_left_child;
-						moved_node_left_child->parent = moved_node->parent;
-						moved_node->left_child = del_node->left_child;
-						del_node->left_child->parent = moved_node;
-					}
-						
-					if (isLeftChild(del_node->parent, del_node))
-						del_node->parent->left_child = moved_node;
-					else
-						del_node->parent->right_child = moved_node;
-					moved_node->parent = del_node->parent;
-
-					moved_node->red = del_node->red;
-					moved_node_left_child->red = false;
-					return ;
-				}
-
-				/*
-				if (isLeftChild(moved_node->parent, moved_node))
-					*to_nullify = &moved_node->parent->left_child;
-				else
-					*to_nullify = &moved_node->parent->right_child;
-				*/
-				node_type v_node;
-				v_node.red = false;
-				v_node.parent = moved_node->parent;
-				v_node.left_child = NULL;
-				v_node.right_child = NULL;
-				//std::cout << "v_node address : " << &v_node << std::endl;
 
 				if (moved_node != del_node->left_child)
 				{
+					moved_node->parent->right_child = moved_node_left_child;
+					moved_node_left_child->parent = moved_node->parent;
 					moved_node->left_child = del_node->left_child;
 					del_node->left_child->parent = moved_node;
-					moved_node->parent->right_child = NULL;
 				}
-				else
-					moved_node->parent->left_child = &v_node;
 
 				if (isLeftChild(del_node->parent, del_node))
 					del_node->parent->left_child = moved_node;
@@ -837,26 +759,83 @@ namespace ft
 					del_node->parent->right_child = moved_node;
 				moved_node->parent = del_node->parent;
 
-				moved_node->right_child = del_node->right_child;
-				if (del_node->right_child)
-					del_node->right_child->parent = moved_node;
-				if (isBlackNode(moved_node))
-					resolve_double_blackness(&v_node, to_nullify);
+				moved_node->red = del_node->red;
+				moved_node_left_child->red = false;
+				destroy_node(del_node);
+			}
+
+			void
+			handleMovedNodeIsLeafCase(node_pointer del_node,
+					node_pointer moved_node)
+			{
+				node_pointer moved_node_old_parent = moved_node->parent;
+				if (moved_node != del_node->left_child)
+				{
+					moved_node->left_child = del_node->left_child;
+					del_node->left_child->parent = moved_node;
+					moved_node->parent->right_child = NULL;
+
+					if (isLeftChild(del_node->parent, del_node))
+						del_node->parent->left_child = moved_node;
+					else
+						del_node->parent->right_child = moved_node;
+					moved_node->parent = del_node->parent;
+
+					moved_node->right_child = del_node->right_child;
+					if (del_node->right_child)
+						del_node->right_child->parent = moved_node;
+					del_node->right_child = NULL;
+					del_node->left_child = NULL;
+					del_node->parent = moved_node_old_parent;
+					moved_node_old_parent->right_child = del_node;
+					if (isBlackNode(moved_node))
+						resolve_double_blackness(del_node);
+					else
+						moved_node->red = del_node->red;
+					moved_node_old_parent->right_child = NULL;
+					destroy_node(del_node);
+				}
 				else
-					moved_node->red = del_node->red;
+				{
+					if (isLeftChild(del_node->parent, del_node))
+						del_node->parent->left_child = moved_node;
+					else
+						del_node->parent->right_child = moved_node;
+					moved_node->parent = del_node->parent;
+
+					moved_node->right_child = del_node->right_child;
+					if (del_node->right_child)
+						del_node->right_child->parent = moved_node;
+					del_node->right_child = NULL;
+					del_node->left_child = NULL;
+					del_node->parent = moved_node;
+					moved_node->left_child = del_node;
+					if (isBlackNode(moved_node))
+						resolve_double_blackness(del_node);
+					else
+						moved_node->red = del_node->red;
+					moved_node->left_child = NULL;
+					destroy_node(del_node);
+				}
+			}
+
+			void
+			handleDelNodeHasLeftChildCase(node_pointer del_node)
+			{
+				node_pointer moved_node = rightmost(del_node->left_child); 
+				if (moved_node->left_child)
+					handleMovedNodeHasLeftChildCase(del_node, moved_node);
+				else
+					handleMovedNodeIsLeafCase(del_node, moved_node);
 			}
 			
 			void
-			balance(bool del_node_red, node_pointer moved_node,
-					node_pointer** to_nullify)
+			balance(bool del_node_red, node_pointer moved_node)
 			{
 				if (del_node_red ^ moved_node->red)
-				{
 					moved_node->red = false;
-					return ;
-				}
-				if (del_node_red == false && moved_node->red == false)
-					resolve_double_blackness(moved_node, to_nullify);
+				else if (del_node_red == false && moved_node->red == false)
+					resolve_double_blackness(moved_node);
 			}
 
 			node_pointer
@@ -960,32 +939,27 @@ namespace ft
 			}
 
 			void
-			rotate_recolor_erase(node_pointer sibling, uint8_t cfg,
-									node_pointer** to_nullify)
+			rotate_recolor_erase(node_pointer sibling, uint8_t cfg)
 			{
 				node_pointer parent = sibling->parent;
 				
 				switch (cfg)
 				{
 					case LL:
-						*to_nullify = &parent->right_child;
 						rotRight(parent);
 						sibling->left_child->red = false;
 						break;
 					case LR:
-						*to_nullify = &parent->right_child;
 						rotLeft(sibling);
 						swapColor(sibling->parent, sibling);
 						rotRight(parent);
 						sibling->red = false;
 						break;
 					case RR:
-						*to_nullify = &parent->left_child;
 						rotLeft(parent);
 						sibling->right_child->red = false;
 						break;
 					case RL:
-						*to_nullify = &parent->left_child;
 						rotRight(sibling);
 						swapColor(sibling->parent, sibling);
 						rotLeft(parent);
