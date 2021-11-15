@@ -6,7 +6,7 @@
 /*   By: hbaudet <hbaudet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 13:07:06 by hbaudet           #+#    #+#             */
-/*   Updated: 2021/11/14 20:01:58 by darbib           ###   ########.fr       */
+/*   Updated: 2021/11/15 18:18:31 by darbib           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,6 @@ int main()
 		cout << "Capacity of MIKE is sufficient\n";
 	else
 		std::cerr << "THERE IS A PROBLEM ON LINE 63\n";
-
 	size_t	mike_resize = 9;
 	bob_resize = 0;
 	
@@ -259,6 +258,7 @@ int main()
 	cout << '\n';
 
 	erase_in_me.erase(erase_in_me.begin() + 7);
+	return 1;
 	for (size_t i = 0; i < erase_in_me.size(); i++)
 		cout << erase_in_me.at(i).front() << ' ';
 	cout << '\n';

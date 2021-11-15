@@ -171,10 +171,10 @@ namespace ft
 
 			virtual ~vector()
 			{
-				for (size_type i = 0; i < this->_size; i++)
+				for (size_type i = 0; i < _size; i++)
 					_alloc.destroy(_elems + i);
 				if (_capacity != 0)
-					this->_alloc.deallocate(this->_elems, this->_capacity);
+					_alloc.deallocate(_elems, _capacity);
 			}
 
 			size_type
@@ -196,6 +196,11 @@ namespace ft
 				{
 					for (size_type i = _size; i < n; i++)
 						_alloc.construct(_elems + i, val);
+				}
+				if (n < _size)
+				{
+					for (size_type i = n; i < _size; i++)
+						_alloc.destroy(_elems + i);
 				}
 				_size = n;
 			}
@@ -256,7 +261,7 @@ namespace ft
 				}
 				else
 				{	
-					for (size_type i = 0; i < _capacity; i++)
+					for (size_type i = 0; i < _size; i++)
 						_alloc.destroy(_elems + i);
 					size_type i = 0;
 					for (InputIterator it = first; it != last; it++)
@@ -289,7 +294,7 @@ namespace ft
 				}
 				else
 				{	
-					for (size_type i = 0; i < _capacity; i++)
+					for (size_type i = 0; i < _size; i++)
 						_alloc.destroy(_elems + i);
 					for (size_type i = 0; i < n; i++)
 						_alloc.construct(_elems + i, val);
@@ -323,6 +328,7 @@ namespace ft
 			pop_back()
 			{
 				_size--;
+				_alloc.destroy(_elems + _size);
 			}
 
 			/*
