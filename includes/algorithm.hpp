@@ -108,7 +108,6 @@ namespace ft
 			return false;
 		if (size2 == 0)
 			return false;
-
 		for (; (first1 != last1 && first2 != last2); ++first1, ++first2)
 			if (*first1 != *first2) return false;
 		return (first1 == last1) && (first2 == last2);

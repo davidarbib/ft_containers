@@ -6,7 +6,7 @@
 /*   By: hbaudet <hbaudet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 13:07:06 by hbaudet           #+#    #+#             */
-/*   Updated: 2021/11/15 18:18:31 by darbib           ###   ########.fr       */
+/*   Updated: 2021/11/16 16:14:27 by darbib           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,10 @@ using namespace TESTED_NS;
 int main()
 {
 	vector<int>			test(3, 3);
+	std::cout << "test content :" << std::endl;
+	for (vector<int>::iterator it = test.begin(); it != test.end(); it++)
+		std::cout << *it << std::endl;
+	std::cout << "--------------" << std::endl;
 
 	cout << "self assignation test\n";
 	vector<vector<int> >	self_assign;
@@ -32,9 +36,22 @@ int main()
 	self_assign.assign(4, test);
 	*ptr = *ptr2;
 
+	std::cout << "self_assign content :" << std::endl;
+	int i = 0;
+	for (vector<vector<int> >::iterator jt = self_assign.begin();
+			jt != self_assign.end(); jt++)
+	{
+		std::cout << "test " << i << std::endl;
+		for (vector<int>::iterator it = jt->begin(); it != jt->end(); it++)
+			std::cout << *it << std::endl;
+		i++;
+	}
+	std::cout << "--------------" << std::endl;
+
 	cout << std::boolalpha << (*ptr == *ptr2) << '\n';
 //	self_assign = self_assign; //compiler doesn't like it!
 
+	return 0;
 
 
 	vector<vector<int> > JOHN;
@@ -243,6 +260,7 @@ int main()
 	for (size_t i = 0; i < insert_bis.size(); i++)
 		cout << insert_bis[i].back() << ' ';
 	cout << '\n';
+	//return 1;
 
 
 	//ERASE
@@ -258,7 +276,7 @@ int main()
 	cout << '\n';
 
 	erase_in_me.erase(erase_in_me.begin() + 7);
-	return 1;
+	std::cout << "size : " << erase_in_me.size() << std::endl;
 	for (size_t i = 0; i < erase_in_me.size(); i++)
 		cout << erase_in_me.at(i).front() << ' ';
 	cout << '\n';
@@ -320,6 +338,7 @@ int main()
 	//CLEAR
 	cout << "\nCLEAR\n";
 	JOHN.clear();
+	//return 1;
 	MIKE.clear();
 	cout << "Size of JOHN " << JOHN.size() << std::endl;
 	if (JOHN.capacity() >= JOHN.size())

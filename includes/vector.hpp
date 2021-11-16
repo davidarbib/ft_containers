@@ -140,31 +140,28 @@ namespace ft
 			}
 
 			vector &
-			operator= (const vector& x)
-			{
-				this->_size = x._size;
-				if (this->_size > this->_capacity)
+			operator=(const vector& x)
+			{ 
+				size_type new_capacity;
+				try
 				{
-					this->destroy_elems();
-					size_type new_capacity = this->_size;
-					try
-					{
-						_elems = this->_alloc.allocate(new_capacity);
-						for (size_type i = 0; i < this->_size; i++)
-							_alloc.construct(_elems + i, x._elems[i]);
-					}
-					catch (std::bad_alloc &e)
-					{
-						std::cout << e.what() << std::endl;
-					}
-					this->_capacity = new_capacity;
-				}
-				else
-				{	
-					for (size_type i = 0; i < this->_capacity; i++)
-						_alloc.destroy(this->_elems + i);
+					if (x._size > this->_capacity)
+						new_capacity = x._size;
+					else
+						new_capacity = this->_capacity;
+					pointer new_elems = _alloc.allocate(new_capacity);	
+					for (size_type i = 0; i < x._size; i++)
+						_alloc.construct(new_elems + i, x._elems[i]);
 					for (size_type i = 0; i < this->_size; i++)
-						_alloc.construct(this->_elems + i, x._elems[i]);
+						_alloc.destroy(_elems + i);
+					_alloc.deallocate(_elems, this->_capacity);
+					_elems = new_elems;
+					this->_capacity = new_capacity;
+					this->_size = x._size;
+				}
+				catch (std::bad_alloc &e)
+				{
+					std::cout << e.what() << std::endl;
 				}
 				return *this;
 			}
@@ -375,6 +372,7 @@ namespace ft
 					while (it != position)
 					{
 						_alloc.construct(_elems + i, _elems[i - 1]);
+						_alloc.destroy(_elems + i - 1);
 						i--;
 						it--;
 					}
@@ -424,6 +422,7 @@ namespace ft
 					while (it != position)
 					{
 						_alloc.construct(_elems + i, _elems[i - n]);
+						_alloc.destroy(_elems + i - n);
 						i--;
 						it--;
 					}
@@ -489,6 +488,7 @@ namespace ft
 					while (j >= insert_idx)
 					{
 						_alloc.construct(_elems + j, _elems[j - n]);
+						_alloc.destroy(_elems + j - n);
 						j--;
 					}
 					InputIterator in_it = first;
@@ -518,6 +518,7 @@ namespace ft
 				while (it != this->end() - 1)
 				{
 					_alloc.construct(_elems + i, _elems[i + 1]);
+					_alloc.destroy(_elems + i + 1);
 					i++;
 					it++;
 				}
@@ -546,31 +547,13 @@ namespace ft
 				while (it != this->end())
 				{
 					_alloc.construct(_elems + i, _elems[i + j]);
+					_alloc.destroy(_elems + i + j);
 					i++;
 					it++;
 				}
 				_size -= j;
 				return first;
 			}
-			
-			/*
-			void
-			swap (vector<value_type>& x)
-			{
-				allocator_type tmp_alloc = x._alloc;
-				pointer tmp_elems = x._elems;
-				size_type tmp_capacity = x._capacity;
-				size_type tmp_size = x._size;
-				x._alloc = this->_alloc;
-				x._elems = this->_elems;
-				x._capacity = this->_capacity;
-				x._size = this->_size;
-				this->_alloc = tmp_alloc;
-				this->_elems = tmp_elems; 
-				this->_capacity = tmp_capacity; 
-				this->_size = tmp_size; 
-			}
-			*/
 			
 			void
 			swap(vector<value_type>& x)
@@ -585,6 +568,8 @@ namespace ft
 			void
 			clear()
 			{
+				for (size_type i = 0; i < _size; i++)
+					_alloc.destroy(_elems + i);
 				_size = 0;
 			}
 
@@ -760,7 +745,7 @@ namespace ft
 
 	template <class T, class Alloc>
 	bool operator!=(const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs)
-	{ return !ft::equal(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()); }
+	{ return !(lhs == rhs); }
 
 	template <class T, class Alloc>
 	bool operator<=(const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs)

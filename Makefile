@@ -6,7 +6,7 @@
 #    By: darbib <darbib@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/06 14:53:36 by darbib            #+#    #+#              #
-#    Updated: 2021/11/14 19:58:42 by darbib           ###   ########.fr        #
+#    Updated: 2021/11/16 18:40:53 by darbib           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 SHELL = /bin/zsh
@@ -35,7 +35,7 @@ endif
 
 # ------------------------------------------------------------------------------
 
-CURRENT_FIX = inception_main.cpp
+CURRENT_FIX = insert_main.cpp
 DEFINES = -D TEST_TREE=1
 
 ifeq ($(FT), 1)
@@ -51,11 +51,7 @@ SRC_DIR = ./srcs/
 
 OBJ = $(SRC:%.cpp=$(OBJ_DIR)%.o)
 
-INC_DIRS = ./vector \
-		   ./iterator \
-		   ./type_traits \
-		   ./map \
-		   ./algorithm
+INC_DIRS = ./includes
 
 INC = $(addprefix -I, $(INC_DIRS))
 
@@ -68,7 +64,7 @@ SRC = main_perso.cpp \
 
 vpath %.cpp $(SRC_DIR)
 
-.PHONY: all clean fclean re test
+.PHONY: all clean fclean re test current_fix algotest $(NAME)
 
 # ------------------------------------------------------------------------------
 
@@ -97,25 +93,19 @@ fclean : clean
 
 re : fclean all
 
+prep_for_mli :
+	@cp $(INC_DIRS)/*.hpp .
+	@echo $(MAGENTA) "headers moved in repo root"  $(RESET)
+
+del_mli_setup :
+	@mv *.hpp hpptrash
+	@echo $(MAGENTA) "headers removed from repo root"  $(RESET)
+
 algotest : algorithm_test.cpp
 	@echo $(MAGENTA) "Testing algorithm functions"  $(RESET)
 	@$(CC) $(CFLAGS) $< -o $@ $(INC) 
 	@./$@
 
-prep_for_mli : 
-	@echo $(MAGENTA) "Extract headers from subdirectories"  $(RESET)
-	@cp iterator/*.hpp .
-	@cp vector/*.hpp .
-	@cp algorithm/*.hpp .
-	@cp type_traits/*.hpp .
-	@cp stack/*.hpp .
-	@cp map/*.hpp .
-
-del_mli_setup : 
-	@echo $(MAGENTA) "remove headers from root directory" $(RESET)
-	@mkdir -p hpptrash
-	@mv *.hpp hpptrash
-
 current_fix : $(CURRENT_FIX) 
 	@echo $(MAGENTA) "build current test"  $(RESET)
-	$(CC) $(CFLAGS) $< -o $@ $(DEFINES) $(INC) 
+	@$(CC) $(CFLAGS) $< -o $@ $(DEFINES) $(INC) 
