@@ -187,10 +187,12 @@ namespace ft
 			{
 				if (n > _capacity)
 				{
+					//std::cout << "reallocation" << std::endl;
 					this->realloc_elems(computeCapacity(n));
 				}
 				if (n > _size)
 				{
+					//std::cout << "construction" << std::endl;
 					for (size_type i = _size; i < n; i++)
 						_alloc.construct(_elems + i, val);
 				}
@@ -423,13 +425,13 @@ namespace ft
 				else
 				{
 					iterator it = this->begin();
-					size_type i = 0;
+					int i = 0;
 					while (it != position)
 					{
 						it++;
 						i++;
 					}
-					size_type insert_idx = i;
+					int insert_idx = i;
 					i = _size - 1;
 					while (i >= insert_idx)
 					{
@@ -437,7 +439,7 @@ namespace ft
 						_alloc.destroy(_elems + i);
 						i--;
 					}
-					for (size_type j = 0; j < n; j++)
+					for (int j = 0; j < static_cast<int>(n); j++)
 						_alloc.construct(_elems + insert_idx + j, val);
 				}
 				_size = new_size;
@@ -726,7 +728,6 @@ namespace ft
 					this->destroy_elems();
 					_elems = new_elems;
 					_capacity = new_capacity;
-					
 				}
 				catch(std::bad_alloc &e)
 				{
