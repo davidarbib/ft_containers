@@ -6,7 +6,7 @@
 /*   By: hbaudet <hbaudet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 13:07:06 by hbaudet           #+#    #+#             */
-/*   Updated: 2021/11/16 16:14:27 by darbib           ###   ########.fr       */
+/*   Updated: 2021/11/17 15:38:20 by darbib           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,9 +50,6 @@ int main()
 
 	cout << std::boolalpha << (*ptr == *ptr2) << '\n';
 //	self_assign = self_assign; //compiler doesn't like it!
-
-	return 0;
-
 
 	vector<vector<int> > JOHN;
 	vector<vector<int> > BOB(5, test);

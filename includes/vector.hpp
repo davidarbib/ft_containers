@@ -336,6 +336,7 @@ namespace ft
 			iterator
 			insert(iterator position, const value_type& val)
 			{
+				pointer insert_location = NULL;
 				if (_size == _capacity)
 				{
 					try
@@ -350,6 +351,7 @@ namespace ft
 							i++;
 							it++;
 						}
+						insert_location = new_elems + i;
 						new_elems[i++] = val;
 						while (i < _size + 1)
 						{
@@ -377,9 +379,10 @@ namespace ft
 						it--;
 					}
 					_alloc.construct(_elems + i, val);
+					insert_location = _elems + i;
 				}
 				_size++;
-				return position;
+				return iterator(insert_location);
 			}
 
 			void
@@ -387,6 +390,7 @@ namespace ft
 			{
 				size_type new_size = _size + n;
 				if (new_size > _capacity)
+				{
 					try
 					{
 						size_type new_capacity = computeCapacity(new_size);
@@ -415,19 +419,26 @@ namespace ft
 					{
 						std::cout << e.what() << std::endl;
 					}
+				}
 				else
 				{
-					iterator it = this->begin() + new_size - 1;
-					size_type i = new_size;
+					iterator it = this->begin();
+					size_type i = 0;
 					while (it != position)
 					{
-						_alloc.construct(_elems + i, _elems[i - n]);
-						_alloc.destroy(_elems + i - n);
+						it++;
+						i++;
+					}
+					size_type insert_idx = i;
+					i = _size - 1;
+					while (i >= insert_idx)
+					{
+						_alloc.construct(_elems + i + n, _elems[i]);
+						_alloc.destroy(_elems + i);
 						i--;
-						it--;
 					}
 					for (size_type j = 0; j < n; j++)
-						_alloc.construct(_elems + i - j, val);
+						_alloc.construct(_elems + insert_idx + j, val);
 				}
 				_size = new_size;
 			}
@@ -478,21 +489,22 @@ namespace ft
 				else
 				{
 					iterator it = this->begin();
-					size_type insert_idx = 0;
+					int i = 0;
 					while (it != position)
 					{
-						insert_idx++;
 						it++;
+						i++;
 					}
-					size_type j = new_size;
-					while (j >= insert_idx)
+					int insert_idx = i;
+					i = _size - 1;
+					while (i >= insert_idx)
 					{
-						_alloc.construct(_elems + j, _elems[j - n]);
-						_alloc.destroy(_elems + j - n);
-						j--;
+						_alloc.construct(_elems + i + n, _elems[i]);
+						_alloc.destroy(_elems + i);
+						i--;
 					}
 					InputIterator in_it = first;
-					j = 0;
+					int j = 0;
 					while (in_it != last)
 					{
 						_alloc.construct(_elems + insert_idx + j, *in_it);
@@ -563,7 +575,6 @@ namespace ft
 				std::swap(this->_elems, x._elems);
 				std::swap(this->_size, x._size);
 			}
-			
 
 			void
 			clear()
