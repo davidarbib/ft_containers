@@ -6,7 +6,7 @@
 /*   By: mchardin <mchardin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/02 13:07:06 by hbaudet           #+#    #+#             */
-/*   Updated: 2021/11/17 21:59:35 by darbib           ###   ########.fr       */
+/*   Updated: 2021/11/18 16:49:10 by darbib           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,7 +149,6 @@ void	reserve_tests(void)
 {
 	std::cout << std::endl << "RESERVE TESTS" << std::endl;
 	vector<T> test(65, 7);
-	/*
 	std::cout << "s: " << test.size() << ", c: " << test.capacity() << std::endl;
 	test.reserve(12);
 	std::cout << "s: " << test.size() << ", c: " << test.capacity() << std::endl;
@@ -161,7 +160,7 @@ void	reserve_tests(void)
 	std::cout << "s: " << test.size() << ", c: " << test.capacity() << std::endl;
 	test.reserve(10252);
 	std::cout << "s: " << test.size() << ", c: " << test.capacity() << std::endl;
-	*/
+	/*
 	try
 	{
 		test.reserve(test.max_size() + 1);
@@ -174,6 +173,7 @@ void	reserve_tests(void)
 	{
 		std::cout << "error : " << e.what() << std::endl;
 	}
+	*/
 	print_vector<T>(test);
 }
 
@@ -185,6 +185,7 @@ void	copy_swap_tests(void)
 	for (size_t i = 0; i < 50; i++) { test.push_back(i); }
 	vector<T> test_copy(test);
 	for (size_t i = 0; i < test_copy.size(); i++) { test_copy[i] += 100; }
+	print_vector<T>(test);
 	print_vector<T>(test_copy);
 	vector<T> test_range(test.begin() + 20, test.begin() + 30);
 	print_vector<T>(test_range);
@@ -281,11 +282,10 @@ void	awesome_tests(void)
 
 int main()
 {
-	//push_pop_back_tests<int>();
-//	resize_tests<int>();
-//	insert_tests<int>();
+	push_pop_back_tests<int>();
+	resize_tests<int>();
+	insert_tests<int>();
 	reserve_tests<int>();
-	return 0;
 	copy_swap_tests<int>();
 	reverse_it_tests<int>();
 	erase_clear_tests<int>();

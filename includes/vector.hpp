@@ -115,7 +115,7 @@ namespace ft
 			}
 
 			vector(const vector& other)
-			: _size(other.size()), _capacity(other.capacity()), _elems(NULL),
+			: _size(other._size), _capacity(other.SIZE_CAP), _elems(NULL),
 				_alloc(other._alloc)
 			{
 				if (!strncmp(typeid(value_type).name(), CHAR_TYPEID, 1))
@@ -390,6 +390,8 @@ namespace ft
 			void
 			insert(iterator position, size_type n, const value_type& val)
 			{
+				if (n == 0)
+					return ;
 				size_type new_size = _size + n;
 				if (new_size > _capacity)
 				{
@@ -451,6 +453,8 @@ namespace ft
 					typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = 0)
 			{
 				size_type n = computeSize(first, last);
+				if (n == 0)
+					return ;
 				size_type new_size = _size + n;
 				if (new_size > _capacity)
 				{
