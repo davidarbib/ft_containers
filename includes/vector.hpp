@@ -230,7 +230,8 @@ namespace ft
 				}
 				if (n <= _capacity)
 					return ;
-				this->realloc_elems(_capacity * 2);
+				//this->realloc_elems(_capacity * 2);
+				this->realloc_elems(n);
 				_capacity = n;
 			}
 
