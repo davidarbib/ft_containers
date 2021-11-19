@@ -225,7 +225,7 @@ namespace ft
 					{
 						throw std::length_error(EMAXSIZE);
 					}
-					catch(std::bad_alloc &e)
+					catch(const std::bad_alloc &e)
 					{
 						std::cout << e.what() << std::endl;
 						return ;

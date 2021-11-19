@@ -6,6 +6,7 @@
 #endif
 
 #define CHAR_TYPEID "c"
+#define E_AT "map::at"
 
 #include <typeinfo>
 #include <functional>
@@ -52,9 +53,12 @@ namespace ft
 					{ return comp(x.first, y.first); }
 			};
 
+		private :
 			typedef ft::rbTreeMap<key_type, mapped_type, 
 					value_compare, key_compare,
 					allocator_type>							tree_type; 
+		public : 
+			typedef typename tree_type::node_type			node_type;
 
 			map(const Compare& comp = Compare(),
 					const Allocator& = Allocator())
@@ -218,6 +222,27 @@ namespace ft
 			const_iterator
 			find(const key_type& x) const
 			{ return _tree.find(x); }
+
+			mapped_type&
+			at(const key_type& key)
+			throw (std::out_of_range())
+			{
+				iterator it = _tree.find(key);
+				if (it != end())
+					return it->second; 
+				else
+				{
+					try
+					{
+						throw std::out_of_range(E_AT);
+					}
+					catch(const std::bad_alloc &e)
+					{
+						std::cout << e.what() << std::endl;
+						return it->second;
+					}
+				}
+			}
 
 			size_type
 			count(const key_type& x) const

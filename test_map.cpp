@@ -372,6 +372,22 @@ int test_erase_hbaudet()
 	return 0;
 }
 
+void
+test_at(void)
+{
+	TESTED_NS::map<int, int> mp;
+	mp[1] = 23;
+	mp[2] = 24;
+	mp[3] = 25;
+	mp[4] = 26;
+	mp[5] = 27;
+	mp[6] = 28;
+	mp[7] = 29;
+	mp[8] = 210;
+	int idx = 4;
+	std::cout << "at " << idx << " there is " << mp.at(idx) << std::endl;
+}
+
 int main()
 {
 #ifdef FT 
@@ -379,6 +395,7 @@ int main()
 #else
 	std::cout << "Namespace tested : std" << std::endl;
 #endif
+	/*
 	test_insert();
 	test_erase();
 	test_clear();
@@ -387,6 +404,8 @@ int main()
 	test_bounds_range();
 	test_ctors_assign();
 	test_swap();
+	*/
+	test_at();
 	//while (1) {};
 	return 0;
 }
