@@ -1,16 +1,18 @@
 #include <iostream>
 #include <string>
 #include <deque>
+/*
 #if 1 //CREATE A REAL STL EXAMPLE
 	#include <map>
 	#include <stack>
 	#include <vector>
 	namespace ft = std;
 #else
+*/
 	#include <map.hpp>
 	#include <stack.hpp>
 	#include <vector.hpp>
-#endif
+//#endif
 
 #include <stdlib.h>
 
@@ -59,7 +61,7 @@ int main(int argc, char** argv) {
 	ft::vector<int> vector_int;
 	ft::stack<int> stack_int;
 	ft::vector<Buffer> vector_buffer;
-	ft::stack<Buffer, std::deque<int> > stack_deq_buffer;
+	ft::stack<Buffer, std::deque<Buffer> > stack_deq_buffer;
 	ft::map<int, int> map_int;
 
 	for (int i = 0; i < COUNT; i++)

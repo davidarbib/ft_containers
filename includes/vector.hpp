@@ -1,3 +1,6 @@
+#ifndef VECTOR_HPP
+# define VECTOR_HPP
+
 #include <memory>
 #include <stdexcept>
 #include <iostream>
@@ -792,3 +795,5 @@ namespace ft
 				!ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
 	}
 }
+
+#endif

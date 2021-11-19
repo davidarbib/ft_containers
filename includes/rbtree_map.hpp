@@ -467,6 +467,15 @@ namespace ft
 			{
 				uint8_t		cfg = 0;
 
+				//std::cout << "----------new insertion----------" << std::endl;
+				//std::cout << "value to insert : ";
+				//std::cout << value.first << ", ";
+				//std::cout << value.second << std::endl;
+				//std::cout << "tree state : " << std::endl;
+				//print_tree();
+				//std::cout << "tree values : " << std::endl;
+				//printInOrderValues();
+
 				if (_nil->right_child == NULL)
 				{
 					*success = 1;
@@ -482,7 +491,8 @@ namespace ft
 				node_pointer stop_node = push_back(root, value, &cfg, success);
 				if (*success)
 				{
-					check_recolor_rotate(root, stop_node, cfg);
+					if (stop_node->parent != root)
+						check_recolor_rotate(stop_node);
 					_begin_node = leftmost(getRoot());
 					if (_begin_node == NULL)
 						_begin_node = _nil;
@@ -519,7 +529,7 @@ namespace ft
 				}
 				new_node->red = true;
 				*success = 1;
-				check_recolor_rotate(getRoot(), new_node, cfg);
+				check_recolor_rotate(getRoot());
 				_begin_node = leftmost(getRoot());
 				return new_node;
 			}
@@ -858,13 +868,17 @@ namespace ft
 			node_pointer
 			rotRight(node_pointer node)
 			{
-				node_pointer tmp = node->left_child->right_child;
+				node_pointer tmp = NULL;
+				if (node->left_child)
+					tmp = node->left_child->right_child;
 				if (isLeftChild(node->parent, node))
 					node->parent->left_child = node->left_child;
 				else
 					node->parent->right_child = node->left_child;
-				node->left_child->parent = node->parent;
+				if (node->left_child)
+					node->left_child->parent = node->parent;
 				node->parent = node->left_child;
+				if (node->left_child)
 				node->parent->right_child = node;
 				if (tmp)
 					tmp->parent = node;
@@ -875,15 +889,18 @@ namespace ft
 			node_pointer
 			rotLeft(node_pointer node)
 			{
-				node_pointer tmp = node->right_child->left_child;
-
+				node_pointer tmp = NULL;
+				if (node->right_child)
+					tmp = node->right_child->left_child;
 				if (isLeftChild(node->parent, node))
 					node->parent->left_child = node->right_child;
 				else
 					node->parent->right_child = node->right_child;
-				node->right_child->parent = node->parent;
+				if (node->right_child)
+					node->right_child->parent = node->parent;
 				node->parent = node->right_child;
-				node->parent->left_child = node;
+				if (node->right_child)
+					node->parent->left_child = node;
 				node->right_child = tmp;
 				if (tmp)
 					tmp->parent = node;
@@ -1022,28 +1039,72 @@ namespace ft
 			}
 
 			void
+			check_recolor_rotate(node_pointer node)
+			{
+				while (node != getRoot()
+						&& isRedNode(node)
+						&& isRedNode(node->parent))
+				{
+					int cfg = 0;
+					if (isLeftChild(node->parent, node))
+						cfg |= LEFTCHILD;
+					if (isLeftChild(grandParent(node), node->parent))
+						cfg |= LEFTMOST;
+					//std::cout << "cfg is : " << (int)cfg << std::endl;
+					if (isBlackNode(uncle(node)))
+					{
+						//std::cout << "new node has a black uncle" << std::endl;
+						rotate_recolor_insert(node, cfg);
+						break ;
+					}
+					else
+					{
+						//std::cout << "new node has a red uncle" << std::endl;
+						node->parent->red = false;
+						uncle(node)->red = false;
+						grandParent(node)->red = true;
+					}
+					node = grandParent(node);
+				}
+				getRoot()->red = false;
+			}
+			/*
+			void
 			check_recolor_rotate(node_pointer root, node_pointer new_node,
 									uint8_t cfg)
 			{
+				std::cout << "cfg is : " << (int)cfg << std::endl;
 				if (new_node == root)
-					new_node->red = false;
-				if (!new_node->parent->red)
-					return ;
-				if (!uncle(new_node))
 				{
+					std::cout << "new node is root" << std::endl;
+					new_node->red = false;
+				}
+				else if (!new_node->parent->red)
+				{
+					std::cout << "new node's parent is black" << std::endl;
+					return ;
+				}
+				else if (!uncle(new_node))
+				{
+					std::cout << "new node hasnt an uncle" << std::endl;
 					rotate_recolor_insert(new_node, cfg);
 					return ;
 				}
-				if (uncle(new_node)->red)
+				else if (uncle(new_node)->red)
 				{
+					std::cout << "new node has a red uncle" << std::endl;
 					new_node->parent->red = false;
 					uncle(new_node)->red = false;
 					grandParent(new_node)->red = true;
 					check_recolor_rotate(root, grandParent(new_node), cfg);
 				}
 				else
+				{
+					std::cout << "new node has a black uncle" << std::endl;
 					rotate_recolor_insert(new_node, cfg);
+				}
 			}
+			*/
 
 			void
 			destroy_node(node_pointer node)

@@ -17,6 +17,12 @@ void	print(TESTED_NS::map<Key, T>& lst)
 		std::cout << it->first << " => " << it->second << '\n';
 }
 
+template <class Key, class T>
+void	printPair(TESTED_NS::pair<Key, T>& pair)
+{
+	std::cout << pair.first << ", " << pair.second << std::endl;
+}
+
 void
 test_insert(void)
 {
@@ -205,6 +211,7 @@ test_bounds_range(void)
 	mymap['d']=80;
 	mymap['e']=100;
 
+	/*
 	itlow = mymap.lower_bound('k');
 	itup = mymap.upper_bound('k');
 
@@ -212,6 +219,7 @@ test_bounds_range(void)
 	std::cout << itlow->first << ", " << itlow->second << std::endl;
 	std::cout << itup->first << ", " << itup->second << std::endl;
 	std::cout << "*****************************" << std::endl;
+	*/
 
 	itlow=mymap.lower_bound('b');  // itlow points to b
 	itup=mymap.upper_bound('d');   // itup points to e (not d!)
@@ -371,15 +379,14 @@ int main()
 #else
 	std::cout << "Namespace tested : std" << std::endl;
 #endif
-	//test_insert();
-	//test_erase();
-	//test_clear();
-	//test_erase_isolated();
-	//test_brackets_op();
-	//test_bounds_range();
-	//test_ctors_assign();
-	//test_swap();
-	test_erase_hbaudet();
+	test_insert();
+	test_erase();
+	test_clear();
+	test_erase_isolated();
+	test_brackets_op();
+	test_bounds_range();
+	test_ctors_assign();
+	test_swap();
 	//while (1) {};
 	return 0;
 }
