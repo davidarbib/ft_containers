@@ -373,7 +373,7 @@ int test_erase_hbaudet()
 }
 
 void
-test_at(void)
+test_at_find(void)
 {
 	TESTED_NS::map<int, int> mp;
 	mp[1] = 23;
@@ -396,6 +396,10 @@ test_at(void)
 	{
 		std::cout << e.what() << std::endl;
 	}
+	
+	printPair(*(mp.find(6)));
+	std::cout << (mp.end() == mp.find(0)) << std::endl;
+	std::cout << (mp.end() == mp.find(10)) << std::endl;
 }
 
 void
@@ -450,6 +454,29 @@ test_empty(void)
 	std::cout << "mp is empty : " << mp.empty() << std::endl;
 }
 
+void
+test_getallocator(void)
+{
+	TESTED_NS::map<char,int> mp;
+	TESTED_NS::pair<const char,int>* p;
+
+	p=mp.get_allocator().allocate(5);
+	mp.get_allocator().deallocate(p,5);
+}
+
+void
+test_keycomp(void)
+{
+	int count = 10;
+	TESTED_NS::map<int,int> mp;
+	for (int i = 0; i < count; i++)
+		mp[i] = 100 + i;
+	for (TESTED_NS::map<int,int>::iterator it = mp.begin();
+			mp.key_comp()(it->first, count / 2);
+			it++)
+		printPair(*it);
+}
+
 int main()
 {
 #ifdef FT 
@@ -465,10 +492,11 @@ int main()
 	test_bounds_range();
 	test_ctors_assign();
 	test_swap();
-	test_at();
+	test_at_find();
 	test_reverseit();
 	test_count();
 	test_empty();
+	test_keycomp();
 	//while (1) {};
 	return 0;
 }
