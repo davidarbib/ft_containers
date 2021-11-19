@@ -386,6 +386,68 @@ test_at(void)
 	mp[8] = 210;
 	int idx = 4;
 	std::cout << "at " << idx << " there is " << mp.at(idx) << std::endl;
+	int noidx = 100;
+	try
+	{
+		std::cout << "at " << noidx << " there is " << mp.at(noidx);
+		std::cout << std::endl;
+	}
+	catch (const std::out_of_range &e)
+	{
+		std::cout << e.what() << std::endl;
+	}
+}
+
+void
+test_reverseit(void)
+{
+	TESTED_NS::map<char,int> mp;
+
+	mp['a'] = 100;
+	mp['b'] = 200;
+	mp['c'] = 300;
+
+	TESTED_NS::map<char,int>::reverse_iterator rit;
+	for (rit=mp.rbegin(); rit!=mp.rend(); ++rit)
+		printPair(*rit);
+}
+
+void
+test_count(void)
+{
+	int count = 10;
+	TESTED_NS::map<char,int> mp;
+	char c = 'a';
+
+	for (int i = 0; i < count; i++)
+		mp[c + i]= i;
+
+	for (c='a'; c<'z'; c++)
+	{
+		std::cout << c;
+		if (mp.count(c)>0)
+			std::cout << " is an element of mp.\n";
+		else 
+			std::cout << " is not an element of mp.\n";
+	}
+}
+
+void
+test_empty(void)
+{
+	TESTED_NS::map<int,int> mp;
+	int count = 10;
+
+	std::cout << "mp is empty : " << mp.empty() << std::endl;
+
+	for (int i = 0; i < count; i++)
+		mp[i]= 100 + i;
+	
+	std::cout << "mp is empty : " << mp.empty() << std::endl;
+
+	mp.clear();
+
+	std::cout << "mp is empty : " << mp.empty() << std::endl;
 }
 
 int main()
@@ -395,7 +457,6 @@ int main()
 #else
 	std::cout << "Namespace tested : std" << std::endl;
 #endif
-	/*
 	test_insert();
 	test_erase();
 	test_clear();
@@ -404,8 +465,10 @@ int main()
 	test_bounds_range();
 	test_ctors_assign();
 	test_swap();
-	*/
 	test_at();
+	test_reverseit();
+	test_count();
+	test_empty();
 	//while (1) {};
 	return 0;
 }

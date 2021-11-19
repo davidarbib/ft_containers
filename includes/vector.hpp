@@ -209,15 +209,14 @@ namespace ft
 
 			size_type
 			capacity() const
-				{ return this->_capacity; }
+			{ return this->_capacity; }
 
 			bool
 			empty() const
-				{ return (this->_size == 0); }
+			{ return (this->_size == 0); }
 
 			void
 			reserve(size_type n)
-			throw (std::length_error())
 			{
 				if (n > _max_size)
 				{
@@ -662,7 +661,6 @@ namespace ft
 
 			reference
 			at(size_type pos)
-			throw (std::out_of_range)
 			{
 				if (pos >= _size)
 					throw std::out_of_range(E_RANGE);
@@ -671,7 +669,6 @@ namespace ft
 
 			const_reference
 			at(size_type pos) const
-			throw (std::out_of_range)
 			{
 				if (pos >= _size)
 					throw std::out_of_range(E_RANGE);

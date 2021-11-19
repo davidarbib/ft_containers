@@ -225,23 +225,22 @@ namespace ft
 
 			mapped_type&
 			at(const key_type& key)
-			throw (std::out_of_range())
 			{
 				iterator it = _tree.find(key);
 				if (it != end())
 					return it->second; 
 				else
-				{
-					try
-					{
-						throw std::out_of_range(E_AT);
-					}
-					catch(const std::bad_alloc &e)
-					{
-						std::cout << e.what() << std::endl;
-						return it->second;
-					}
-				}
+					throw std::out_of_range(E_AT);
+			}
+
+			const mapped_type&
+			at(const key_type& key) const
+			{
+				iterator it = _tree.find(key);
+				if (it != end())
+					return it->second; 
+				else
+					throw std::out_of_range(E_AT);
 			}
 
 			size_type
