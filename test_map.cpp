@@ -477,6 +477,61 @@ test_keycomp(void)
 		printPair(*it);
 }
 
+void
+test_valuecomp(void)
+{
+	TESTED_NS::map<char,int> mp;
+
+	mp['a']=1;
+	mp['b']=2;
+	mp['c']=3;
+
+	std::cout << mp.value_comp()(*mp.begin(), *(++mp.begin())) << std::endl;
+}
+
+void
+test_relational(void)
+{
+	int count = 10;
+	TESTED_NS::map<char, int> mp;
+	TESTED_NS::map<char, int> mp2;
+
+	for (int i = 0; i < count; i++)
+	{
+		mp['a' + i] = i;
+		mp2['a' + (i * 2)] = i;
+	}
+	std::cout << (mp < mp2) << std::endl;
+	std::cout << (mp <= mp2) << std::endl;
+	std::cout << (mp > mp2) << std::endl;
+	std::cout << (mp >= mp2) << std::endl;
+	std::cout << (mp == mp2) << std::endl;
+	std::cout << (mp != mp2) << std::endl;
+}
+
+void
+test_nonmemberswap()
+{
+	TESTED_NS::map<char,int> foo,bar;
+
+	foo['x']=100;
+	foo['y']=200;
+
+	bar['a']=11;
+	bar['b']=22;
+	bar['c']=33;
+
+	swap(foo,bar);
+
+	std::cout << "foo contains:\n";
+	for (TESTED_NS::map<char,int>::iterator it=foo.begin(); it!=foo.end(); ++it)
+		std::cout << it->first << " => " << it->second << '\n';
+
+	std::cout << "bar contains:\n";
+	for (TESTED_NS::map<char,int>::iterator it=bar.begin(); it!=bar.end(); ++it)
+		std::cout << it->first << " => " << it->second << '\n';
+}
+
 int main()
 {
 #ifdef FT 
@@ -497,6 +552,9 @@ int main()
 	test_count();
 	test_empty();
 	test_keycomp();
+	test_valuecomp();
+	test_relational();
+	test_nonmemberswap();
 	//while (1) {};
 	return 0;
 }
