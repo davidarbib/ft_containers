@@ -539,21 +539,35 @@ int main()
 #else
 	std::cout << "Namespace tested : std" << std::endl;
 #endif
+	std::cout << "---------------- insert ------------------" << std::endl;
 	test_insert();
+	std::cout << "---------------- erase ------------------" << std::endl;
 	test_erase();
+	std::cout << "---------------- clear ------------------" << std::endl;
 	test_clear();
-	test_erase_isolated();
+	std::cout << "---------------- operator[] ------------------" << std::endl;
 	test_brackets_op();
+	std::cout << "---------------- lower/upper/equal range ------------------" << std::endl;
 	test_bounds_range();
+	std::cout << "---------------- ctors/assign ------------------" << std::endl;
 	test_ctors_assign();
+	std::cout << "---------------- swap ------------------" << std::endl;
 	test_swap();
+	std::cout << "---------------- at/find ------------------" << std::endl;
 	test_at_find();
+	std::cout << "---------------- reverse it ------------------" << std::endl;
 	test_reverseit();
+	std::cout << "---------------- count ------------------" << std::endl;
 	test_count();
+	std::cout << "---------------- empty ------------------" << std::endl;
 	test_empty();
+	std::cout << "---------------- keycomp ------------------" << std::endl;
 	test_keycomp();
+	std::cout << "---------------- valuecomp ------------------" << std::endl;
 	test_valuecomp();
+	std::cout << "---------------- relational ------------------" << std::endl;
 	test_relational();
+	std::cout << "---------------- non member swap ------------------" << std::endl;
 	test_nonmemberswap();
 	//while (1) {};
 	return 0;
