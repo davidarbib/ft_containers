@@ -94,8 +94,9 @@ namespace ft
 				else
 					_max_size = _alloc.max_size();
 
-				//this->_size = computeSize(first, last);
-				this->_size = ft::distance(first, last);
+				this->_size = computeSize(first, last);
+				//this->_size = ft::distance(first, last);
+				//(doesnt compile on mli tester)
 				if (this->_size == 0)
 					return ;
 				_capacity = _size;
