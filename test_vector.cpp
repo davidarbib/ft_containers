@@ -1,12 +1,34 @@
 #include "vector.hpp"
 #include <vector>
 #include <iostream>
+#include <sys/time.h>
 
 #ifndef TESTED_NS
 # define TESTED_NS std
 #endif
 
 int count = 20;
+#define TIME_FACTOR 1000
+
+long	get_usec_from_epoch()
+{
+	struct timeval	tv;
+
+	gettimeofday(&tv, NULL);
+	return (tv.tv_usec / TIME_FACTOR + tv.tv_sec * TIME_FACTOR);
+}
+
+long	get_relative_ms(struct timeval begin_tv)
+{
+	struct timeval	current_tv;
+	long			sec_interval;
+	long			usec_interval;
+
+	gettimeofday(&current_tv, NULL);
+	sec_interval = current_tv.tv_sec - begin_tv.tv_sec;
+	usec_interval = current_tv.tv_usec - begin_tv.tv_usec;
+	return (usec_interval / TIME_FACTOR + sec_interval * TIME_FACTOR);
+}
 
 template <class T>
 void
@@ -355,6 +377,26 @@ test_nonmemberswap(void)
 	printVec(vec2);
 }
 
+void
+test_complexity(void)
+{
+	count = 1000;
+	struct timeval before;
+
+	TESTED_NS::vector<int> vec;
+
+	gettimeofday(&before, NULL);
+	for (int i = 0; i < count; i++)
+		vec.insert(vec.begin(), 1, i * 10);
+	std::cout << "time : " << get_relative_ms(before) << " ms" << std::endl;
+
+	count *= 10;
+	gettimeofday(&before, NULL);
+	for (int i = 0; i < count; i++)
+		vec.insert(vec.begin(), 1, i * 10);
+	std::cout << "time : " << get_relative_ms(before) << " ms" << std::endl;
+}
+
 int main()
 {
 #ifdef FT 
@@ -382,5 +424,6 @@ int main()
 	test_swap();
 	test_relational();
 	test_nonmemberswap();
+	test_complexity();
 	return 0;
 }
