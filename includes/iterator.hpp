@@ -4,7 +4,7 @@
 #include "iterator_traits.hpp"
 
 /*
-** iterator tag dispatching used for compute distance with 
+** iterator tag dispatching used to compute distance with 
 ** iterator specific complexity
 */
 
@@ -14,7 +14,6 @@ namespace ft
 	typename ft::iterator_traits<InputIt>::difference_type
 	do_distance(InputIt first, InputIt last, ft::input_iterator_tag)
 	{
-		//std::cout << "distance with input it" << std::endl;
 		typename ft::iterator_traits<InputIt>::difference_type distance = 0;
 		for (InputIt it = first; it != last; it++) 
 			distance++;
@@ -25,7 +24,6 @@ namespace ft
 	typename ft::iterator_traits<InputIt>::difference_type
 	do_distance(InputIt first, InputIt last, ft::random_access_iterator_tag)
 	{
-		//std::cout << "distance with random access it" << std::endl;
 		return last - first;
 	}
 

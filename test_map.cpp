@@ -12,12 +12,26 @@
 
 #define TIME_FACTOR 1000
 
+int count = 20;
+
 long	get_usec_from_epoch()
 {
 	struct timeval	tv;
 
 	gettimeofday(&tv, NULL);
-	return (tv.tv_usec / TIME_FACTOR + tv.tv_sec * TIME_FACTOR);
+	return (tv.tv_usec + tv.tv_sec * TIME_FACTOR * TIME_FACTOR);
+}
+
+long	get_relative_us(struct timeval begin_tv)
+{
+	struct timeval	current_tv;
+	long			sec_interval;
+	long			usec_interval;
+
+	gettimeofday(&current_tv, NULL);
+	sec_interval = current_tv.tv_sec - begin_tv.tv_sec;
+	usec_interval = current_tv.tv_usec - begin_tv.tv_usec;
+	return (usec_interval + sec_interval * TIME_FACTOR * TIME_FACTOR);
 }
 
 long	get_relative_ms(struct timeval begin_tv)
@@ -555,6 +569,46 @@ test_nonmemberswap()
 		std::cout << it->first << " => " << it->second << '\n';
 }
 
+void
+test_performance(void)
+{
+	count = 1000;
+	struct timeval before;
+
+	TESTED_NS::map<int, int> mp;
+
+	gettimeofday(&before, NULL);
+	for (int i = 0; i < count; i++)
+		mp.insert(TESTED_NS::make_pair(i, i * 5));
+	std::cout << "insert time : " << get_relative_us(before) << " us" << std::endl;
+	gettimeofday(&before, NULL);
+	for (int i = 0; i < count; i++)
+		mp.erase(i);
+	std::cout << "erase time : " << get_relative_us(before) << " us" << std::endl;
+
+	TESTED_NS::map<int, int> mp2;
+	gettimeofday(&before, NULL);
+	count *= 10;
+	for (int i = 0; i < count; i++)
+		mp2.insert(TESTED_NS::make_pair(i, i * 10));
+	std::cout << "insert time : " << get_relative_us(before) << " us" << std::endl;
+	gettimeofday(&before, NULL);
+	for (int i = 0; i < count; i++)
+		mp2.erase(i);
+	std::cout << "erase time : " << get_relative_us(before) << " us" << std::endl;
+
+	TESTED_NS::map<int, int> mp3;
+	gettimeofday(&before, NULL);
+	count *= 10;
+	for (int i = 0; i < count; i++)
+		mp3.insert(TESTED_NS::make_pair(i, i * 10));
+	std::cout << "insert time : " << get_relative_us(before) << " us" << std::endl;
+	gettimeofday(&before, NULL);
+	for (int i = 0; i < count; i++)
+		mp3.erase(i);
+	std::cout << "erase time : " << get_relative_us(before) << " us" << std::endl;
+}
+
 int main()
 {
 #ifdef FT 
@@ -592,6 +646,7 @@ int main()
 	test_relational();
 	std::cout << "---------------- non member swap ------------------" << std::endl;
 	test_nonmemberswap();
+	//test_performance();
 	//while (1) {};
 	return 0;
 }

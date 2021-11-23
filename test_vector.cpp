@@ -377,26 +377,6 @@ test_nonmemberswap(void)
 	printVec(vec2);
 }
 
-void
-test_complexity(void)
-{
-	count = 1000;
-	struct timeval before;
-
-	TESTED_NS::vector<int> vec;
-
-	gettimeofday(&before, NULL);
-	for (int i = 0; i < count; i++)
-		vec.insert(vec.begin(), 1, i * 10);
-	std::cout << "time : " << get_relative_ms(before) << " ms" << std::endl;
-
-	count *= 10;
-	gettimeofday(&before, NULL);
-	for (int i = 0; i < count; i++)
-		vec.insert(vec.begin(), 1, i * 10);
-	std::cout << "time : " << get_relative_ms(before) << " ms" << std::endl;
-}
-
 int main()
 {
 #ifdef FT 
@@ -404,25 +384,25 @@ int main()
 #else
 	std::cout << "Namespace tested : std" << std::endl;
 #endif
-	//test_ctors();
-	//test_assign();
-	//test_at();
-	//test_back();
-	//test_beginend();
-	//test_rbeginend();
-	//test_clear();
-	//test_empty();
-	//test_erase();
-	//test_front();
-	//test_getallocator();
-	//test_insert();
-	//test_opeequal();
-	//test_popback();
-	//test_pushback();
-	//test_reserve();
-	//test_resize();
-	//test_swap();
-	//test_relational();
-	//test_nonmemberswap();
+	test_ctors();
+	test_assign();
+	test_at();
+	test_back();
+	test_beginend();
+	test_rbeginend();
+	test_clear();
+	test_empty();
+	test_erase();
+	test_front();
+	test_getallocator();
+	test_insert();
+	test_opeequal();
+	test_popback();
+	test_pushback();
+	test_reserve();
+	test_resize();
+	test_swap();
+	test_relational();
+	test_nonmemberswap();
 	return 0;
 }
