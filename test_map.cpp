@@ -2,12 +2,35 @@
 #include <map>
 #include <iostream>
 #include "print_pair.hpp" //TODO delete before evaluation
+#include <sys/time.h>
 
 //#define TESTED_NS ft
 
 #ifndef TESTED_NS
 # define TESTED_NS std
 #endif
+
+#define TIME_FACTOR 1000
+
+long	get_usec_from_epoch()
+{
+	struct timeval	tv;
+
+	gettimeofday(&tv, NULL);
+	return (tv.tv_usec / TIME_FACTOR + tv.tv_sec * TIME_FACTOR);
+}
+
+long	get_relative_ms(struct timeval begin_tv)
+{
+	struct timeval	current_tv;
+	long			sec_interval;
+	long			usec_interval;
+
+	gettimeofday(&current_tv, NULL);
+	sec_interval = current_tv.tv_sec - begin_tv.tv_sec;
+	usec_interval = current_tv.tv_usec - begin_tv.tv_usec;
+	return (usec_interval / TIME_FACTOR + sec_interval * TIME_FACTOR);
+}
 
 template <class Key, class T>
 void	print(TESTED_NS::map<Key, T>& lst)

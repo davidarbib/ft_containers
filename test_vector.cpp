@@ -404,26 +404,25 @@ int main()
 #else
 	std::cout << "Namespace tested : std" << std::endl;
 #endif
-	test_ctors();
-	test_assign();
-	test_at();
-	test_back();
-	test_beginend();
-	test_rbeginend();
-	test_clear();
-	test_empty();
-	test_erase();
-	test_front();
-	test_getallocator();
-	test_insert();
-	test_opeequal();
-	test_popback();
-	test_pushback();
-	test_reserve();
-	test_resize();
-	test_swap();
-	test_relational();
-	test_nonmemberswap();
-	test_complexity();
+	//test_ctors();
+	//test_assign();
+	//test_at();
+	//test_back();
+	//test_beginend();
+	//test_rbeginend();
+	//test_clear();
+	//test_empty();
+	//test_erase();
+	//test_front();
+	//test_getallocator();
+	//test_insert();
+	//test_opeequal();
+	//test_popback();
+	//test_pushback();
+	//test_reserve();
+	//test_resize();
+	//test_swap();
+	//test_relational();
+	//test_nonmemberswap();
 	return 0;
 }
