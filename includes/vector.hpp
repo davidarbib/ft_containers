@@ -13,8 +13,8 @@
 #include "iterator_traits.hpp"
 
 #define CHAR_TYPEID "c"
-#define EMAXSIZE "can't reserve above max_size"
-#define E_RANGE "Out of bound exception"
+#define EMAXSIZE "vector::reserve"
+#define E_RANGE "vector::at"
 
 #if __APPLE__ == 1
 	#define SIZE_CAP _capacity

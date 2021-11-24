@@ -1,5 +1,5 @@
-#ifndef RBTREE_MAP_HPP
-# define RBTREE_MAP_HPP
+#ifndef RBTREE_HPP
+# define RBTREE_HPP
 
 #include <iostream>
 #include <iomanip>

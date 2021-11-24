@@ -285,10 +285,6 @@ namespace ft
 				return make_pair(low_it, up_it);
 			}
 
-			tree_type& //TODO delete this method before evaluation
-			tree(void)
-			{ return _tree; }
-
 		private :
 			tree_type			_tree;
 			key_compare			_comp;

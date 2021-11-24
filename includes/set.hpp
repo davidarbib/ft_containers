@@ -1,13 +1,6 @@
 #ifndef SET_HPP
 # define SET_HPP
 
-#ifndef TEST_TREE
-# define TEST_TREE 0
-#endif
-
-#define CHAR_TYPEID "c"
-#define E_AT "set::at"
-
 #include <typeinfo>
 #include <functional>
 #include <string.h>
@@ -240,10 +233,6 @@ namespace ft
 				const_iterator up_it = upper_bound(x);
 				return make_pair(low_it, up_it);
 			}
-
-			tree_type& //TODO delete this method before evaluation
-			tree(void)
-			{ return _tree; }
 
 		private :
 			tree_type			_tree;
