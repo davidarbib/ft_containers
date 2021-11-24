@@ -1,5 +1,5 @@
-#ifndef RBTREE_HPP
-# define RBTREE_HPP
+#ifndef RBTREE_MAP_HPP
+# define RBTREE_MAP_HPP
 
 #include <iostream>
 #include <iomanip>
@@ -9,6 +9,8 @@
 #include <stdint.h>
 #include <string.h>
 #include "print_pair.hpp"
+#include "algorithm.hpp"
+#include <algorithm>
 
 #define LEFTMOST	2
 #define LEFTCHILD	1
@@ -20,12 +22,14 @@
 
 namespace ft
 {
-	template <typename T, class Compare = std::less<T>,
-			 	class KeyCompare = std::less<T>, class Alloc = std::allocator<T> >
+	template <typename Key, class Compare = std::less<Key>,
+				class Alloc = std::allocator<Key> >
 	class rbTree
 	{
 		public :
-			typedef T										value_type;
+			typedef Key										key_type;
+			typedef Key										value_type;
+			typedef Compare									key_compare;
 			typedef ft::rbnode<value_type>					node_type;
 			typedef node_type*								node_pointer;
 			typedef Alloc									allocator_type;
@@ -33,25 +37,63 @@ namespace ft
 			typedef typename Alloc::const_reference			const_reference;
 			typedef typename Alloc::pointer					pointer;
 			typedef typename Alloc::const_pointer			const_pointer;
-			typedef ft::rbtree_iterator<value_type, false>	iterator;
+			typedef ft::rbtree_iterator<value_type, true>	iterator;
 			typedef ft::rbtree_iterator<value_type, true>	const_iterator;
 			typedef ft::reverse_iterator<iterator>			reverse_iterator;
 			typedef ft::reverse_iterator<const_iterator>	const_reverse_iterator;
+			typedef std::size_t								size_type;
 
 		private :
 			typedef typename Alloc::template rebind<node_type>::other
 															node_allocator_type;
 		public : 
-			rbTree( const Compare& cmp = Compare(), const KeyCompare& key_cmp = KeyCompare(),
+			rbTree(const Compare& cmp = Compare(), 
 						const Alloc& alloc = Alloc())
-			: _alloc(alloc), _cmp(cmp), _key_cmp(key_cmp),
-				_nil(make_null_node()), _end_node(_nil)
-			{ }
+			: _alloc(alloc), _cmp(cmp), _nil(make_null_node()),
+				_begin_node(_nil), _end_node(_nil), _size(0)
+			{ _max_size = _node_alloc.max_size(); }
 
-			~rbTree()
+			rbTree(const rbTree<Key, Compare, Alloc>& src)
+			: _alloc(src._alloc), _cmp(src._cmp), _nil(make_null_node()),
+				_size(src._size), _max_size(src._max_size)
 			{
-				_clear_(_nil->right_child);
+				duplicateTree(src.getRoot(), _nil);
+				_begin_node = leftmost(getRoot());
+				_end_node = _nil;
+			}
+
+			virtual ~rbTree()
+			{
+				//std::cout << "rbtree destructor" << std::endl;
+				_clear_();
 				_node_alloc.deallocate(_nil, 1);
+			}
+			
+			allocator_type
+			getAllocator() const
+			{ return _alloc; }
+
+			void
+			swap(rbTree<Key, Compare, Alloc>& other)
+			{
+				std::swap(this->_nil, other._nil);
+				std::swap(this->_alloc, other._alloc);
+				std::swap(this->_cmp, other._cmp);
+				std::swap(this->_node_alloc, other._node_alloc);
+				std::swap(this->_begin_node, other._begin_node);
+				std::swap(this->_end_node, other._end_node);
+				std::swap(this->_size, other._size);
+			}
+
+			rbTree&
+			operator=(const rbTree<Key, Compare, Alloc>& src)
+			{
+				_clear_();
+				duplicateTree(src.getRoot(), _nil);
+				_begin_node = leftmost(getRoot());
+				_size = src._size;
+				_max_size = src._max_size;
+				return *this;
 			}
 			
 			node_pointer
@@ -61,6 +103,18 @@ namespace ft
 			node_pointer
 			endNode(void) const
 			{ return _end_node; }
+
+			bool
+			empty() const
+			{ return _size == 0; }
+			
+			size_type
+			size() const
+			{ return _size; }
+
+			size_type
+			max_size() const
+			{ return _max_size; }
 
 			node_pointer
 			getRoot(void) const
@@ -84,8 +138,7 @@ namespace ft
 				node_pointer node = NULL;
 				try
 				{
-					node_pointer new_node = createNode(value);
-					node = insert(new_node, success);
+					node = insert(value, success);
 				}
 				catch (std::bad_alloc &e)
 				{
@@ -100,21 +153,26 @@ namespace ft
 				node_pointer node = NULL;
 				try
 				{
-					node_pointer new_node = createNode(value);
+					if (hint.getCurrentPtr() == _end_node)
+						return insert(value, success);
 					iterator after_hint = hint;
 					after_hint++;
-					if (hint.getCurrentPtr() == _end_node)
-						node = insert(new_node, success);
-					else if (after_hint.getCurrentPtr() != _end_node
+					if (after_hint.getCurrentPtr() != _end_node
 							&& _cmp(*hint, value) && _cmp(value, *after_hint))
+					{
+						node_pointer new_node = createNode(value);
 						node = directInsert(hint.getCurrentPtr(),
 											new_node, success);
+					}
 					else if (after_hint.getCurrentPtr() == _end_node
 							&& _cmp(*hint, value))
+					{
+						node_pointer new_node = createNode(value);
 						node = directInsert(hint.getCurrentPtr(),
 											new_node, success);
+					}
 					else
-						node = insert(new_node, success);
+						node = insert(value, success);
 				}
 				catch (std::bad_alloc &e)
 				{
@@ -123,108 +181,163 @@ namespace ft
 				return node;
 			}
 			
-			/*
-			 * in this implementation of red black delete
-			 * there isnt copy of predecessor/successor
-			 * just pointers update, to avoid large data copy for complex_type
-			 */
-			void
-			erase(node_pointer del_node)
-			{ 
-				if (!del_node->left_child && !del_node->right_child)
-				{
-					if (!del_node->red)
-						resolve_double_blackness(del_node);
-					destroy_node(del_node);
-					_begin_node = leftmost(getRoot());
-					if (_begin_node == NULL)
-						_begin_node = _nil;
-					return ;
-				}
-				if (del_node->left_child)
-				{
-					handle_left_case(del_node);
-					del_node->parent = NULL;
-					destroy_node(del_node);
-					_begin_node = leftmost(getRoot());
-					if (_begin_node == NULL)
-						_begin_node = _nil;
-					return ;
-				}
-				if (isLeftChild(del_node->parent, del_node))
-					del_node->parent->left_child = del_node->right_child;
-				else
-					del_node->parent->right_child = del_node->right_child;
-				del_node->right_child->parent = del_node->parent;	
-				node_pointer moved_node = del_node->right_child;
-				balance(del_node->red, moved_node);
-				del_node->parent = NULL;
-				destroy_node(del_node);
-				_begin_node = leftmost(getRoot());
-				if (_begin_node == NULL)
-					_begin_node = _nil;
-			}
-
-			void
-			_erase_(const_reference value)
-			{ erase(getNodeWhoseValue(getRoot(), value)); }
-
 			void
 			_erase_(node_pointer node_to_del)
 			{ erase(node_to_del); }
 
-			node_pointer
-			find(const_reference value)
+			void
+			_erase_(iterator first, iterator last)
 			{
-				node_pointer node;
-
-				node = getNodeWhoseValue(getRoot(), value);
-				if (!node)
-					node = _end_node;
-				return node;
+				iterator it = first;
+				node_pointer tmp = NULL;
+				int i = 0;
+				for (; it != last; it++)
+				{
+					if (i > 0)
+					{
+			 			_erase_(tmp);
+						i--;
+						tmp = NULL;
+					}
+					tmp = it.getCurrentPtr();
+					i++;
+				}
+				if (tmp)
+			 		_erase_(tmp);
 			}
-			
-			template <typename Key, typename Value>
-			node_pointer
-			find(const Key& key, Value value,
-					typename ft::enable_if<ft::is_same<value_type,
-					ft::pair<const Key, Value> >::value>::type* = 0)
+
+			void
+			_clear_(void)
 			{
-				(void)value;
+				node_pointer tree_root = getRoot();
+				if (tree_root)
+					clear(tree_root);
+				_begin_node = _end_node;
+				_size = 0;
+				_nil->right_child = NULL;
+			}
+
+			void
+			clear(node_pointer root)
+			{	
+				if (root == NULL)
+					return ;
+				if (root->left_child)
+					clear(root->left_child);
+				if (root->right_child)
+					clear(root->right_child);
+				//std::cout << "-----------------------" << std::endl;
+				//std::cout << "node to delete is :  ";
+				//std::cout << root << std::endl;
+				//std::cout << root->value.first << ", ";
+				//std::cout << root->value.second << std::endl;
+				_alloc.destroy(&root->value);
+				//std::cout << "before deallocation" << std::endl;
+				_node_alloc.deallocate(root, 1);
+				//std::cout << "after deallocation" << std::endl;
+			}
+
+			size_type
+			count(const key_type& x) const
+			{
+				if (getNodeWithKey(getRoot(), x) != NULL) 
+					return 1;
+				return 0;
+			}
+
+			iterator
+			find(const Key& key)
+			{
 				node_pointer node;
 
 				node = getNodeWithKey(getRoot(), key);
 				if (!node)
 					node = _end_node;
-				return node;
+				return iterator(node);
 			}
 
-			template <typename Key>
+			const_iterator
+			find(const Key& key) const
+			{
+				node_pointer node;
+
+				node = getNodeWithKey(getRoot(), key);
+				if (!node)
+					node = _end_node;
+				return const_iterator(node);
+			}
+
+			iterator
+			findNotLess(const Key& key)
+			{ return iterator(getNodeWithKeyNotLess(getRoot(), key)); }
+
+			const_iterator
+			findNotLess(const Key& key) const
+			{ return const_iterator(getNodeWithKeyNotLess(getRoot(), key)); }
+
+			iterator
+			findUpper(const Key& key)
+			{ return iterator(getNodeWithKeyGreater(getRoot(), key)); }
+
+			const_iterator
+			findUpper(const Key& key) const
+			{ return const_iterator(getNodeWithKeyGreater(getRoot(), key)); }
+
 			node_pointer
 			getNodeWithKey(node_pointer root, const Key& key) const
 			{
 				if (root == NULL)
 					return NULL;
-				if (root->value.first == key)
+				if (root->value == key)
 					return root;
-				if (_key_cmp(key, root->value.first))
+				if (_cmp(key, root->value))
 					return getNodeWithKey(root->left_child, key);
 				return getNodeWithKey(root->right_child, key);
 			}
 
-			template <typename Key>
 			node_pointer
-			getNodeWithUpperKey(node_pointer root, const Key& key) const
+			getNodeWithKeyGreater(node_pointer root, const Key& key) const
 			{
-				if (root == NULL)
-					return NULL;
-				if (root->value.first == key)
-					return root;
-				if (_key_cmp(key, root->value.first))
-					return getNodeWithKey(root->left_child, key);
-				return getNodeWithKey(root->right_child, key);
+				node_pointer greatest = _end_node;
+				node_pointer head = root;
+
+				while (head)
+				{
+					if (_cmp(key, head->value))
+					{
+						greatest = head;
+						head = head->left_child;
+					}
+					else
+						head = head->right_child;
+				}
+				return greatest;
 			}
-			
+
+			node_pointer
+			getNodeWithKeyNotLess(node_pointer root, const Key& key) const
+			{
+				node_pointer notless = _end_node;
+				node_pointer head = root;
+
+				while (head)
+				{
+					if (equalTo(key, head->value))
+					{
+						notless = head;
+						break;
+					}
+					if (_cmp(key, head->value))
+					{
+						notless = head;
+						head = head->left_child;
+					}
+					else
+						head = head->right_child;
+				}
+				return notless;
+			}
+
 			#define RED "\e[0;31m"
 			#define RESET "\e[0;0m"
 
@@ -290,20 +403,33 @@ namespace ft
 			node_allocator_type	_node_alloc;
 			allocator_type		_alloc;
 			Compare				_cmp;
-			KeyCompare			_key_cmp;
 			node_pointer		_nil;
 			node_pointer		_begin_node;
 			node_pointer		_end_node;
+			size_type			_size;
+			size_type			_max_size;
 			
 			bool
-			equalTo(value_type &x, value_type &y)
+			equalTo(const Key &x, const Key &y) const
 			{ return !_cmp(x, y) && !_cmp(y, x); }
 
-			template <typename Key>
-			bool
-			keyEqualTo(Key &x, Key &y)
-			{ return !_key_cmp(x, y) && !_key_cmp(y, x); }
-
+			void
+			duplicateTree(node_pointer src_root, node_pointer parent_dest_tree, bool left = false)
+			{
+				if (src_root)
+				{
+					node_pointer new_node = createNode(src_root->value);
+					new_node->parent = parent_dest_tree;
+					if (left)
+						parent_dest_tree->left_child = new_node;
+					else
+						parent_dest_tree->right_child = new_node;
+					new_node->red = src_root->red;
+					duplicateTree(src_root->left_child, new_node, true);
+					duplicateTree(src_root->right_child, new_node, false);
+				}
+			}
+			
 			node_pointer
 			createNode(const_reference value)
 			{
@@ -314,7 +440,11 @@ namespace ft
 					node->left_child = NULL;
 					node->right_child = NULL;
 					node->parent = NULL;
+					node->red = true;
 					_alloc.construct(&node->value, value);
+					//std::cout << "node : " << node << std::endl;
+					//std::cout << "with value : " << node->value << "created";
+					//std::cout << std::endl;
 					return node;
 				}
 				catch (std::bad_alloc &e)
@@ -325,26 +455,41 @@ namespace ft
 			}
 
 			node_pointer
-			insert(node_pointer new_node, bool *success)
+			insert(const_reference value, bool *success)
 			{
 				uint8_t		cfg = 0;
+
+				//std::cout << "----------new insertion----------" << std::endl;
+				//std::cout << "value to insert : ";
+				//std::cout << value.first << ", ";
+				//std::cout << value.second << std::endl;
+				//std::cout << "tree state : " << std::endl;
+				//print_tree();
+				//std::cout << "tree values : " << std::endl;
+				//printInOrderValues();
+
 				if (_nil->right_child == NULL)
 				{
+					*success = 1;
+					node_pointer new_node = createNode(value);
 					_nil->right_child = new_node;
 					new_node->red = false;
 					new_node->parent = _nil;
 					_begin_node = new_node;
+					_size++;
 					return new_node;
 				}
 				node_pointer root = _nil->right_child;
-				new_node->red = true;
-				node_pointer stop_node = push_back(root, new_node, &cfg, success);
-				if (!*success)
-					return stop_node;
-				check_recolor_rotate(root, new_node, cfg);
-				_begin_node = leftmost(getRoot());
-				if (_begin_node == NULL)
-					_begin_node = _nil;
+				node_pointer stop_node = push_back(root, value, &cfg, success);
+				if (*success)
+				{
+					if (stop_node->parent != root)
+						check_recolor_rotate(stop_node);
+					_begin_node = leftmost(getRoot());
+					if (_begin_node == NULL)
+						_begin_node = _nil;
+					_size++;
+				}
 				return stop_node;
 			}
 
@@ -352,6 +497,8 @@ namespace ft
 			directInsert(node_pointer hint, node_pointer new_node, bool *success)
 			{
 				uint8_t		cfg = 0;
+
+				_size++;
 				if (hint->right_child)
 				{
 					node_pointer parent = leftmost(hint->right_child);
@@ -374,9 +521,94 @@ namespace ft
 				}
 				new_node->red = true;
 				*success = 1;
-				check_recolor_rotate(getRoot(), new_node, cfg);
+				check_recolor_rotate(getRoot());
 				_begin_node = leftmost(getRoot());
 				return new_node;
+			}
+
+			/*
+			 * in this implementation of red black delete
+			 * there isnt copy of predecessor/successor
+			 * just pointers update, to avoid large data copy for complex_type
+			 */
+			void
+			erase(node_pointer del_node)
+			{ 
+				//std::cout << "del_node value : ";
+				//std::cout << del_node->value.first;
+				//std::cout << ", " << del_node->value.second;
+				//std::cout << std::endl;
+				//std::cout << "----------------tree state before erase----------------" << std::endl;
+				//print_tree();
+				if (!del_node->left_child && !del_node->right_child)
+				{
+					if (isBlackNode(del_node))
+						resolve_double_blackness(del_node);
+					if (isLeftChild(del_node->parent, del_node))
+						del_node->parent->left_child = NULL;
+					else
+						del_node->parent->right_child = NULL;
+					destroy_node(del_node);
+				}
+				else if (del_node->left_child)
+				{
+					handleDelNodeHasLeftChildCase(del_node);
+				}
+				else
+				{
+					if (isLeftChild(del_node->parent, del_node))
+						del_node->parent->left_child = del_node->right_child;
+					else
+						del_node->parent->right_child = del_node->right_child;
+					del_node->right_child->parent = del_node->parent;	
+					node_pointer moved_node = del_node->right_child;
+					balance(del_node->red, moved_node);
+					destroy_node(del_node);
+				}
+				_size--;
+				_begin_node = leftmost(getRoot());
+				if (_begin_node == NULL)
+					_begin_node = _nil;
+			}
+
+			void
+			s_black_n_red_case(node_pointer node)
+			{
+				uint8_t cfg = 99;
+
+				if (isLeftChild(node->parent, sibling(node))
+						&& isRedNode(sibling(node)->left_child))
+					cfg = LL;
+				if (isLeftChild(node->parent, sibling(node))
+						&& isRedNode(sibling(node)->right_child)
+						&& isBlackNode(sibling(node)->left_child))
+					cfg = LR;
+				if (!isLeftChild(node->parent, sibling(node))
+						&& isRedNode(sibling(node)->left_child)
+						&& isBlackNode(sibling(node)->right_child))
+					cfg = RL;
+				if (!isLeftChild(node->parent, sibling(node))
+						&& isRedNode(sibling(node)->right_child))
+					cfg = RR;
+				rotate_recolor_erase(sibling(node), cfg);
+			}
+
+			void
+			s_red_case(node_pointer node)
+			{
+				node_pointer old_sibling = sibling(node);
+				if (isLeftChild(node->parent, node))
+					rotLeft(node->parent);
+				else
+					rotRight(node->parent);
+				node->parent->red = !node->parent->red;
+				old_sibling->red = !old_sibling->red;
+			}
+
+			void
+			s_black_n_black_p_red(node_pointer node)
+			{
+				node->parent->red = false;
 			}
 
 			//(a)if sibling (s) black and at least one sibling child is red (r) : rotations of parent (eventually sibling pre rotation)
@@ -392,51 +624,31 @@ namespace ft
 			void
 			resolve_double_blackness(node_pointer node)
 			{
-				uint8_t cfg;
-
-				if (node == getRoot())
+				while (true)
 				{
-					node->red = false;
-					return ;
-				}
-				if (isSiblingBlackNephewRed(node))
-				{
-					if (isLeftChild(node->parent, sibling(node))
-						&& isRedNode(sibling(node)->left_child))
-						cfg = LL;
-					if (isLeftChild(node->parent, sibling(node))
-						&& isRedNode(sibling(node)->right_child)
-						&& isBlackNode(sibling(node)->left_child))
-						cfg = LR;
-					if (!isLeftChild(node->parent, sibling(node))
-						&& isRedNode(sibling(node)->left_child)
-						&& isBlackNode(sibling(node)->right_child))
-						cfg = RL;
-					if (!isLeftChild(node->parent, sibling(node))
-						&& isRedNode(sibling(node)->right_child))
-						cfg = RR;
-					rotate_recolor_erase(sibling(node), cfg);
-					return ;
-				}
-				if (isSiblingBlackNephewsBlack(node))
-				{
-					sibling(node)->red = true;
-					if (!node->parent->red)
-						resolve_double_blackness(node->parent);
-					else
-						node->parent->red = false;
-					return ;
-				}
-				if (sibling(node)->red)
-				{
-					node_pointer old_sibling = sibling(node);
-					if (isLeftChild(node->parent, node))
-						rotLeft(node->parent);
-					else
-						rotRight(node->parent);
-					node->parent->red = !node->parent->red;
-					old_sibling->red = !old_sibling->red;
-					resolve_double_blackness(node);
+					if (node == getRoot())
+					{
+						node->red = false;
+						break ;
+					}
+					else if (isSiblingBlackNephewRed(node))
+					{
+						s_black_n_red_case(node);
+						break ;
+					}
+					else if (isSiblingBlackNephewsBlack(node))
+					{
+						sibling(node)->red = true;
+						if (isBlackNode(node->parent))
+							node = node->parent;
+						else
+						{
+							s_black_n_black_p_red(node);
+							break;
+						}
+					}
+					if (isRedNode(sibling(node)))
+						s_red_case(node);
 				}
 			}
 
@@ -481,7 +693,7 @@ namespace ft
 			bool
 			isSiblingBlackNephewsBlack(node_pointer node) const
 			{
-				if (!sibling(node)->red
+				if (isBlackNode(sibling(node))
 					&& isBlackNode(nephewL(node))
 					&& isBlackNode(nephewR(node)))
 					return true;
@@ -491,7 +703,7 @@ namespace ft
 			bool
 			isSiblingBlackNephewRed(node_pointer node) const
 			{
-				if (!sibling(node)->red
+				if (isBlackNode(sibling(node))
 					&& (isRedNode(nephewL(node))
 						|| isRedNode(nephewR(node))))
 					return true;
@@ -512,27 +724,59 @@ namespace ft
 
 			node_pointer
 			nephewL(node_pointer node) const
-			{ return sibling(node)->left_child; }
+			{
+				if (!sibling(node))
+					return NULL;
+				return sibling(node)->left_child;
+			}
 
 			node_pointer
 			nephewR(node_pointer node) const
-			{ return sibling(node)->right_child; }
+			{
+				if (!sibling(node))
+					return NULL;
+				return sibling(node)->right_child;
+			}
 
 			void
-			handle_left_case(node_pointer del_node)
+			handleMovedNodeHasLeftChildCase(node_pointer del_node,
+					node_pointer moved_node)
 			{
-				node_pointer moved_node = rightmost(del_node->left_child); 
-				node_pointer rmost_leftchild = moved_node->left_child;
-				if (rmost_leftchild)
-				{
-					moved_node->parent->right_child = rmost_leftchild;
-					rmost_leftchild->parent = moved_node->parent;
+				node_pointer moved_node_left_child = moved_node->left_child;
+				moved_node->right_child = del_node->right_child;
+				if (del_node->right_child)
+					del_node->right_child->parent = moved_node;
 
-					if (moved_node != del_node->left_child)
-					{
-						moved_node->left_child = del_node->left_child;
-						del_node->left_child->parent = moved_node;
-					}
+				if (moved_node != del_node->left_child)
+				{
+					moved_node->parent->right_child = moved_node_left_child;
+					moved_node_left_child->parent = moved_node->parent;
+					moved_node->left_child = del_node->left_child;
+					del_node->left_child->parent = moved_node;
+				}
+
+				if (isLeftChild(del_node->parent, del_node))
+					del_node->parent->left_child = moved_node;
+				else
+					del_node->parent->right_child = moved_node;
+				moved_node->parent = del_node->parent;
+
+				moved_node->red = del_node->red;
+				moved_node_left_child->red = false;
+				destroy_node(del_node);
+			}
+
+			void
+			handleMovedNodeIsLeafCase(node_pointer del_node,
+					node_pointer moved_node)
+			{
+				node_pointer moved_node_old_parent = moved_node->parent;
+				if (moved_node != del_node->left_child)
+				{
+					moved_node->left_child = del_node->left_child;
+					del_node->left_child->parent = moved_node;
+					moved_node->parent->right_child = NULL;
+
 					if (isLeftChild(del_node->parent, del_node))
 						del_node->parent->left_child = moved_node;
 					else
@@ -541,52 +785,58 @@ namespace ft
 
 					moved_node->right_child = del_node->right_child;
 					if (del_node->right_child)
-					del_node->right_child->parent = moved_node;
-
-					rmost_leftchild->red = false;
-					return ;
+						del_node->right_child->parent = moved_node;
+					del_node->right_child = NULL;
+					del_node->left_child = NULL;
+					del_node->parent = moved_node_old_parent;
+					moved_node_old_parent->right_child = del_node;
+					if (isBlackNode(moved_node))
+						resolve_double_blackness(del_node);
+					else
+						moved_node->red = del_node->red;
+					moved_node_old_parent->right_child = NULL;
+					destroy_node(del_node);
 				}
-
-				node_type v_node;
-				v_node.red = false;
-				v_node.parent = moved_node->parent;
-				v_node.left_child = NULL;
-				v_node.right_child = NULL;
-
-				if (moved_node != del_node->left_child)
+				else
 				{
-					moved_node->left_child = del_node->left_child;
-					del_node->left_child->parent = moved_node;
-					moved_node->parent->right_child = NULL;
+					if (isLeftChild(del_node->parent, del_node))
+						del_node->parent->left_child = moved_node;
+					else
+						del_node->parent->right_child = moved_node;
+					moved_node->parent = del_node->parent;
+
+					moved_node->right_child = del_node->right_child;
+					if (del_node->right_child)
+						del_node->right_child->parent = moved_node;
+					del_node->right_child = NULL;
+					del_node->left_child = NULL;
+					del_node->parent = moved_node;
+					moved_node->left_child = del_node;
+					if (isBlackNode(moved_node))
+						resolve_double_blackness(del_node);
+					else
+						moved_node->red = del_node->red;
+					moved_node->left_child = NULL;
+					destroy_node(del_node);
 				}
-				else
-					moved_node->parent->left_child = &v_node;
+			}
 
-				if (isLeftChild(del_node->parent, del_node))
-					del_node->parent->left_child = moved_node;
+			void
+			handleDelNodeHasLeftChildCase(node_pointer del_node)
+			{
+				node_pointer moved_node = rightmost(del_node->left_child); 
+				if (moved_node->left_child)
+					handleMovedNodeHasLeftChildCase(del_node, moved_node);
 				else
-					del_node->parent->right_child = moved_node;
-				moved_node->parent = del_node->parent;
-
-				moved_node->right_child = del_node->right_child;
-				if (del_node->right_child)
-					del_node->right_child->parent = moved_node;
-
-				if (moved_node->red)
-					moved_node->red = false;
-				else
-					resolve_double_blackness(&v_node);
+					handleMovedNodeIsLeafCase(del_node, moved_node);
 			}
 			
 			void
 			balance(bool del_node_red, node_pointer moved_node)
 			{
 				if (del_node_red ^ moved_node->red)
-				{
 					moved_node->red = false;
-					return ;
-				}
-				if (del_node_red == false && moved_node->red == false)
+				else if (del_node_red == false && moved_node->red == false)
 					resolve_double_blackness(moved_node);
 			}
 
@@ -610,13 +860,17 @@ namespace ft
 			node_pointer
 			rotRight(node_pointer node)
 			{
-				node_pointer tmp = node->left_child->right_child;
+				node_pointer tmp = NULL;
+				if (node->left_child)
+					tmp = node->left_child->right_child;
 				if (isLeftChild(node->parent, node))
 					node->parent->left_child = node->left_child;
 				else
 					node->parent->right_child = node->left_child;
-				node->left_child->parent = node->parent;
+				if (node->left_child)
+					node->left_child->parent = node->parent;
 				node->parent = node->left_child;
+				if (node->left_child)
 				node->parent->right_child = node;
 				if (tmp)
 					tmp->parent = node;
@@ -627,15 +881,18 @@ namespace ft
 			node_pointer
 			rotLeft(node_pointer node)
 			{
-				node_pointer tmp = node->right_child->left_child;
-
+				node_pointer tmp = NULL;
+				if (node->right_child)
+					tmp = node->right_child->left_child;
 				if (isLeftChild(node->parent, node))
 					node->parent->left_child = node->right_child;
 				else
 					node->parent->right_child = node->right_child;
-				node->right_child->parent = node->parent;
+				if (node->right_child)
+					node->right_child->parent = node->parent;
 				node->parent = node->right_child;
-				node->parent->left_child = node;
+				if (node->right_child)
+					node->parent->left_child = node;
 				node->right_child = tmp;
 				if (tmp)
 					tmp->parent = node;
@@ -643,38 +900,40 @@ namespace ft
 			}
 
 			node_pointer
-			push_back(node_pointer root, node_pointer new_node,
+			push_back(node_pointer root, const_reference value,
 						uint8_t *cfg, bool *success)
 			{
-				if (equalTo(new_node->value, root->value))
+				if (equalTo(value, root->value))
 				{
 					*success = false;
 					return root;
 				}
-				if (_cmp(new_node->value, root->value))
+				if (_cmp(value, root->value))
 				{
 					if (root->left_child == NULL)
 					{	
 						*cfg |= LEFTCHILD;
+						node_pointer new_node = createNode(value);
 						root->left_child = new_node;
 						new_node->parent = root;
 						*success = true;
 						return new_node;
 					}
 					*cfg |= LEFTMOST;
-					return push_back(root->left_child, new_node, cfg, success);
+					return push_back(root->left_child, value, cfg, success);
 				}
 				else
 				{
 					if (root->right_child == NULL)
 					{	
+						node_pointer new_node = createNode(value);
 						root->right_child = new_node;
 						new_node->parent = root;
 						*success = true;
 						return new_node;
 					}
 					*cfg = 0;
-					return push_back(root->right_child, new_node, cfg, success);
+					return push_back(root->right_child, value, cfg, success);
 				}
 			}
 
@@ -692,30 +951,52 @@ namespace ft
 			rotate_recolor_erase(node_pointer sibling, uint8_t cfg)
 			{
 				node_pointer parent = sibling->parent;
-
+				
 				switch (cfg)
 				{
 					case LL:
-						sibling->left_child->red = false;
 						rotRight(parent);
+						sibling->left_child->red = false;
 						break;
 					case LR:
-						sibling->right_child->red = false;
 						rotLeft(sibling);
+						swapColor(sibling->parent, sibling);
 						rotRight(parent);
+						sibling->red = false;
 						break;
 					case RR:
-						sibling->right_child->red = false;
 						rotLeft(parent);
+						sibling->right_child->red = false;
 						break;
 					case RL:
-						sibling->left_child->red = false;
 						rotRight(sibling);
+						swapColor(sibling->parent, sibling);
 						rotLeft(parent);
+						sibling->red = false;
 						break;
 				}
+				if (isRedNode(parent)
+					&& (cfg == RR || cfg == LL))
+				{
+					parent->red = false;
+					sibling->red = true;
+				}
+				if (isRedNode(parent)
+					&& (cfg == RL || cfg == LR))
+				{
+					parent->red = false;
+					sibling->parent->red = true;
+				}
 			}
-
+			
+			void
+			swapColor(node_pointer node1, node_pointer node2)
+			{
+				bool tmp_red = node1->red;
+				node1->red = node2->red;
+				node2->red = tmp_red;
+			}
+			
 			void
 			rotate_recolor_insert(node_pointer new_node, uint8_t cfg)
 			{
@@ -750,39 +1031,76 @@ namespace ft
 			}
 
 			void
+			check_recolor_rotate(node_pointer node)
+			{
+				while (node != getRoot()
+						&& isRedNode(node)
+						&& isRedNode(node->parent))
+				{
+					int cfg = 0;
+					if (isLeftChild(node->parent, node))
+						cfg |= LEFTCHILD;
+					if (isLeftChild(grandParent(node), node->parent))
+						cfg |= LEFTMOST;
+					//std::cout << "cfg is : " << (int)cfg << std::endl;
+					if (isBlackNode(uncle(node)))
+					{
+						//std::cout << "new node has a black uncle" << std::endl;
+						rotate_recolor_insert(node, cfg);
+						break ;
+					}
+					else
+					{
+						//std::cout << "new node has a red uncle" << std::endl;
+						node->parent->red = false;
+						uncle(node)->red = false;
+						grandParent(node)->red = true;
+					}
+					node = grandParent(node);
+				}
+				getRoot()->red = false;
+			}
+			/*
+			void
 			check_recolor_rotate(node_pointer root, node_pointer new_node,
 									uint8_t cfg)
 			{
+				std::cout << "cfg is : " << (int)cfg << std::endl;
 				if (new_node == root)
-					new_node->red = false;
-				if (!new_node->parent->red)
-					return ;
-				if (!uncle(new_node))
 				{
+					std::cout << "new node is root" << std::endl;
+					new_node->red = false;
+				}
+				else if (!new_node->parent->red)
+				{
+					std::cout << "new node's parent is black" << std::endl;
+					return ;
+				}
+				else if (!uncle(new_node))
+				{
+					std::cout << "new node hasnt an uncle" << std::endl;
 					rotate_recolor_insert(new_node, cfg);
 					return ;
 				}
-				if (uncle(new_node)->red)
+				else if (uncle(new_node)->red)
 				{
+					std::cout << "new node has a red uncle" << std::endl;
 					new_node->parent->red = false;
 					uncle(new_node)->red = false;
 					grandParent(new_node)->red = true;
 					check_recolor_rotate(root, grandParent(new_node), cfg);
 				}
 				else
+				{
+					std::cout << "new node has a black uncle" << std::endl;
 					rotate_recolor_insert(new_node, cfg);
+				}
 			}
+			*/
 
 			void
 			destroy_node(node_pointer node)
 			{
-				if (node->parent)
-				{
-					if (isLeftChild(node->parent, node))
-						node->parent->left_child = NULL;
-					else
-						node->parent->right_child = NULL;
-				}
 				_alloc.destroy(&node->value);
 				_node_alloc.deallocate(node, 1);
 			}
@@ -802,6 +1120,8 @@ namespace ft
 			rightmost(node_pointer start_node) const
 			{
 				node_pointer head = start_node;
+				if (!head)
+					return NULL;
 				while (head->right_child)
 					head = head->right_child;
 				return head;
@@ -836,20 +1156,6 @@ namespace ft
 				return head;
 			}
 
-			void
-			_clear_(node_pointer root)
-			{	
-				if (root == NULL)
-					return ;
-				if (root->left_child)
-					_clear_(root->left_child);
-				if (root->right_child)
-					_clear_(root->right_child);
-				_alloc.destroy(&root->value);
-				_node_alloc.deallocate(root, 1);
-				_begin_node = _end_node;
-			}
-
 			node_pointer
 			make_null_node(void)
 			{
@@ -858,6 +1164,7 @@ namespace ft
 				null_node->parent = null_node;
 				null_node->left_child = null_node;
 				null_node->right_child = NULL;
+				//std::cout << "nil address : " << null_node << std::endl;
 				return null_node;
 			}
 	};
