@@ -530,14 +530,9 @@ namespace ft
 			{
 				if (position == this->end())
 					return position;
-				iterator it = this->begin();
-				size_type i = 0;
-				while (it != position)
-				{	
-					i++;
-					it++;
-				}
+				size_type i = position - begin();	
 				_alloc.destroy(_elems + i);
+				iterator it = position;
 				while (it != this->end() - 1)
 				{
 					_alloc.construct(_elems + i, _elems[i + 1]);

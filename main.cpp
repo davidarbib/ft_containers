@@ -1189,6 +1189,19 @@ test_performance(void)
 	for (int i = 0; i < count; i++)
 		vec3.erase(vec3.begin());
 	std::cout << "erase time : " << get_relative_us(before) << " us" << std::endl;
+
+	TESTED_NS::vector<int> vec4;
+
+	std::cout << "capacity : " << vec4.capacity() << std::endl;
+	gettimeofday(&before, NULL);
+	for (int i = 0; i < count; i++)
+		vec4.insert(vec4.begin(), i);
+	std::cout << "insert time : " << get_relative_us(before) << " us" << std::endl;
+	gettimeofday(&before, NULL);
+	std::cout << "capacity : " << vec4.capacity() << std::endl;
+	for (int i = 0; i < count; i++)
+		vec4.erase(vec4.end() - 1);
+	std::cout << "erase time : " << get_relative_us(before) << " us" << std::endl;
 }
 
 void
@@ -1540,7 +1553,6 @@ int main()
 	
 	{
 	using namespace vector_test;
-	/*
 	test_ctors();
 	test_assign();
 	test_at();
@@ -1561,7 +1573,6 @@ int main()
 	test_swap();
 	test_relational();
 	test_nonmemberswap();
-	*/
 	test_performance();
 	}
 	return 0;
