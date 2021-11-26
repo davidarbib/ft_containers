@@ -1142,6 +1142,55 @@ test_relational(void)
 
 namespace vector_test
 {
+
+void
+test_performance(void)
+{
+	count = 10;
+	struct timeval before;
+
+	TESTED_NS::vector<int> vec;
+	std::cout << "capacity : " << vec.capacity() << std::endl;
+
+	gettimeofday(&before, NULL);
+	for (int i = 0; i < count; i++)
+		vec.insert(vec.begin(), i);
+	std::cout << "insert time : " << get_relative_us(before) << " us" << std::endl;
+	gettimeofday(&before, NULL);
+	std::cout << "capacity : " << vec.capacity() << std::endl;
+	for (int i = 0; i < count; i++)
+		vec.erase(vec.begin());
+	std::cout << "erase time : " << get_relative_us(before) << " us" << std::endl;
+
+	TESTED_NS::vector<int> vec2;
+
+	count *= 10;
+	std::cout << "capacity : " << vec2.capacity() << std::endl;
+	gettimeofday(&before, NULL);
+	for (int i = 0; i < count; i++)
+		vec2.insert(vec2.begin(), i);
+	std::cout << "insert time : " << get_relative_us(before) << " us" << std::endl;
+	gettimeofday(&before, NULL);
+	std::cout << "capacity : " << vec2.capacity() << std::endl;
+	for (int i = 0; i < count; i++)
+		vec2.erase(vec2.begin());
+	std::cout << "erase time : " << get_relative_us(before) << " us" << std::endl;
+
+	TESTED_NS::vector<int> vec3;
+
+	std::cout << "capacity : " << vec3.capacity() << std::endl;
+	count *= 10;
+	gettimeofday(&before, NULL);
+	for (int i = 0; i < count; i++)
+		vec3.insert(vec3.begin(), i);
+	std::cout << "insert time : " << get_relative_us(before) << " us" << std::endl;
+	gettimeofday(&before, NULL);
+	std::cout << "capacity : " << vec3.capacity() << std::endl;
+	for (int i = 0; i < count; i++)
+		vec3.erase(vec3.begin());
+	std::cout << "erase time : " << get_relative_us(before) << " us" << std::endl;
+}
+
 void
 test_ctors(void)
 {
@@ -1491,6 +1540,7 @@ int main()
 	
 	{
 	using namespace vector_test;
+	/*
 	test_ctors();
 	test_assign();
 	test_at();
@@ -1511,7 +1561,10 @@ int main()
 	test_swap();
 	test_relational();
 	test_nonmemberswap();
+	*/
+	test_performance();
 	}
+	return 0;
 
 	std::cout << "###################################" << std::endl;
 	std::cout << "##             stack             ##" << std::endl;

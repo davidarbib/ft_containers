@@ -1,3 +1,8 @@
-rm current_fix;
-make current_fix FT=1 DEBUG=1 SANITIZE=1;
-./current_fix
+#!/usr/bin/zsh
+clang++ -Wall -Wextra -Werror -std=c++98 -o ft main.cpp -Iincludes -DFT
+clang++ -Wall -Wextra -Werror -std=c++98 -o std main.cpp -Iincludes
+chmod 755 ft
+chmod 755 std
+./ft > "mine"
+./std > "true"
+diff "true" mine
