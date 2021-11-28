@@ -3,6 +3,7 @@
 
 #include <cstddef>
 #include "iterator_traits.hpp"
+#include <iterator>
 #include "type_traits.hpp"
 
 namespace ft
@@ -15,7 +16,7 @@ namespace ft
 			typedef typename ft::conditional<isconst, const T&, T&>::type	reference;
 			typedef typename ft::conditional<isconst, const T*, T*>::type	pointer;
 			typedef std::ptrdiff_t					difference_type;
-			typedef ft::random_access_iterator_tag	iterator_category;
+			typedef std::random_access_iterator_tag	iterator_category;
 
 			vect_iterator()
 			: _current_ptr(NULL)

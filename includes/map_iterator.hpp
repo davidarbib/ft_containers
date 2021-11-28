@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <iostream>
 #include "iterator_traits.hpp"
+#include <iterator_traits>
 #include "type_traits.hpp"
 #include "rbnode.hpp"
 
@@ -23,7 +24,7 @@ namespace ft
 			typedef typename
 				ft::conditional<isconst, const T*, T*>::type	pointer;
 			typedef std::ptrdiff_t								difference_type;
-			typedef ft::bidirectionnal_iterator_tag				iterator_category;
+			typedef std::bidirectionnal_iterator_tag			iterator_category;
 
 			map_iterator()
 			: _current_ptr(NULL)

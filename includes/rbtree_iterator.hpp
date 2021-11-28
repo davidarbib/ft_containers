@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <iostream>
 #include "iterator_traits.hpp"
+#include <iterator>
 #include "type_traits.hpp"
 #include "rbnode.hpp"
 
@@ -22,7 +23,7 @@ namespace ft
 			typedef value_type&									reference;
 			typedef value_type*									pointer;
 			typedef std::ptrdiff_t								difference_type;
-			typedef ft::bidirectionnal_iterator_tag				iterator_category;
+			typedef std::bidirectionnal_iterator_tag			iterator_category;
 
 			rbtree_iterator()
 			: _current_ptr(NULL)

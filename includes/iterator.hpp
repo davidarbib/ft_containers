@@ -2,6 +2,7 @@
 # define ITERATOR_HPP
 
 #include "iterator_traits.hpp"
+#include <iterator>
 
 /*
 ** iterator tag dispatching used to compute distance with 
@@ -12,7 +13,7 @@ namespace ft
 {
 	template <class InputIt>
 	typename ft::iterator_traits<InputIt>::difference_type
-	do_distance(InputIt first, InputIt last, ft::input_iterator_tag)
+	do_distance(InputIt first, InputIt last, std::input_iterator_tag)
 	{
 		typename ft::iterator_traits<InputIt>::difference_type distance = 0;
 		for (InputIt it = first; it != last; it++) 
@@ -22,7 +23,7 @@ namespace ft
 
 	template <class InputIt>
 	typename ft::iterator_traits<InputIt>::difference_type
-	do_distance(InputIt first, InputIt last, ft::random_access_iterator_tag)
+	do_distance(InputIt first, InputIt last, std::random_access_iterator_tag)
 	{
 		return last - first;
 	}

@@ -94,9 +94,7 @@ namespace ft
 				else
 					_max_size = _alloc.max_size();
 
-				this->_size = computeSize(first, last);
-				//this->_size = ft::distance(first, last);
-				//(doesnt compile on mli tester)
+				this->_size = ft::distance(first, last);
 				if (this->_size == 0)
 					return ;
 				_capacity = _size;
@@ -244,7 +242,7 @@ namespace ft
 			assign(InputIterator first, InputIterator last,
 					typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = 0)
 			{
-				size_type tmp_size = computeSize(first, last);
+				size_type tmp_size = ft::distance(first, last);
 				if (tmp_size > _capacity)
 				{
 					//size_type new_capacity = computeCapacity(tmp_size);
@@ -457,7 +455,7 @@ namespace ft
 			insert(iterator position, InputIterator first, InputIterator last,
 					typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = 0)
 			{
-				size_type n = computeSize(first, last);
+				size_type n = ft::distance(first, last);
 				if (n == 0)
 					return ;
 				size_type new_size = _size + n;
@@ -755,6 +753,7 @@ namespace ft
 
 	template <class T, class Alloc>
 	bool operator==(const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs)
+
 	{ return ft::equal(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()); }
 
 	template <class T, class Alloc>

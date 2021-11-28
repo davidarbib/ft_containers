@@ -1146,6 +1146,7 @@ namespace vector_test
 void
 test_performance(void)
 {
+	std::cout << "--------------------multiple insertion/deletion--------------------" << std::endl;
 	count = 10;
 	struct timeval before;
 
@@ -1203,6 +1204,69 @@ test_performance(void)
 		vec4.erase(vec4.end() - 1);
 	std::cout << "erase time : " << get_relative_us(before) << " us" << std::endl;
 }
+
+void
+test_performance2(void)
+{
+	std::cout << "--------------------single insertion/deletion--------------------" << std::endl;
+	/*
+	**here are benchmarks of inserting / deleting one element
+	**on different vector size
+	*/
+	count = 10;
+	struct timeval before;
+
+	TESTED_NS::vector<int> vec;
+	std::cout << "capacity : " << vec.capacity() << std::endl;
+
+	for (int i = 0; i < count; i++)
+		vec.insert(vec.begin(), i);
+
+	gettimeofday(&before, NULL);
+	vec.insert(vec.begin(), 777);
+	std::cout << "insert time : " << get_relative_us(before) << " us" << std::endl;
+
+	gettimeofday(&before, NULL);
+	vec.erase(vec.begin());
+	std::cout << "erase time : " << get_relative_us(before) << " us" << std::endl;
+
+	std::cout << "capacity : " << vec.capacity() << std::endl;
+
+	TESTED_NS::vector<int> vec2;
+
+	count *= 10;
+	std::cout << "capacity : " << vec2.capacity() << std::endl;
+	for (int i = 0; i < count; i++)
+		vec2.insert(vec2.begin(), i);
+
+	gettimeofday(&before, NULL);
+	vec2.insert(vec2.begin(), 777);
+	std::cout << "insert time : " << get_relative_us(before) << " us" << std::endl;
+
+	gettimeofday(&before, NULL);
+	vec2.erase(vec2.begin());
+	std::cout << "erase time : " << get_relative_us(before) << " us" << std::endl;
+
+	std::cout << "capacity : " << vec2.capacity() << std::endl;
+
+	TESTED_NS::vector<int> vec3;
+
+	std::cout << "capacity : " << vec3.capacity() << std::endl;
+	count *= 10;
+	for (int i = 0; i < count; i++)
+		vec3.insert(vec3.begin(), i);
+
+	gettimeofday(&before, NULL);
+	vec3.insert(vec3.begin(), 777);
+	std::cout << "insert time : " << get_relative_us(before) << " us" << std::endl;
+
+	gettimeofday(&before, NULL);
+	vec3.erase(vec3.begin());
+	std::cout << "erase time : " << get_relative_us(before) << " us" << std::endl;
+
+	std::cout << "capacity : " << vec2.capacity() << std::endl;
+}
+
 
 void
 test_ctors(void)
@@ -1553,6 +1617,7 @@ int main()
 	
 	{
 	using namespace vector_test;
+	/*
 	test_ctors();
 	test_assign();
 	test_at();
@@ -1574,6 +1639,8 @@ int main()
 	test_relational();
 	test_nonmemberswap();
 	test_performance();
+	*/
+	test_performance2();
 	}
 	return 0;
 
