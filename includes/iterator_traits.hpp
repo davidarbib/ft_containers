@@ -26,7 +26,7 @@ namespace ft
 		typedef T*									pointer;
 		typedef T&									reference;
 		typedef std::ptrdiff_t						difference_type;
-		typedef ft::random_access_iterator_tag		iterator_category;
+		typedef std::random_access_iterator_tag		iterator_category;
 	};
 
 	template <typename T> 
@@ -36,7 +36,7 @@ namespace ft
 		typedef const T*							pointer;
 		typedef const T&							reference;
 		typedef std::ptrdiff_t						difference_type;
-		typedef ft::random_access_iterator_tag		iterator_category;
+		typedef std::random_access_iterator_tag		iterator_category;
 	};
 }
 
